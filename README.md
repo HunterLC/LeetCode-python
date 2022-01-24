@@ -202,3 +202,75 @@ class Solution(object):
                 current.next = l2
             return root.next
     ```
+
++ 归并排序 bottom up
+    ```
+    # Definition for singly-linked list.
+    # class ListNode:
+    #     def __init__(self, val=0, next=None):
+    #         self.val = val
+    #         self.next = next
+    class Solution:
+        def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+            if head == None or head.next == None:  # 排序列表为空 or 只有一个元素， 不需要排
+                return head
+            # 统计列表长度
+            len = 1
+            current = head
+            while current != None:
+                current = current.next
+                len = len + 1
+
+            dummy = ListNode(0)
+            dummy.next = head
+            n = 1
+            #  for n in [1<<x for x in range(10) if 1<<x < len ]:
+            while n < len:
+                current = dummy.next
+                tail = dummy
+                while current != None:
+                    left = current
+                    right = self.split(left,n)
+                    current = self.split(right,n)
+                    tail.next, tail = self.merge(left,right)
+                n = n << 1
+                
+            return dummy.next
+
+        # 将列表分割为两个部分，前部分含有n个元素，返回剩余部分的第一个节点位置
+        def split(self, head, n):
+            # 分割前n个元素
+            while n > 1 and head != None:
+                head = head.next
+                n = n - 1
+            # 如果还剩下其余元素，就把下一个位置地址记录，即rest部分的开头
+            rest = head.next if head != None else None
+            # 断尾操作，前部分的最后指向空
+            if head != None:
+                head.next = None
+            return rest
+            for num in [1<<x for x in range(10) if 1<<x < 50 ]:
+                print(num)
+
+
+        # 合并列表，并返回合并结果的队头和队尾
+        def merge(self, l1, l2):
+            root = ListNode(0, None) # 使用root节点从小到大连接我们需要的节点
+            tail = root
+            while l1 != None and l2 != None:
+                if l1.val > l2.val: # 以l1为基础，让它的元素变成小的
+                    tail.next = l2
+                    l2 = l2.next
+                else:
+                    tail.next = l1
+                    l1 = l1.next
+                tail = tail.next
+            if l1 != None:
+                tail.next = l1
+            elif l2 != None:
+                tail.next = l2
+            # 将tail移动到队尾
+            while tail.next != None:
+                tail = tail.next
+            return root.next, tail
+    ```
