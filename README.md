@@ -144,3 +144,61 @@ class Solution(object):
             
             return root.next
     ```
+
+## 148.排序链表
+> 给你链表的头结点`head`，请将其按**升序**排列并返回**排序后的链表**
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/sort-list/
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 归并排序 top down
+    ```
+    # Definition for singly-linked list.
+    # class ListNode:
+    #     def __init__(self, val=0, next=None):
+    #         self.val = val
+    #         self.next = next
+    class Solution:
+        def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+            if head == None or head.next == None:  # 排序列表为空 or 只有一个元素， 不需要排
+                return head
+            # 链表含有多个元素,使用递归的方式将链表一分为二
+            slow = head
+            fast = head.next
+            while fast != None and fast.next != None:
+                slow = slow.next
+                fast = fast.next.next
+            # slow已经到了链表的中间位置
+            mid = slow.next
+            slow.next = None
+            return self.merge(self.sortList(head), self.sortList(mid))
+
+        def merge(self, l1, l2):
+            root = ListNode(0, None) # 使用root节点从小到大连接我们需要的节点
+            current = root
+            while l1 != None and l2 != None:
+                if l1.val > l2.val: # 以l1为基础，让它的元素变成小的
+                    current.next = l2
+                    l2 = l2.next
+                else:
+                    current.next = l1
+                    l1 = l1.next
+                current = current.next
+
+            # 或者while这么写
+            # while l1 != None and l2 != None:
+            #     if l1.val > l2.val: # 以l1为基础，让它的元素变成小的
+            #         temp = l1
+            #         l1 = l2
+            #         l2 = temp
+            #     current.next = l1
+            #     l1 = l1.next
+            #     current = current.next
+
+            if l1 != None:
+                current.next = l1
+            elif l2 != None:
+                current.next = l2
+            return root.next
+    ```
