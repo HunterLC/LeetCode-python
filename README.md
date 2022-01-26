@@ -94,6 +94,64 @@
 ```
 
 #### 5.归并排序
+> 归并排序（MERGE-SORT）是利用归并的思想实现的排序方法，该算法采用经典的分治（divide-and-conquer）策略:分治法将问题分(divide)成一些小的问题然后递归求解，而治(conquer)的阶段则将分的阶段得到的各答案"修补"在一起，即分而治之。
++ top down
+这种结构很像一棵完全二叉树，本文的归并排序我们采用递归去实现（也可采用迭代的方式去实现）。分阶段可以理解为就是递归拆分子序列的过程，递归深度为log2n。  
+![归并排序top down总思路](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/归并排序1.png)  
+治阶段，我们需要将两个已经有序的子序列合并成一个有序序列，比如上图中的最后一次合并，要将[4,5,7,8]和[1,2,3,6]两个已经有序的子序列，合并为最终序列[1,2,3,4,5,6,7,8]  
+![归并排序top down治思路](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/归并排序2.png)  
+最后  
+![归并排序top down思路](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/归并排序3.png)  
+
+```
+    public static void sort(int []arr){
+        int []temp = new int[arr.length];//在排序前，先建好一个长度等于原数组长度的临时数组，避免递归中频繁开辟空间
+        sort(arr,0,arr.length-1,temp);
+    }
+    private static void sort(int[] arr,int left,int right,int []temp){
+        if(left<right){
+            int mid = (left+right)/2;
+            sort(arr,left,mid,temp);//左边归并排序，使得左子序列有序
+            sort(arr,mid+1,right,temp);//右边归并排序，使得右子序列有序
+            merge(arr,left,mid,right,temp);//将两个有序子数组合并操作
+        }
+    }
+    private static void merge(int[] arr,int left,int mid,int right,int[] temp){
+        int i = left;//左序列指针
+        int j = mid+1;//右序列指针
+        int t = 0;//临时数组指针
+        while (i<=mid && j<=right){
+            if(arr[i]<=arr[j]){
+                temp[t++] = arr[i++];
+            }else {
+                temp[t++] = arr[j++];
+            }
+        }
+        while(i<=mid){//将左边剩余元素填充进temp中
+            temp[t++] = arr[i++];
+        }
+        while(j<=right){//将右序列剩余元素填充进temp中
+            temp[t++] = arr[j++];
+        }
+        t = 0;
+        //将temp中的元素全部拷贝到原数组中
+        while(left <= right){
+            arr[left++] = temp[t++];
+        }
+    }
+```
++ bottom up
+先两个两个的 merge，完成一趟后，再 4 个4个的 merge，直到结束  
+> 例如[4,3,1,7,8,9,2,11,5,6]  
+step=1: (3->4)->(1->7)->(8->9)->(2->11)->(5->6)  
+step=2: (1->3->4->7)->(2->8->9->11)->(5->6)  
+step=4: (1->2->3->4->7->8->9->11)->(5->6)  
+step=8: (1->2->3->4->5->6->7->8->9->11)  
+
+```
+代码参照题目148的链表写法，换汤不换药
+```
+
 #### 6.希尔排序
 > 希尔排序是把记录按下标的一定增量分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至1时，整个文件恰被分成一组，算法便终止。  
 希尔排序在数组中采用跳跃式分组的策略，通过某个增量将数组元素划分为若干组，然后分组进行插入排序，随后逐步缩小增量，继续按组进行插入排序操作，直至增量为1。希尔排序通过这种策略使得整个数组在初始阶段达到从宏观上看基本有序，小的基本在前，大的基本在后。然后缩小增量，到增量为1时，其实多数情况下只需微调即可，不会涉及过多的数据移动。  
