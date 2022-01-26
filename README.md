@@ -177,6 +177,7 @@ step 1: 构造初始堆。将给定无序序列构造成一个大顶堆（一般
 |2|从最后一个非叶子结点开始（叶结点自然不用调整，第一个非叶子结点 arr.length/2-1=5/2-1=1，也就是下面的6结点），从左至右，从下至上进行调整|![找最后一个非叶子结点](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序4.png)|
 |3|找到第二个非叶节点4，由于[4,9,8]中9元素最大，4和9交换|![找下一个相邻的非叶子节点](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序5.png)|
 |4|交换导致了子根[4,5,6]结构混乱，继续调整，[4,5,6]中6最大，交换4和6。我们就将一个无需序列构造成了一个大顶堆|![调整子树](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序6.png)|  
+
 step 2: 将堆顶元素与末尾元素进行交换，使末尾元素最大。然后继续调整堆，再将堆顶元素与末尾元素交换，得到第二大元素。如此反复进行交换、重建、交换。  
 |序号|说明|示意图|
 |:-:|-|:-:|
@@ -184,6 +185,7 @@ step 2: 将堆顶元素与末尾元素进行交换，使末尾元素最大。然
 |2|重新调整结构，使其继续满足堆定义|![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序8.png)|
 |3|再将堆顶元素8与末尾元素5进行交换，得到第二大元素8|![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序9.png)|
 |4|后续过程，继续进行调整，交换，如此反复进行，最终使得整个序列有序|![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序10.png)|
+
 ```
     public static void sort(int []arr){
         //1.构建大顶堆
