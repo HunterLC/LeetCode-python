@@ -557,8 +557,6 @@ class Solution(object):
             if head != None:
                 head.next = None
             return rest
-            for num in [1<<x for x in range(10) if 1<<x < 50 ]:
-                print(num)
 
 
         # 合并列表，并返回合并结果的队头和队尾
@@ -582,11 +580,5 @@ class Solution(object):
                 tail = tail.next
             return root.next, tail
     ```
-
-
-
-
-
-
 
 ###
