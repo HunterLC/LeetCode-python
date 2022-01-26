@@ -48,7 +48,6 @@
         }
     }
 ```
-
 #### 4.快速排序
 > 快速排序(Quick Sort)使用分治法策略。  
 它的基本思想是：选择一个基准数，通过一趟排序将要排序的数据分割成独立的两部分；其中一部分的所有数据都比另外一部分的所有数据都要小。然后，再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列。  
@@ -96,7 +95,144 @@
 
 #### 5.归并排序
 #### 6.希尔排序
+> 希尔排序是把记录按下标的一定增量分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至1时，整个文件恰被分成一组，算法便终止。  
+希尔排序在数组中采用跳跃式分组的策略，通过某个增量将数组元素划分为若干组，然后分组进行插入排序，随后逐步缩小增量，继续按组进行插入排序操作，直至增量为1。希尔排序通过这种策略使得整个数组在初始阶段达到从宏观上看基本有序，小的基本在前，大的基本在后。然后缩小增量，到增量为1时，其实多数情况下只需微调即可，不会涉及过多的数据移动。  
+我们来看下希尔排序的基本步骤，在此我们选择增量gap=length/2，缩小增量继续以gap = gap/2的方式，这种增量选择我们可以用一个序列来表示，{n/2,(n/2)/2...1}，称为增量序列。希尔排序的增量序列的选择与证明是个数学难题，我们选择的这个增量序列是比较常用的，也是希尔建议的增量，称为希尔增量，但其实这个增量序列不是最优的。此处我们做示例使用希尔增量。
+
+示例:
+![希尔排序示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/希尔排序.png)
+```
+    /**
+     * 希尔排序 针对有序序列在插入时采用交换法
+     * @param arr
+     */
+    public static void sort(int []arr){
+        //增量gap，并逐步缩小增量
+       for(int gap=arr.length/2;gap>0;gap/=2){
+           //从第gap个元素，逐个对其所在组进行直接插入排序操作
+           for(int i=gap;i<arr.length;i++){
+               int j = i;
+               while(j-gap>=0 && arr[j]<arr[j-gap]){
+                   //插入排序采用交换法
+                   swap(arr,j,j-gap);
+                   j-=gap;
+               }
+           }
+       }
+    }
+
+    /**
+     * 希尔排序 针对有序序列在插入时采用移动法。
+     * @param arr
+     */
+    public static void sort1(int []arr){
+        //增量gap，并逐步缩小增量
+        for(int gap=arr.length/2;gap>0;gap/=2){
+            //从第gap个元素，逐个对其所在组进行直接插入排序操作
+            for(int i=gap;i<arr.length;i++){
+                int j = i;
+                int temp = arr[j];
+                if(arr[j]<arr[j-gap]){
+                    while(j-gap>=0 && temp<arr[j-gap]){
+                        //移动法
+                        arr[j] = arr[j-gap];
+                        j-=gap;
+                    }
+                    arr[j] = temp;
+                }
+            }
+        }
+    }
+    /**
+     * 交换数组元素
+     * @param arr
+     * @param a
+     * @param b
+     */
+    public static void swap(int []arr,int a,int b){
+        arr[a] = arr[a]+arr[b];
+        arr[b] = arr[a]-arr[b];
+        arr[a] = arr[a]-arr[b];
+    }
+```
+
 #### 7.堆排序
+> 堆排序是利用堆这种数据结构而设计的一种排序算法，堆排序是一种选择排序，它的最坏，最好，平均时间复杂度均为O(nlogn)，它也是不稳定排序。  
+
+堆是具有以下性质的完全二叉树：每个结点的值都大于或等于其左右孩子结点的值，称为大顶堆；或者每个结点的值都小于或等于其左右孩子结点的值，称为小顶堆。  
+![大顶堆、小顶堆](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序1.png)  
+对堆中的结点按层进行编号，将这种逻辑结构映射到数组中就是下面这个样子  
+![数组表示结果](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序2.png)  
+该数组从逻辑上讲就是一个堆结构，我们用简单的公式来描述一下堆的定义就是  
++ 大顶堆：arr[i] >= arr[2i+1] && arr[i] >= arr[2i+2] 
++ 小顶堆：arr[i] <= arr[2i+1] && arr[i] <= arr[2i+2]
+
+**基本过程(以大顶堆为例)**
+> 将待排序序列构造成一个大顶堆，此时，整个序列的最大值就是堆顶的根节点。将其与末尾元素进行交换，此时末尾就为最大值。然后将剩余n-1个元素重新构造成一个堆，这样会得到n个元素的次小值。如此反复执行，便能得到一个有序序列了
+
+step 1: 构造初始堆。将给定无序序列构造成一个大顶堆（一般升序采用大顶堆，降序采用小顶堆)。  
+|序号|说明|示意图|
+|:-:|-|:-:|
+|1|假设给定无序序列结构|![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序3.png)|
+|2|从最后一个非叶子结点开始（叶结点自然不用调整，第一个非叶子结点 arr.length/2-1=5/2-1=1，也就是下面的6结点），从左至右，从下至上进行调整|![找最后一个非叶子结点](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序4.png)|
+|3|找到第二个非叶节点4，由于[4,9,8]中9元素最大，4和9交换|![找下一个相邻的非叶子节点](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序5.png)|
+|4|交换导致了子根[4,5,6]结构混乱，继续调整，[4,5,6]中6最大，交换4和6。我们就将一个无需序列构造成了一个大顶堆|![调整子树](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序6.png)|  
+step 2: 将堆顶元素与末尾元素进行交换，使末尾元素最大。然后继续调整堆，再将堆顶元素与末尾元素交换，得到第二大元素。如此反复进行交换、重建、交换。  
+|序号|说明|示意图|
+|:-:|-|:-:|
+|1|将堆顶元素9和末尾元素4进行交换|![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序7.png)|
+|2|重新调整结构，使其继续满足堆定义|![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序8.png)|
+|3|再将堆顶元素8与末尾元素5进行交换，得到第二大元素8|![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序9.png)|
+|4|后续过程，继续进行调整，交换，如此反复进行，最终使得整个序列有序|![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序10.png)|
+```
+    public static void sort(int []arr){
+        //1.构建大顶堆
+        for(int i=arr.length/2-1;i>=0;i--){
+            //从第一个非叶子结点从下至上，从右至左调整结构
+            adjustHeap(arr,i,arr.length);
+        }
+        //2.调整堆结构+交换堆顶元素与末尾元素
+        for(int j=arr.length-1;j>0;j--){
+            swap(arr,0,j);//将堆顶元素与末尾元素进行交换
+            adjustHeap(arr,0,j);//重新对堆进行调整
+        }
+
+    }
+
+    /**
+     * 调整大顶堆（仅是调整过程，建立在大顶堆已构建的基础上）
+     * @param arr
+     * @param i
+     * @param length
+     */
+    public static void adjustHeap(int []arr,int i,int length){
+        int temp = arr[i];//先取出当前元素i
+        for(int k=i*2+1;k<length;k=k*2+1){//从i结点的左子结点开始，也就是2i+1处开始
+            if(k+1<length && arr[k]<arr[k+1]){//如果左子结点小于右子结点，k指向右子结点
+                k++;
+            }
+            if(arr[k] >temp){//如果子节点大于父节点，将子节点值赋给父节点（不用进行交换）
+                arr[i] = arr[k];
+                i = k;
+            }else{
+                break;
+            }
+        }
+        arr[i] = temp;//将temp值放到最终的位置
+    }
+
+    /**
+     * 交换元素
+     * @param arr
+     * @param a
+     * @param b
+     */
+    public static void swap(int []arr,int a ,int b){
+        int temp=arr[a];
+        arr[a] = arr[b];
+        arr[b] = temp;
+    }
+```
 
 ## 题目
 ### 1.两数之和
