@@ -314,9 +314,9 @@ step 2: 将堆顶元素与末尾元素进行交换，使末尾元素最大。然
 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
 你可以按任意顺序返回答案。
 
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/two-sum
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/two-sum  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
 
 ```
 class Solution(object):
@@ -337,9 +337,9 @@ class Solution(object):
 请你将两个数相加，并以相同形式返回一个表示和的链表。
 你可以假设除了数字 0 之外，这两个数都不会以 0 开头。
 
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/add-two-numbers
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/add-two-numbers  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
 + 法一 ~~这种写法很烂~~
     ```
     # Definition for singly-linked list.
@@ -453,12 +453,211 @@ class Solution(object):
             return root.next
     ```
 
+### 27.移除元素
+> 给你一个数组 `nums` 和一个值 `val`，你需要 `原地` 移除所有数值等于` val `的元素，并返回移除后数组的新长度。不要使用额外的数组空间，你必须仅使用` O(1) `额外空间并` 原地 `修改输入数组。元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/remove-element  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
++ 法一：直接使用list自带函数remove
+    ```
+    class Solution:
+        def removeElement(self, nums: List[int], val: int) -> int:
+            for i in range(nums.count(val)):
+                nums.remove(val)
+            return len(nums)
+    ```
+
++ 法二：双指针做法
+    ```
+    class Solution:
+        def removeElement(self, nums: List[int], val: int) -> int:
+            # 双指针做法
+            start = 0
+            end = len(nums) - 1
+            if end < 0 or (end == 0 and nums[0] == val):
+                return 0 # 要返回0 不能啥也不返回
+            while start <= end:
+                if nums[end] == val:
+                    end = end - 1
+                    continue
+                if nums[start] == val:
+                    nums[start] = nums[end]
+                    nums[end] = val
+                    end = end - 1
+                start = start + 1
+            return start
+    ```
+
+### 56.合并区间
+> 以数组`intervals`表示若干个区间的集合，其中单个区间为`intervals[i] = [starti, endi]`。请你合并所有重叠的区间，并返回`一个不重叠的区间数组`，该数组需恰好覆盖输入中的所有区间。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/merge-intervals  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
+
++ 快速排序
+    ```
+    class Solution:
+        def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+            if len(intervals) <= 1 :
+                return intervals
+            
+            # 快速排序
+            # import sys
+            # sys.setrecursionlimit(1000000) # 修改python的递归深度限制
+            self.quick_sort(intervals,0,len(intervals)-1)
+
+            result = []
+            # 两两配对
+            for i in range(len(intervals)-1):
+                # 前一个区间的最大值大于等于紧邻后者区间的最小值
+                if intervals[i][1] >= intervals[i+1][0]:
+                    # 因为可以合并，所以前一个区间看可以理解为没用了，只更新后者
+                    intervals[i+1][0] = intervals[i][0]
+                    intervals[i+1][1] = max(intervals[i][1],intervals[i+1][1])
+                else: #不能合并
+                    result.append(intervals[i])
+            result.append(intervals[-1])
+
+            return result
+
+        def quick_sort(self, intervals, start, end):
+            # 快速排序
+            if start > end:
+                return
+
+            # 选择基准值
+            base = intervals[start]
+            l = start
+            r = end
+
+            # 把小于基准值的数放左边，大于基准值的放右边
+            while l < r:
+                while l < r:
+                    if intervals[r][0] > base[0]:
+                        r = r - 1
+                    else:
+                        intervals[l] = intervals[r]
+                        l = l + 1
+                        break
+                while l < r:
+                    if intervals[l][0] < base[0]:
+                        l = l + 1
+                    else:
+                        intervals[r] = intervals[l]
+                        r = r - 1
+                        break
+            intervals[l] = base
+            # 左右递归求解
+            self.quick_sort(intervals,start,l-1)
+            self.quick_sort(intervals,l+1,end)
+    ```
+
+### 75.颜色分类
+> 给定一个包含红色、白色和蓝色、共 n 个元素的数组 nums ，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。  
+我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。  
+必须在不使用库的sort函数的情况下解决这个问题。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/sort-colors  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
++ 单指针
+    ```
+    class Solution:
+        def sortColors(self, nums: List[int]) -> None:
+            """
+            Do not return anything, modify nums in-place instead.
+            """
+            ptr = 0
+            # 先排0，再排1
+            for i in range(len(nums)):
+                if nums[i] == 0:
+                    self.swap(nums,i,ptr)
+                    ptr += 1
+            for i in range(ptr,len(nums)):
+                if nums[i] == 1:
+                    self.swap(nums,i,ptr)
+                    ptr += 1
+        
+        def swap(self, nums, a, b):
+            nums[a], nums[b] = nums[b], nums[a]
+    ```
++ 双指针(0、1交换)
+    ```
+    class Solution:
+        def sortColors(self, nums: List[int]) -> None:
+            """
+            Do not return anything, modify nums in-place instead.
+            """
+            p_r, p_w = 0, 0
+            for i in range(len(nums)):
+                if nums[i] == 0:
+                    self.swap(nums,i,p_r)
+                    if p_r < p_w:  # 说明0后面已经有1排好了，上一行的swap把一个已经排好的1交换到i位置了，如果不继续交换，那么下次循环就到i+1位置了，这个1就被跳过了
+                        self.swap(nums,i,p_w)
+                    p_r += 1
+                    p_w += 1
+                elif nums[i] == 1:
+                    self.swap(nums,i,p_w)
+                    p_w += 1
+        
+        def swap(self, nums, a, b):
+            nums[a], nums[b] = nums[b], nums[a]
+    ```
++ 双指针(0、2交换)
+    ```
+    class Solution:
+        def sortColors(self, nums: List[int]) -> None:
+            """
+            Do not return anything, modify nums in-place instead.
+            """
+            n = len(nums)
+            p_r, p_b = 0, n-1
+            for i in range(n):
+                if i > p_b:  # 这是元素已经被排过了
+                    break
+                while i <= p_b and nums[i] == 2:
+                    self.swap(nums,i,p_b)
+                    p_b -= 1
+                if nums[i] == 0:
+                    self.swap(nums,i,p_r)
+                    p_r += 1
+        
+        def swap(self, nums, a, b):
+            nums[a], nums[b] = nums[b], nums[a]
+    ```
++ 三指针
+    ```
+    class Solution:
+        def sortColors(self, nums: List[int]) -> None:
+            """
+            Do not return anything, modify nums in-place instead.
+            """
+            p_r, p_w, p_b = 0, 0, 0   # 三个指针分别指向数组中下一个红、白、蓝应该插入的位置
+            for color in nums:
+                if color == 0:   # 当前元素是红色
+                    nums[p_b] = 2
+                    nums[p_w] = 1
+                    nums[p_r] = 0
+                    p_r = p_r + 1  # 最后一个红色位置后移1位
+                    p_w = p_w + 1  # 最后一个白色位置后移1位
+                    p_b = p_b + 1  # 最后一个蓝色位置后移1位
+                elif color == 1: # 当前元素是白色
+                    nums[p_b] = 2
+                    nums[p_w] = 1
+                    p_w = p_w + 1  # 最后一个白色位置后移1位
+                    p_b = p_b + 1  # 最后一个蓝色位置后移1位
+                else:            # 当前元素是蓝色
+                    nums[p_b] = 2
+                    p_b = p_b + 1  # 最后一个蓝色位置后移1位
+    ```
 ### 148.排序链表
 > 给你链表的头结点`head`，请将其按**升序**排列并返回**排序后的链表**
 
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/sort-list/
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/sort-list/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
 
 + 归并排序 top down
     ```
@@ -580,5 +779,25 @@ class Solution(object):
                 tail = tail.next
             return root.next, tail
     ```
-6786868687578578578
-###
+
+### 179.最大数
+
+> 给定一组非负整数 nums，重新排列每个数的顺序（每个数不可拆分）使之组成一个最大的整数。  
+注意：输出结果可能非常大，所以你需要返回一个字符串而不是整数。
+
+来源：力扣（LeetCode）    
+链接：https://leetcode-cn.com/problems/largest-number/    
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处
+
+```
+class Solution:
+    def largestNumber(self, nums: List[int]) -> str:
+        import functools
+        nums_str=list(map(str,nums))
+        compare=lambda x,y: 1 if x+y<y+x else -1
+        nums_str.sort(key=functools.cmp_to_key(compare))
+        res=''.join(nums_str)
+        if res[0]=='0':
+            res='0'
+        return res
+```
