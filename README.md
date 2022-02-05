@@ -453,6 +453,84 @@ class Solution(object):
             return root.next
     ```
 
+### 4.寻找两个正序数组的中位数
+> 给定两个大小分别为` m `和` n `的正序（从小到大）数组` nums1 `和` nums2`。请你找出并返回这两个正序数组的 `中位数` 。  
+算法的时间复杂度应该为` O(log (m+n)) `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/median-of-two-sorted-arrays  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 二分查找 $O(log(m+n)).$
+    ```
+    class Solution:
+        def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
+            # 二分查找
+            m = len(nums1)
+            n = len(nums2)
+            # 求中位数是第几个数字，奇数的时候left和right一样
+            left = int((m + n + 1)/2)
+            right = int((m + n + 2)/2)
+            return (self.getKthElement(nums1, 0, m-1, nums2, 0, n-1, left)+self.getKthElement(nums1, 0, m-1, nums2, 0, n-1, right))/2
+        
+        def getKthElement(self, nums1, start_1, end_1, nums2, start_2, end_2, k):
+            length_1 = end_1 - start_1 + 1
+            length_2 = end_2 - start_2 + 1
+            if length_1 == 0:
+                return nums2[start_2+k-1]
+            if length_1 > length_2:
+                return self.getKthElement(nums2, start_2, end_2, nums1, start_1, end_1, k)
+            if k == 1:
+                return min(nums1[start_1],nums2[start_2])
+            
+            # 比较k/2个元素的大小，小的一方全部排除
+            element_1 = min(length_1, int(k/2))
+            element_2 = min(length_2, int(k/2))
+            if nums1[start_1+element_1-1] < nums2[start_2+element_2-1]:
+                return self.getKthElement(nums1, start_1+element_1, end_1, nums2, start_2, end_2, k-element_1)
+            else:
+                return self.getKthElement(nums1, start_1, end_1, nums2, start_2+element_2, end_2, k-element_2)
+            return 0.0
+
+    ```
++ 中位数定义出发 $O(log min(m,n)).$
+    ```
+    class Solution:
+        def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
+            # 二分查找
+            m = len(nums1)
+            n = len(nums2)
+            # 保证muns1的长度最短，就以它为基准
+            if m > n:
+                return self.findMedianSortedArrays(nums2, nums1)
+            # 对于短的nums1而言，长度为m，共有m+1种切割方式，最小是0位置，最大是m位置
+            min_i, max_i = 0, m
+            while min_i <= max_i:
+                i = (max_i + min_i) // 2
+                j = (m + n + 1) // 2 - i
+                if  i != 0 and j != n and nums1[i-1] > nums2[j]:
+                    max_i = i - 1
+                elif i != m and j != 0 and nums2[j-1] > nums1[i]:
+                    min_i = i + 1
+                else:
+                    max_left, min_right = 0, 0
+                    if i == 0:
+                        max_left = nums2[j-1]
+                    elif j == 0:
+                        max_left = nums1[i-1]
+                    else:
+                        max_left = max(nums1[i-1], nums2[j-1])
+                    if (m + n) % 2 != 0:
+                        return float(max_left)
+
+                    if i == m:
+                        min_right = nums2[j]
+                    elif j == n:
+                        min_right = nums1[i]
+                    else:
+                        min_right = min(nums1[i], nums2[j])
+                    return float((max_left + min_right) / 2)
+    ```
 ### 27.移除元素
 > 给你一个数组 `nums` 和一个值 `val`，你需要 `原地` 移除所有数值等于` val `的元素，并返回移除后数组的新长度。不要使用额外的数组空间，你必须仅使用` O(1) `额外空间并` 原地 `修改输入数组。元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。
 
@@ -801,3 +879,74 @@ class Solution:
             res='0'
         return res
 ```
+
+### 215.数组中的第k个最大元素
+> 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。  
+请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+
+来源：力扣（LeetCode）    
+链接：https://leetcode-cn.com/problems/kth-largest-element-in-an-array/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处
+
++ 调库(~~毫无意义~~)
+    ```
+    class Solution:
+        def findKthLargest(self, nums: List[int], k: int) -> int:
+            nums.sort(reverse = True)
+            return nums[k-1]
+    ```
+
++ 大顶堆
+    ```
+    class Solution:
+        def findKthLargest(self, nums: List[int], k: int) -> int:
+            # python的heapq库只实现了小顶堆，这里使用大顶堆合适一些
+            # heapq.heappush(maxHeap, -i)当然非要用的话，可以通过加‘-’号构建大顶堆
+            # 所以自己造轮子，自己写堆排序
+            n = len(nums)
+            if n == 1:
+                return nums[0]
+            # 第一个非叶子节点
+            node = int(n / 2) - 1
+            # 创建大顶堆
+            for i in range(node,-1,-1):
+                self.adjustHeap(nums, i, n)
+            count = 0
+            if count == k-1:
+                return nums[0] 
+            else:
+                # 交换队头、队尾，并调整大顶堆
+                for i in range(n-1,0,-1):
+                    # 不能写在这里，因为在判断之前可能for循环都进不来了
+                    # if count == k-1:
+                    #     return nums[0]
+                    self.swap(nums, 0, i)
+                    self.adjustHeap(nums, 0, i)
+                    count += 1
+                    # 如果换在这里，需要提前考虑题目判断点是不是第一大
+                    # 如果是问的是第一大，在这里的时候就已经swap了，那么结果肯定不对了
+                    if count == k-1:
+                        return nums[0]
+
+        def adjustHeap(self, nums, node, length):
+            """
+            调整大顶堆
+            """
+            temp = nums[node]
+            # 从当前节点的第一个(左)孩子节点开始
+            i = 2 * node + 1
+            while i < length:
+                if i+1 < length and nums[i] < nums[i+1]: # 右孩子存在且比左孩子更大
+                    i += 1 # 指向右孩子
+                if nums[i] > temp:
+                    nums[node] = nums[i]
+                    node = i
+                else:
+                    break
+                i = 2 * i + 1
+            nums[node] = temp
+
+
+        def swap(self, nums, a, b):
+            nums[a], nums[b] = nums[b], nums[a]
+    ```
