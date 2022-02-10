@@ -1,5 +1,7 @@
 # LeetCode-python
-我要刷题冲冲冲
+![](https://img.shields.io/badge/Python%20Version-3.7-blue)
+![](https://img.shields.io/badge/排序算法-7种-red)
+我要刷题**冲冲冲**
 
 ## 基础知识
 ### 排序算法（java实现）
