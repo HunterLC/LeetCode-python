@@ -861,6 +861,31 @@ class Solution(object):
             return root.next, tail
     ```
 
+### 160.相交链表
+> 给你两个单链表的头节点` headA `和` headB `，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回` null `。  
+题目数据` 保证 `整个链式结构中不存在环。  
+注意，函数返回结果后，链表必须 保持其原始结构。
+
+来源：力扣（LeetCode）    
+链接：https://leetcode-cn.com/problems/intersection-of-two-linked-lists/    
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处  
+![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/link/link_160.png)
+
+```
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        A, B = headA, headB
+        while A != B :
+            A = A.next if A else headB
+            B = B.next if B else headA
+        return A
+```
 ### 179.最大数
 
 > 给定一组非负整数 nums，重新排列每个数的顺序（每个数不可拆分）使之组成一个最大的整数。  
@@ -882,7 +907,48 @@ class Solution:
             res='0'
         return res
 ```
+### 206.反转链表
+> 给你单链表的头节点` head `，请你反转链表，并返回反转后的链表。
+ 
+来源：力扣（LeetCode）    
+链接：https://leetcode-cn.com/problems/reverse-linked-list/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处
 
++ 迭代法
+    ```
+    # Definition for singly-linked list.
+    # class ListNode:
+    #     def __init__(self, val=0, next=None):
+    #         self.val = val
+    #         self.next = next
+    class Solution:
+        def reverseList(self, head: ListNode) -> ListNode:
+            pre, tail = None, head
+            while tail != None:
+                temp = tail.next
+                tail.next = pre
+                pre = tail
+                tail = temp
+            return pre
+    ```
++ 递归法
+    ```
+    # Definition for singly-linked list.
+    # class ListNode:
+    #     def __init__(self, val=0, next=None):
+    #         self.val = val
+    #         self.next = next
+    class Solution:
+        def reverseList(self, head: ListNode) -> ListNode:
+            return self.reverse(None, head)
+        
+        def reverse(self, first, second):
+            if not second:
+                return first
+            temp = second.next
+            second.next = first
+            return self.reverse(second, temp)
+    ```
 ### 215.数组中的第k个最大元素
 > 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。  
 请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
@@ -953,3 +1019,24 @@ class Solution:
         def swap(self, nums, a, b):
             nums[a], nums[b] = nums[b], nums[a]
     ```
+
+### 876.链表的中间结点
+> 给定一个头结点为` head `的非空单链表，返回链表的中间结点。  
+如果有两个中间结点，则返回第二个中间结点。
++ 快慢指针
+    ```
+    # Definition for singly-linked list.
+    # class ListNode:
+    #     def __init__(self, val=0, next=None):
+    #         self.val = val
+    #         self.next = next
+    class Solution:
+        def middleNode(self, head: ListNode) -> ListNode:
+            slow, fast = head, head
+            while fast and fast.next:
+                slow = slow.next
+                fast = fast.next.next
+            return slow
+    ```
+
+ 
