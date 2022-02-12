@@ -38,6 +38,6 @@ git branch -d 本地分支名
 git push origin --delete 远程分支名
 ```
 
-### ps:加入提交的过程中遇到了`SSL 10054`错误
+### ps:假如提交的过程中遇到了`SSL 10054`错误
 
 `git config --global http.sslVerify "false"`
