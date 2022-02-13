@@ -739,44 +739,64 @@ class Solution(object):
 来源：力扣（LeetCode）  
 链接：https://leetcode-cn.com/problems/reverse-linked-list-ii  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
-```
-# Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, val=0, next=None):
-#         self.val = val
-#         self.next = next
-class Solution:
-    def reverseBetween(self, head: ListNode, left: int, right: int) -> ListNode:
-        if left == right:
-            return head
-        p, q = head, head.next
-        pre = tail = None
-        count = 1
-        while q:
-            if count < left:
-                if count == left - 1:
-                    pre = p
-                p = p.next
-                q = q.next
-                count += 1
-            elif count >= left and count <= right:
-                if count == left:
-                    tail = p
-                temp = q.next
-                q.next = p
-                p = q
-                q = temp
-                count += 1
-                if count == right:
-                    break
-        if pre:
-            pre.next = p
-            tail.next = q
-            return head
-        else:
-            tail.next = q
-            return p   
-```
++ 自己的解答 
+    ```
+    # Definition for singly-linked list.
+    # class ListNode:
+    #     def __init__(self, val=0, next=None):
+    #         self.val = val
+    #         self.next = next
+    class Solution:
+        def reverseBetween(self, head: ListNode, left: int, right: int) -> ListNode:
+            if left == right:
+                return head
+            p, q = head, head.next
+            pre = tail = None
+            count = 1
+            while q:
+                if count < left:
+                    if count == left - 1:
+                        pre = p
+                    p = p.next
+                    q = q.next
+                    count += 1
+                elif count >= left and count <= right:
+                    if count == left:
+                        tail = p
+                    temp = q.next
+                    q.next = p
+                    p = q
+                    q = temp
+                    count += 1
+                    if count == right:
+                        break
+            if pre:
+                pre.next = p
+                tail.next = q
+                return head
+            else:
+                tail.next = q
+                return p   
+    ```
++ 官方解答更好
+    ```
+    class Solution:
+        def reverseBetween(self, head: ListNode, left: int, right: int) -> ListNode:
+            # 设置 dummyNode 是这一类问题的一般做法
+            dummy_node = ListNode(-1)
+            dummy_node.next = head
+            pre = dummy_node
+            for _ in range(left - 1):
+                pre = pre.next
+
+            cur = pre.next
+            for _ in range(right - left):
+                next = cur.next
+                cur.next = next.next
+                next.next = pre.next
+                pre.next = next
+            return dummy_node.next
+    ```
 ### 141.环形链表 I
 > 给你一个链表的头节点` head `，判断链表中是否有环。  
 如果链表中有某个节点，可以通过连续跟踪` next `指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数` pos `来表示链表尾连接到链表中的位置（索引从 0 开始）。注意：`pos `不作为参数进行传递 。仅仅是为了标识链表的实际情况。  
