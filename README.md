@@ -569,7 +569,40 @@ class Solution(object):
                 start = start + 1
             return start
     ```
+### 54.螺旋矩阵
+> 给你一个` m `行` n `列的矩阵` matrix `，请按照**顺时针**螺旋顺序 ，返回矩阵中的所有元素。
 
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/spiral-matrix/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。 
+
+```
+class Solution:
+    def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
+        i, j = 0, len(matrix)-1
+        result = []
+        # 每转一圈只需要四步，直到转完
+        while len(matrix[i]) > 0 and i <= j:
+            # 第一步：往右到底，不用判断，直接拿进去
+            result += matrix[i]
+            i += 1
+            if i > j:
+                break
+            # 第二步：往下直到倒数第二层，取最后一个值
+            for idx in range(i,j):
+                result.append(matrix[idx].pop())
+            # 第三步：最后一层往左到底
+            matrix[j].reverse()
+            result += matrix[j]
+            # 第四步：从底往上取第一个数
+            j -= 1
+            for idx in range(j,i-1,-1):
+                # 得判断第一个数存不存在
+                if len(matrix[idx]) == 0:
+                    break
+                result.append(matrix[idx].pop(0))
+        return result
+```
 ### 56.合并区间
 > 以数组`intervals`表示若干个区间的集合，其中单个区间为`intervals[i] = [starti, endi]`。请你合并所有重叠的区间，并返回`一个不重叠的区间数组`，该数组需恰好覆盖输入中的所有区间。
 
@@ -1142,6 +1175,56 @@ class Solution:
         def swap(self, nums, a, b):
             nums[a], nums[b] = nums[b], nums[a]
     ```
+### 225.用队列实现栈
+> 请你仅使用两个队列实现一个后入先出（LIFO）的栈，并支持普通栈的全部四种操作（push、top、pop 和 empty）。
+
+实现 MyStack 类：
+```
+void push(int x) 将元素 x 压入栈顶。
+int pop() 移除并返回栈顶元素。
+int top() 返回栈顶元素。
+boolean empty() 如果栈是空的，返回 true ；否则，返回 false 。
+```
+注意：
+
+你只能使用队列的基本操作 —— 也就是` push to back、peek/pop from front、size `和` is empty `这些操作。  
+你所使用的语言也许不支持队列。 你可以使用 ` list `（列表）或者 `deque`（双端队列）来模拟一个队列 , 只要是标准的队列操作即可。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/implement-stack-using-queues  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 一个队列实现
+    ```
+    class MyStack:
+
+        def __init__(self):
+            self.my_stack = []
+            self.size = 0
+
+        def push(self, x: int) -> None:
+            self.my_stack.append(x)
+            self.size += 1
+            n = self.size
+            # 确保栈的后进先出，即把刚刚append进来的元素保存在第一个位置，这样pop就没问题了
+            while n > 1:
+                self.my_stack.append(self.my_stack.pop(0))
+                n -= 1
+
+        def pop(self) -> int:
+            self.size -= 1
+            return self.my_stack.pop(0)
+
+        def top(self) -> int:
+            return self.my_stack[0]
+
+        def empty(self) -> bool:
+            return True if self.size == 0 else False
+    ```
++ 两个队列实现
+```
+
+```
 ### 328.奇偶链表
 > 给定单链表的头节点` head `，将所有索引为奇数的节点和索引为偶数的节点分别组合在一起，然后返回重新排序的列表。  
 第一个节点的索引被认为是` 奇数 `， 第二个节点的索引为` 偶数 `，以此类推。  
