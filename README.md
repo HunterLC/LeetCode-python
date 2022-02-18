@@ -1016,7 +1016,99 @@ class Solution:
                 tail = tail.next
             return root.next, tail
     ```
+### 150.逆波兰表达式求值
+> 根据 逆波兰表示法，求表达式的值。
 
+有效的算符包括` +、-、*、/ `。每个运算对象可以是整数，也可以是另一个逆波兰表达式。  
+注意 两个整数之间的除法只保留整数部分。  
+可以保证给定的逆波兰表达式总是有效的。换句话说，表达式总会得出有效数值且不存在除数为 0 的情况。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/evaluate-reverse-polish-notation  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+> 逆波兰表达式：  
+逆波兰表达式是一种后缀表达式，所谓后缀就是指算符写在后面。 
+> + 平常使用的算式则是一种中缀表达式，如` ( 1 + 2 ) * ( 3 + 4 ) `。
+> + 该算式的逆波兰表达式写法为` ( ( 1 2 + ) ( 3 4 + ) * ) `。  
+
+逆波兰表达式主要有以下两个优点：  
++ 去掉括号后表达式无歧义，上式即便写成` 1 2 + 3 4 + * `也可以依据次序计算出正确结果。  
++ 适合用栈操作运算：遇到数字则入栈；遇到算符则取出栈顶两个数字进行计算，并将结果压入栈中  
+
+```
+class Solution:
+    def evalRPN(self, tokens: List[str]) -> int:
+        def add(pre, succ):
+            return pre + succ
+
+        def subtract(pre, succ):
+            return pre - succ
+
+        def multiply(pre, succ):
+            return pre * succ
+
+        def divide(pre, succ):
+            result = pre / succ
+            # 注意python和C语言对于负数取整的区别
+            return math.floor(result) if result > 0 else math.ceil(result)
+
+        compute_stack = []
+        operator = {'+':add,'-':subtract,'*':multiply,'/':divide}
+        while tokens:
+            temp = tokens.pop(0)
+            if len(temp) > 1 or (ord(temp) >= ord('0') and ord(temp) <= ord('9')):  # 数字
+                compute_stack.append(int(temp))
+            else:
+                succ = compute_stack.pop()
+                pre = compute_stack.pop()
+                compute_stack.append(operator.get(temp)(pre, succ))
+        return compute_stack[0]
+```
+### 155.最小栈
+> 设计一个支持` push `，`pop `，`top `操作，并能在常数时间内检索到最小元素的栈。
+
++ `push(x)` —— 将元素 x 推入栈中。
++ `pop()` —— 删除栈顶的元素。
++ `top()` —— 获取栈顶元素。
++ `getMin()` —— 检索栈中的最小元素。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/min-stack  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class MinStack:
+
+    def __init__(self):
+        self.stack = []
+        self.min_stack = []
+
+    def push(self, val: int) -> None:
+        self.stack.append(val)
+        if len(self.min_stack) == 0:
+            self.min_stack.append(val)
+        else:
+            self.min_stack.append(min(val,self.min_stack[-1]))
+
+    def pop(self) -> None:
+        self.stack.pop()
+        self.min_stack.pop()
+
+    def top(self) -> int:
+        return self.stack[-1]
+
+    def getMin(self) -> int:
+        return self.min_stack[-1]
+
+
+# Your MinStack object will be instantiated and called as such:
+# obj = MinStack()
+# obj.push(val)
+# obj.pop()
+# param_3 = obj.top()
+# param_4 = obj.getMin()
+```
 ### 160.相交链表
 > 给你两个单链表的头节点` headA `和` headB `，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回` null `。  
 题目数据` 保证 `整个链式结构中不存在环。  
@@ -1175,6 +1267,66 @@ class Solution:
         def swap(self, nums, a, b):
             nums[a], nums[b] = nums[b], nums[a]
     ```
+### 224.基本计算器
+> 给你一个字符串表达式` s `，请你实现一个基本计算器来计算并返回它的值。  
+注意:不允许使用任何将字符串作为数学表达式计算的内置函数，比如` eval() `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/basic-calculator/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+```
+class Solution:
+    def calculate(self, s: str) -> int:
+        # 可以转成后缀表达式，再参考150求解
+        num_stack = []
+        operator_stack = []
+        s = s.replace(" ", "")
+        num = ''
+        # TMD题目的意思说明并不一定是一位数
+        for idx in range(0,len(s)):
+            char = s[idx]
+            if char.isdigit():
+                num += char
+                if idx == len(s)-1 or not s[idx+1].isdigit():
+                    num_stack.append(int(num))
+                    num = ''
+                else:
+                    continue
+            elif char in ['+','-','(']:
+                # 考虑比较特殊的-号，即用作负数的这种情况
+                if char == '-'and (idx == 0 or s[idx-1] == '('):
+                    num_stack.append(0)
+                operator_stack.append(char)
+            else: # 右括号
+                temp_op = []
+                temp_num = []
+                # 取符号
+                while operator_stack:
+                    curr_op = operator_stack.pop()
+                    if curr_op == '(':
+                        break
+                    else:
+                        temp_op.append(curr_op)
+                # 取数字
+                for _ in range(0,len(temp_op)+1):
+                    temp_num.append(num_stack.pop())
+                # 计算结果
+                while temp_op:
+                    if temp_op.pop() == '+':
+                        temp_num.append(temp_num.pop()+temp_num.pop())
+                    else:
+                        temp_num.append(temp_num.pop()-temp_num.pop())
+                num_stack.append(temp_num[0])
+            if '(' not in operator_stack and len(num_stack)>1:# 该计算了
+                    succ = num_stack.pop()
+                    pre = num_stack.pop()
+                    if operator_stack.pop() == '+':
+                        num_stack.append(pre + succ)
+                    else:
+                        num_stack.append(pre - succ)
+        return num_stack[0]
+
+```
 ### 225.用队列实现栈
 > 请你仅使用两个队列实现一个后入先出（LIFO）的栈，并支持普通栈的全部四种操作（push、top、pop 和 empty）。
 
@@ -1222,8 +1374,89 @@ boolean empty() 如果栈是空的，返回 true ；否则，返回 false 。
             return True if self.size == 0 else False
     ```
 + 两个队列实现
-```
+    ```
+    class MyStack:
 
+        def __init__(self):
+            self.my_stack = []
+            self.help = []
+
+        def push(self, x: int) -> None:
+            self.help.append(x)
+            while self.my_stack:
+                self.help.append(self.my_stack.pop(0))
+            self.my_stack, self.help = self.help, self.my_stack
+
+        def pop(self) -> int:
+            return self.my_stack.pop(0)
+
+        def top(self) -> int:
+            return self.my_stack[0]
+
+        def empty(self) -> bool:
+            return True if len(self.my_stack) == 0 else False
+
+
+
+    # Your MyStack object will be instantiated and called as such:
+    # obj = MyStack()
+    # obj.push(x)
+    # param_2 = obj.pop()
+    # param_3 = obj.top()
+    # param_4 = obj.empty()
+    ```
+### 232.用栈实现队列
+> 请你仅使用两个栈实现先入先出队列。队列应当支持一般队列支持的所有操作（push、pop、peek、empty）：
+
+实现 MyQueue 类：
+
++ `void push(int x)` 将元素 x 推到队列的末尾
++ `int pop()` 从队列的开头移除并返回元素
++ `int peek()` 返回队列开头的元素
++ `boolean empty()` 如果队列为空，返回 true ；否则，返回 false
+说明：
+
+你**只能**使用标准的栈操作 —— 也就是只有` push to top`,` peek/pop from top`,` size`, 和 `is empty `操作是合法的。
+你所使用的语言也许不支持栈。你可以使用` list` 或者` deque`（双端队列）来模拟一个栈，只要是标准的栈操作即可。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/implement-queue-using-stacks  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class MyQueue:
+
+    def __init__(self):
+        self.input_stack = []
+        self.output_stack = []
+
+    def push(self, x: int) -> None:
+        self.input_stack.append(x)
+
+    def pop(self) -> int:
+        if not self.output_stack:
+            while self.input_stack:
+                self.output_stack.append(self.input_stack.pop())
+        return self.output_stack.pop()
+
+    def peek(self) -> int:
+        if not self.output_stack:
+            while self.input_stack:
+                self.output_stack.append(self.input_stack.pop())
+        return self.output_stack[-1]
+
+    def empty(self) -> bool:
+        if not self.input_stack and not self.output_stack:
+            return True
+        return False
+
+
+# Your MyQueue object will be instantiated and called as such:
+# obj = MyQueue()
+# obj.push(x)
+# param_2 = obj.pop()
+# param_3 = obj.peek()
+# param_4 = obj.empty()
 ```
 ### 328.奇偶链表
 > 给定单链表的头节点` head `，将所有索引为奇数的节点和索引为偶数的节点分别组合在一起，然后返回重新排序的列表。  
