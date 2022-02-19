@@ -534,6 +534,32 @@ class Solution(object):
                         min_right = min(nums1[i], nums2[j])
                     return float((max_left + min_right) / 2)
     ```
+### 20.有效的括号
+> 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串` s `，判断字符串是否有效。  
+有效字符串需满足：  
+左括号必须用相同类型的右括号闭合。  
+左括号必须以正确的顺序闭合。  
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/valid-parentheses  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
+```
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        for item in s:
+            if item in ['(','{','[']:
+                stack.append(item)
+            else:
+                if len(stack) == 0:
+                    return False
+                top = stack[-1]
+                if (item == ')' and top == '(') or (item == '}' and top == '{') or (item == ']' and top == '['):
+                    stack.pop()
+                    continue
+                return False
+        return True if len(stack) == 0 else False
+```
 ### 27.移除元素
 > 给你一个数组 `nums` 和一个值 `val`，你需要 `原地` 移除所有数值等于` val `的元素，并返回移除后数组的新长度。不要使用额外的数组空间，你必须仅使用` O(1) `额外空间并` 原地 `修改输入数组。元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。
 
@@ -1506,5 +1532,62 @@ class Solution:
                 fast = fast.next.next
             return slow
     ```
+### 1472.设计浏览器历史记录
+> 你有一个只支持单个标签页的` 浏览器 `，最开始你浏览的网页是` homepage `，你可以访问其他的网站` url `，也可以在浏览历史中后退` steps `步或前进` steps `步。
 
- 
+请你实现` BrowserHistory `类：
+
++ `BrowserHistory(string homepage) `，用` homepage `初始化浏览器类。
++ `void visit(string url)` 从当前页跳转访问` url `对应的页面  。执行此操作会把浏览历史前进的记录全部删除。
++ `string back(int steps)` 在浏览历史中后退` steps `步。如果你只能在浏览历史中后退至多` x `步且` steps > x `，那么你只后退` x `步。请返回后退至多`  steps `步以后的` url `。
++ `string forward(int steps)` 在浏览历史中前进` steps `步。如果你只能在浏览历史中前进至多` x `步且` steps > x `，那么你只前进` x` 步。请返回前进 至多 `steps`步以后的` url `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/design-browser-history  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class BrowserHistory:
+
+    def __init__(self, homepage: str):
+        self.history = [homepage]
+        self.curr_idx = 0
+        self.len = 1
+
+    def visit(self, url: str) -> None:
+        # 当前元素处于栈顶
+        if self.curr_idx != self.len - 1:
+            for _ in range(0,self.len-self.curr_idx-1):
+                self.history.pop()
+        self.history.append(url)
+        self.curr_idx += 1
+        self.len = len(self.history)
+
+    def back(self, steps: int) -> str:
+        if self.curr_idx+1 <= steps:
+            self.curr_idx = 0
+            return self.history[0]
+        else:
+            while steps:
+                steps -= 1
+                self.curr_idx -= 1
+            return self.history[self.curr_idx]
+
+    def forward(self, steps: int) -> str:
+        if self.curr_idx+1+steps > self.len:
+            self.curr_idx = self.len -1 
+            return self.history[-1]
+        else:
+            while steps:
+                steps -= 1
+                self.curr_idx += 1
+            return self.history[self.curr_idx]
+
+
+
+# Your BrowserHistory object will be instantiated and called as such:
+# obj = BrowserHistory(homepage)
+# obj.visit(url)
+# param_2 = obj.back(steps)
+# param_3 = obj.forward(steps)
+```
