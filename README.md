@@ -1532,6 +1532,49 @@ class Solution:
                 fast = fast.next.next
             return slow
     ```
+### 1209.删除字符串中的所有相邻重复项 II
+> 给你一个字符串` s`，「k 倍重复项删除操作」将会从` s `中选择` k `个相邻且相等的字母，并删除它们，使被删去的字符串的左侧和右侧连在一起。  
+你需要对` s `重复进行无限次这样的删除操作，直到无法继续为止。  
+在执行完所有删除操作后，返回最终得到的字符串。  
+本题答案保证唯一。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string-ii  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def removeDuplicates(self, s: str, k: int) -> str:
+        if len(s) < k:
+            return s
+        stack = []
+        pre = curr = 0
+        count = 0
+        for char in s:
+            stack.append(char)
+            curr = len(stack) - 1
+            if len(stack) == 1 or stack[curr] != stack[pre]:
+                pre = curr
+                count = 1
+            else:
+                count += 1
+            if count == k:
+                while count > 0:
+                    stack.pop()
+                    count -= 1
+                # 重新找pre的位置
+                if len(stack) > 1:
+                    count = 1
+                    for idx in range(pre-1,0,-1):
+                        if stack[idx] != stack[idx-1]:
+                            pre = idx
+                            break
+                        count += 1
+                else:
+                    count = 1
+                    pre = 0
+        return ''.join(stack)
+```
 ### 1472.设计浏览器历史记录
 > 你有一个只支持单个标签页的` 浏览器 `，最开始你浏览的网页是` homepage `，你可以访问其他的网站` url `，也可以在浏览历史中后退` steps `步或前进` steps `步。
 
