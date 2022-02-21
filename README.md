@@ -915,6 +915,92 @@ class Solution:
                     slow = slow.next         
         return None
 ```
+### 146.LRU缓存
+> 请你设计并实现一个满足`  LRU (最近最少使用) 缓存` 约束的数据结构。
+
+实现` LRUCache `类：  
++ `LRUCache(int capacity)` 以 `正整数` 作为容量 `capacity` 初始化 `LRU `缓存
++ `int get(int key) `如果关键字` key `存在于缓存中，则返回关键字的值，否则返回` -1 `。
++ `void put(int key, int value)` 如果关键字` key `已经存在，则变更其数据值` value `；如果不存在，则向缓存中插入该组` key-value `。如果插入操作导致关键字数量超过` capacity `，则应该` 逐出 `最久未使用的关键字。
++ 函数` get `和` put `必须以` O(1) `的平均时间复杂度运行。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/lru-cache  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class DLinkedNode:
+    # 双向链表
+    def __init__(self, key=0, value=0):
+        self.key = key
+        self.value = value
+        self.prev = None
+        self.next = None
+
+class LRUCache:
+
+    def __init__(self, capacity: int):
+        self.cache = {}
+        self.dummy_head = DLinkedNode()
+        self.dummy_tail = DLinkedNode()
+        # 构造头尾相连
+        self.dummy_head.next = self.dummy_tail
+        self.dummy_tail.prev = self.dummy_head
+        self.capacity = capacity
+        self.size = 0
+
+
+    def get(self, key: int) -> int:
+        if key not in self.cache:
+            return -1
+        node = self.cache[key]
+        # 最近使用，放到头节点
+        self.move_to_head(node)
+        return node.value
+
+    def put(self, key: int, value: int) -> None:
+        if key not in self.cache:
+            # 新建node
+            node = DLinkedNode(key,value)
+            self.cache[key] = node
+            if self.size == self.capacity:
+                temp = self.remove_tail()
+                del self.cache[temp.key]
+                self.add_to_head(node)
+            else:
+                self.size += 1
+                self.add_to_head(node)
+        else:
+            node = self.cache[key]
+            node.value = value
+            # 最近使用，放到头节点
+            self.move_to_head(node)
+    
+    def add_to_head(self, node):
+        node.next = self.dummy_head.next
+        self.dummy_head.next.prev = node
+        node.prev = self.dummy_head
+        self.dummy_head.next = node
+
+    def remove_node(self, node):
+        node.prev.next = node.next
+        node.next.prev = node.prev
+
+    def move_to_head(self, node):
+        self.remove_node(node)
+        self.add_to_head(node)
+
+    def remove_tail(self):
+        node = self.dummy_tail.prev
+        self.remove_node(node)
+        return node
+
+
+# Your LRUCache object will be instantiated and called as such:
+# obj = LRUCache(capacity)
+# param_1 = obj.get(key)
+# obj.put(key,value)
+```
 ### 148.排序链表
 > 给你链表的头结点`head`，请将其按**升序**排列并返回**排序后的链表**
 
@@ -1514,6 +1600,54 @@ class Solution:
         odd.next = succ
         return head
 ```
+### 735.行星碰撞
+> 给定一个整数数组` asteroids`，表示在同一行的行星。  
+对于数组中的每一个元素，其绝对值表示行星的大小，正负表示行星的移动方向（正表示向右移动，负表示向左移动）。每一颗行星以相同的速度移动。  
+找出碰撞后剩下的所有行星。碰撞规则：两个行星相互碰撞，较小的行星会爆炸。如果两颗行星大小相同，则两颗行星都会爆炸。两颗移动方向相同的行星，永远不会发生碰撞。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/asteroid-collision  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def asteroidCollision(self, asteroids: List[int]) -> List[int]:
+        stack = []
+        pre = curr = 1 # 记录前一位的符号，1代表正，0代表负
+        for idx, num in enumerate(asteroids):
+            if not stack:
+                stack.append(num)
+                pre = 1 if num > 0 else 0
+                continue
+            curr = 1 if num > 0 else 0
+            if curr == pre or (pre == 0 and curr == 1 ):
+                pre = curr
+                stack.append(num)
+            else:
+                while True:
+                    if curr == pre or (pre == 0 and curr == 1 ):
+                        stack.append(num)
+                        break
+                    temp = stack.pop()
+                    # 右边爆炸
+                    if abs(temp) > abs(num):
+                        stack.append(temp)
+                        break
+                    # 左边爆炸
+                    elif abs(temp) < abs(num):
+                        if stack:
+                            pre = 1 if stack[-1] > 0 else 0
+                        else:
+                            stack.append(num)
+                            pre = curr
+                            break
+                    # 一起爆炸
+                    else:
+                        if stack:
+                            pre = 1 if stack[-1] > 0 else 0
+                        break
+        return stack
+```
 ### 876.链表的中间结点
 > 给定一个头结点为` head `的非空单链表，返回链表的中间结点。  
 如果有两个中间结点，则返回第二个中间结点。
@@ -1573,6 +1707,44 @@ class Solution:
                 else:
                     count = 1
                     pre = 0
+        return ''.join(stack)
+```
+### 1249.移除无效的括号
+> 给你一个由` '('、')' `和小写字母组成的字符串` s`。  
+你需要从字符串中删除最少数目的` '(' `或者` ')' `（可以删除任意位置的括号)，使得剩下的「括号字符串」有效。  
+请返回任意一个合法字符串。  
+
+有效「括号字符串」应当符合以下` 任意一条 `要求：  
++ 空字符串或只包含小写字母的字符串
++ 可以被写作` AB`（A 连接 B）的字符串，其中` A `和` B `都是有效「括号字符串」
++ 可以被写作` (A) `的字符串，其中` A `是一个有效的「括号字符串」
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/minimum-remove-to-make-valid-parentheses  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def minRemoveToMakeValid(self, s: str) -> str:
+        stack = [] # 存放s
+        left_stack = [] # 存放遇到的左括号索引
+        right_index = [] # 存放没配对的右括号索引
+        for idx, char in enumerate(s):
+            # 遇到的都存进去，后面记录位置删去
+            stack.append(char)
+            # 遇到左括号，记录位置
+            if char == '(':
+                left_stack.append(idx)
+            # 遇到右括号，开始匹配
+            elif char == ')':
+                if left_stack:
+                    left_stack.pop()  # 匹配成功一对
+                else:
+                    right_index.append(idx)  # 没匹配成功，记录位置后面删除
+        # 汇总需要删除的位置
+        right_index += left_stack
+        for idx in right_index:
+            stack[idx] = ''
         return ''.join(stack)
 ```
 ### 1472.设计浏览器历史记录
