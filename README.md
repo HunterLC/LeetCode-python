@@ -693,7 +693,47 @@ class Solution:
             self.quick_sort(intervals,start,l-1)
             self.quick_sort(intervals,l+1,end)
     ```
+### 73.矩阵置零
+> 给定一个` m x n `的矩阵，如果一个元素为` 0 `，则将其所在行和列的所有元素都设为` 0 `。请使用 **原地** 算法。
 
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/set-matrix-zeroes/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def setZeroes(self, matrix: List[List[int]]) -> None:
+        """
+        Do not return anything, modify matrix in-place instead.
+        """
+        # 使用O(1)的空间完成，说到底就是时间换空间
+        # 查看第一行是不是存在0
+        row_flag = True if 0 in matrix[0] else False
+        # 查看第一列是不是存在0
+        col_flag = False
+        for idx in range(len(matrix)):
+            if matrix[idx][0] == 0:
+                col_flag = True
+                break
+        
+        # 从第二行第二列开始遍历,遇到0就给对应的行和列做标记
+        for i in range(1,len(matrix)):
+            for j in range(1,len(matrix[0])):
+                if matrix[i][j] == 0:
+                    matrix[i][0] = matrix[0][j] = 0
+        # 开始置0
+        for i in range(1,len(matrix)):
+            for j in range(1,len(matrix[0])):
+                if matrix[0][j] == 0 or matrix[i][0] == 0:
+                    matrix[i][j] = 0
+        if row_flag:
+            for idx in range(len(matrix[0])):
+                matrix[0][idx] = 0
+        
+        if col_flag:
+            for idx in range(len(matrix)):
+                matrix[idx][0] = 0
+```
 ### 75.颜色分类
 > 给定一个包含红色、白色和蓝色、共 n 个元素的数组 nums ，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。  
 我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。  
@@ -856,6 +896,34 @@ class Solution:
                 pre.next = next
             return dummy_node.next
     ```
+### 128.最长连续序列
+> 给定一个未排序的整数数组` nums `，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。  
+请你设计并实现时间复杂度为` O(n) `的算法解决此问题。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/longest-consecutive-sequence  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def longestConsecutive(self, nums: List[int]) -> int:
+        link = {}
+        max_length = 0
+        for num in nums:
+            if num not in link:
+                # 取当前数的左右两个近邻数字的区间大小
+                left = link.get(num-1, 0)
+                right = link.get(num+1, 0)
+                # 当前数字所处区间的大小
+                current = 1 + left + right
+                if current > max_length:
+                    max_length = current
+                # 把当前区间的边界给重新赋值，确保新进来的数字一定不是已有区间内的值
+                link[num] = current
+                link[num - left] = current
+                link[num + right] = current
+        return max_length
+```
 ### 141.环形链表 I
 > 给你一个链表的头节点` head `，判断链表中是否有环。  
 如果链表中有某个节点，可以通过连续跟踪` next `指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数` pos `来表示链表尾连接到链表中的位置（索引从 0 开始）。注意：`pos `不作为参数进行传递 。仅仅是为了标识链表的实际情况。  
