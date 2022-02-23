@@ -595,6 +595,24 @@ class Solution:
                 start = start + 1
             return start
     ```
+### 49.字母异位词分组
+> 给你一个字符串数组，请你将 **字母异位词** 组合在一起。可以按任意顺序返回结果列表。  
+**字母异位词** 是由重新排列源单词的字母得到的一个新单词，所有源单词中的字母通常恰好只用一次。
+ 
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/group-anagrams  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+        result = collections.defaultdict(list)
+        for i in strs:
+            key = ''.join(sorted(i))
+            result[key].append(i)
+
+        return list(result.values())
+```
 ### 54.螺旋矩阵
 > 给你一个` m `行` n `列的矩阵` matrix `，请按照**顺时针**螺旋顺序 ，返回矩阵中的所有元素。
 
@@ -1667,6 +1685,75 @@ class Solution:
             even = even.next
         odd.next = succ
         return head
+```
+### 350.两个数组的交集II
+> 给你两个整数数组` nums1 `和` nums2` ，请你以数组形式返回两数组的交集。返回结果中每个元素出现的次数，应与元素在两个数组中都出现的次数一致（如果出现次数不一致，则考虑取较小值）。可以不考虑输出结果的顺序。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/intersection-of-two-arrays-ii  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def intersect(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        my_dict_1 = collections.Counter(nums1)
+        my_dict_2 = collections.Counter(nums2)
+        result = []
+        for key, value in my_dict_2.items():
+            if key in my_dict_1:
+                for _ in range(min(my_dict_1[key],value)):
+                    result.append(key)
+        return result
+```
+### 380.O(1)时间插入、删除和获取随机元素
+实现`RandomizedSet `类：
+
++ `RandomizedSet()` 初始化 `RandomizedSet` 对象
++ `bool insert(int val)` 当元素` val `不存在时，向集合中插入该项，并返回` true `；否则，返回` false `。
++ `bool remove(int val)` 当元素 `val` 存在时，从集合中移除该项，并返回` true `；否则，返回` false `。
++ `int getRandom()` 随机返回现有集合中的一项（测试用例保证调用此方法时集合中至少存在一个元素）。每个元素应该有 **相同的概率** 被返回。
+
+你必须实现类的所有函数，并满足每个函数的 **平均** 时间复杂度为 `O(1) `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/insert-delete-getrandom-o1  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class RandomizedSet:
+
+    def __init__(self):
+        # 存储键值对，val-index_in_list
+        self.val_dict = {}
+        # 存val，生成index
+        self.val_list = []
+
+    def insert(self, val: int) -> bool:
+        if val in self.val_dict:
+            return False
+        self.val_list.append(val)
+        self.val_dict[val] = len(self.val_list) - 1
+        return True
+
+    def remove(self, val: int) -> bool:
+        if val not in self.val_dict:
+            return False
+        tail, val_idx = self.val_list[-1], self.val_dict[val]
+        self.val_dict[tail], self.val_list[val_idx] = val_idx, tail
+        self.val_list.pop()
+        del self.val_dict[val]
+        return True
+
+    def getRandom(self) -> int:
+        return random.choice(self.val_list)
+
+
+
+# Your RandomizedSet object will be instantiated and called as such:
+# obj = RandomizedSet()
+# param_1 = obj.insert(val)
+# param_2 = obj.remove(val)
+# param_3 = obj.getRandom()
 ```
 ### 735.行星碰撞
 > 给定一个整数数组` asteroids`，表示在同一行的行星。  
