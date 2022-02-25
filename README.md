@@ -1686,6 +1686,39 @@ class Solution:
         odd.next = succ
         return head
 ```
+### 347.前K个高频元素
+> 给你一个整数数组` nums `和一个整数` k `，请你返回其中出现频率前` k `高的元素。你可以按 **任意顺序** 返回答案。
+
+ 来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/top-k-frequent-elements/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        # 构造小顶堆
+        count_dict = collections.Counter(nums)
+        value_key_dict = collections.defaultdict(list)
+        for key, value in count_dict.items():
+            value_key_dict[value].append(key)
+        
+        # 总共的元素个数
+        n = len(value_key_dict)
+        min_heap = []
+        ans = []
+        count = 0
+        for key in value_key_dict:
+            if count < k:
+                heapq.heappush(min_heap,key)
+            else:
+                heapq.heappushpop(min_heap,key)
+            count += 1
+        for i in sorted(min_heap,reverse=True):
+            ans += value_key_dict[i]
+            if len(ans) == k:
+                return ans
+        return ans
+```
 ### 350.两个数组的交集II
 > 给你两个整数数组` nums1 `和` nums2` ，请你以数组形式返回两数组的交集。返回结果中每个元素出现的次数，应与元素在两个数组中都出现的次数一致（如果出现次数不一致，则考虑取较小值）。可以不考虑输出结果的顺序。
 
@@ -1820,6 +1853,52 @@ class Solution:
                 slow = slow.next
                 fast = fast.next.next
             return slow
+    ```
+### 973.最接近原点的K个点
+> 给定一个数组` points `，其中` points[i] = [xi, yi] `表示` X-Y `平面上的一个点，并且是一个整数` k `，返回离原点` (0,0) `最近的` k `个点。  
+这里，平面上两点之间的距离是 `欧几里德距离（ √(x1 - x2)2 + (y1 - y2)2 ）`。  
+你可以按 **任何顺序** 返回答案。除了点坐标的顺序之外，答案 **确保** 是 **唯一** 的。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/k-closest-points-to-origin  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 小顶堆(这样做不省空间，相当是所有的点都放进去算了之后选了前K个顶点)
+    ```
+    import heapq
+
+    class Solution:
+        def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
+            # 使用小顶堆来取得值
+            distance_dict = collections.defaultdict(list)
+            max_heap = []
+            result = []
+            for point in points:
+                distance = math.sqrt(point[0]**2 + point[1]**2)
+                # 构造小顶堆
+                heapq.heappush(max_heap,distance)
+                distance_dict[distance].append(point)
+            
+            for _ in range(k):
+                temp = heapq.heappop(max_heap)
+                result.append(distance_dict[temp].pop())
+            return result
+    ```
++ 大顶堆(省空间，构造K个节点的大顶堆，对剩余的n-k个点分别与堆顶点比，只要其余值小，就弹出堆顶点，把这个值插进去，最后大顶堆里面的k个元素就是所需的)
+    ```
+    class Solution:
+        def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
+            q = [(-x ** 2 - y ** 2, i) for i, (x, y) in enumerate(points[:k])]
+            heapq.heapify(q)
+            
+            n = len(points)
+            for i in range(k, n):
+                x, y = points[i]
+                dist = -x ** 2 - y ** 2
+                heapq.heappushpop(q, (dist, i))
+            
+            ans = [points[identity] for (_, identity) in q]
+            return ans
     ```
 ### 1209.删除字符串中的所有相邻重复项 II
 > 给你一个字符串` s`，「k 倍重复项删除操作」将会从` s `中选择` k `个相邻且相等的字母，并删除它们，使被删去的字符串的左侧和右侧连在一起。  
