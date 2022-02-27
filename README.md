@@ -1687,6 +1687,33 @@ class MyQueue:
 # param_3 = obj.peek()
 # param_4 = obj.empty()
 ```
+### 264.丑数II
+> 给你一个整数` n `，请你找出并返回第` n `个 **丑数** 。  
+**丑数** 就是只包含质因数` 2、3 和/或 5 `的正整数
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/ugly-number-ii/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def nthUglyNumber(self, n: int) -> int:
+        min_heap = []
+        heapq.heappush(min_heap, 1)
+        count = 0
+        while count < n:
+            temp = heapq.heappop(min_heap)
+            if 2*temp not in min_heap:
+                heapq.heappush(min_heap, 2*temp)
+            if 3*temp not in min_heap:
+                heapq.heappush(min_heap, 3*temp)
+            if 5*temp not in min_heap:
+                heapq.heappush(min_heap, 5*temp) 
+            count += 1
+            if count == n:
+                return temp
+        return 0
+```
 ### 299.猜数字游戏
 > 你在和朋友一起玩` 猜数字（Bulls and Cows）`游戏，该游戏规则如下：  
 写出一个秘密数字，并请朋友猜这个数字是多少。朋友每猜测一次，你就会给他一个包含下述信息的提示：  
