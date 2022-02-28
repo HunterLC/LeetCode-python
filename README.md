@@ -881,6 +881,39 @@ class Solution:
                     nums[p_b] = 2
                     p_b = p_b + 1  # 最后一个蓝色位置后移1位
     ```
+### 88.合并两个有序数组
+> 给你两个按 **非递减顺序** 排列的整数数组` nums1 `和` nums2`，另有两个整数` m `和` n `，分别表示 `nums1 `和 `nums2` 中的元素数目。
+
+请你 **合并** `nums2` 到 `nums1` 中，使合并后的数组同样按 **非递减顺序** 排列。
+
+**注意：**最终，合并后数组不应由函数返回，而是存储在数组 `nums1` 中。为了应对这种情况，`nums1` 的初始长度为` m + n`，其中前` m `个元素表示应合并的元素，后` n `个元素为` 0` ，应忽略。`nums2 `的长度为` n `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/merge-sorted-array  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
+        """
+        Do not return anything, modify nums1 in-place instead.
+        """
+        p1, p2 = m-1, n-1
+        tail = m + n - 1
+        while p1 >= 0 or p2 >=0:
+            if p1 < 0:
+                nums1[tail] = nums2[p2]
+                p2 -= 1
+            elif p2 < 0:
+                break
+            elif nums1[p1] < nums2[p2]:
+                nums1[tail] = nums2[p2]
+                p2 -= 1
+            else:
+                nums1[tail] = nums1[p1]
+                p1 -= 1
+            tail -= 1
+```
 ### 92.反转链表 II
 > 给你单链表的头指针` head `和两个整数` left `和` right `，其中` left <= right `。请你反转从位置` left `到位置` right `的链表节点，返回**反转后的链表**
 
@@ -1876,6 +1909,44 @@ class RandomizedSet:
 # param_1 = obj.insert(val)
 # param_2 = obj.remove(val)
 # param_3 = obj.getRandom()
+```
+### 692.前K个高频单词
+> 给定一个单词列表` words `和一个整数` k `，返回前` k `个出现次数最多的单词。  
+返回的答案应该按单词出现频率由高到低排序。如果不同的单词有相同出现频率， 按**字典顺序** 排序。  
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/top-k-frequent-words  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Pair:
+    def __init__(self, key: str, value: int):
+        self.key = key
+        self.value = value
+
+    def __lt__(self, other):
+        # 使用 < 符号时会调用此方法
+        if self.value == other.value:
+            # 当词频相同时，key值大的就小
+            return self.key > other.key
+        else:
+            # 词频不同时，词频小的就小
+            return self.value < other.value
+
+class Solution:
+    def topKFrequent(self, words: List[str], k: int) -> List[str]:
+        count_dict = collections.Counter(words)
+        count = 0
+        ans = []
+        for key, value in count_dict.items():
+            pair = Pair(key, value)
+            if count < k:
+                heapq.heappush(ans,pair)
+            else:
+                heapq.heappushpop(ans,pair)
+            count += 1
+        ans.sort(reverse=True)
+        return [i.key for i in ans]
 ```
 ### 735.行星碰撞
 > 给定一个整数数组` asteroids`，表示在同一行的行星。  
