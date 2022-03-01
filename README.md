@@ -1747,6 +1747,56 @@ class Solution:
                 return temp
         return 0
 ```
+### 295.数据流的中位数
+> 中位数是有序列表中间的数。如果列表长度是偶数，中位数则是中间两个数的平均值。  
+例如，  
+[2,3,4] 的中位数是 3  
+[2,3] 的中位数是 (2 + 3) / 2 = 2.5
+
+设计一个支持以下两种操作的数据结构：  
++ `void addNum(int num)` - 从数据流中添加一个整数到数据结构中。
++ `double findMedian()` - 返回目前所有元素的中位数。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/find-median-from-data-stream  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class MedianFinder:
+
+    def __init__(self):
+        self.min_heap = [] # 存放后半部分的值
+        self.max_heap = [] # 存放前半部分的值
+
+    def addNum(self, num: int) -> None:
+        # 当插入值为奇数时，我们需要前半部分比后半部分多1
+        if len(self.min_heap) == len(self.max_heap): # 当前值插入前，已经插入0个或偶数个值了
+            if len(self.min_heap) == 0: # 还没插入值
+                heapq.heappush(self.max_heap, -num)
+            elif num < -self.max_heap[0]: # 当前值比前半部分的最大值小，说明这个值应该放在前面，满足奇数
+                heapq.heappush(self.max_heap, -num)
+            elif num >= -self.max_heap[0]: # 当前值比前半部分的最大值大，说明这个值应该放在后面，为满足奇数需要把后面的最小值放到前面去
+                heapq.heappush(self.max_heap, -heapq.heappushpop(self.min_heap, num))
+        else: # 当前值插入前，已经插入奇数个值了
+            if len(self.min_heap) == 0: # 还没插入值
+                heapq.heappush(self.min_heap, -heapq.heappushpop(self.max_heap, -num))
+            elif num < -self.max_heap[0]: # 当前值比前半部分的最大值小，说明这个值应该放在前面，为满足偶数需要把前面的最大值放到后面去
+                heapq.heappush(self.min_heap, -heapq.heappushpop(self.max_heap, -num))
+            elif num >= -self.max_heap[0]: # 当前值比前半部分的最大值大，说明这个值应该放在后面
+                heapq.heappush(self.min_heap, num)
+
+    def findMedian(self) -> float:
+        if len(self.min_heap) == len(self.max_heap):
+            # 偶数
+            return (self.min_heap[0] - self.max_heap[0]) / 2
+        return -self.max_heap[0]
+
+
+# Your MedianFinder object will be instantiated and called as such:
+# obj = MedianFinder()
+# obj.addNum(num)
+# param_2 = obj.findMedian()
+```
 ### 299.猜数字游戏
 > 你在和朋友一起玩` 猜数字（Bulls and Cows）`游戏，该游戏规则如下：  
 写出一个秘密数字，并请朋友猜这个数字是多少。朋友每猜测一次，你就会给他一个包含下述信息的提示：  
@@ -1859,6 +1909,29 @@ class Solution:
                 for _ in range(min(my_dict_1[key],value)):
                     result.append(key)
         return result
+```
+### 378.有序矩阵中的第K小的元素
+> 给你一个` n x n `矩阵` matrix `，其中每行和每列元素均按升序排序，找到矩阵中第` k `小的元素。  
+请注意，它是 **排序后** 的第` k `小元素，而不是第` k `个 **不同** 的元素。  
+你必须找到一个内存复杂度优于` O(n2) `的解决方案。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+```
+class Solution:
+    def kthSmallest(self, matrix: List[List[int]], k: int) -> int:
+        # 使用大小为K个元素的大顶堆
+        max_heap = []
+        count = 0
+        for i in range(len(matrix)):
+            for j in range(len(matrix[0])):
+                if count < k:
+                    heapq.heappush(max_heap,-matrix[i][j])
+                    count += 1
+                else:
+                    heapq.heappushpop(max_heap,-matrix[i][j])
+        return -heapq.heappop(max_heap)
 ```
 ### 380.O(1)时间插入、删除和获取随机元素
 实现`RandomizedSet `类：
