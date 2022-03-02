@@ -2069,9 +2069,54 @@ class Solution:
                         break
         return stack
 ```
+### 767.重构字符串
+> 给定一个字符串`S`，检查是否能重新排布其中的字母，使得两相邻的字符不同。  
+若可行，输出任意可行的结果。若不可行，返回空字符串。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/reorganize-string/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def reorganizeString(self, s: str) -> str:
+        length = len(s)
+        if length < 2:
+            return s
+        count_dict = collections.Counter(s)
+        # 找到出现频率最大的那个
+        max_count = max(count_dict.items(),key=lambda x: x[1])[1]
+        if max_count > (length + 1) // 2:
+            return ""
+        max_heap= [(-x[1],x[0]) for x in count_dict.items()]
+        heapq.heapify(max_heap)
+        ans = []
+
+        while len(max_heap) > 1: # 一次拿两个
+            _, first = heapq.heappop(max_heap)
+            _, second = heapq.heappop(max_heap)
+            ans += [first,second]
+            # 将两个字母对应的数量减掉一次
+            count_dict[first] -= 1
+            count_dict[second] -= 1
+            # 如果该字母还有，那么继续进入大顶堆
+            if count_dict[first] > 0:
+                heapq.heappush(max_heap, (-count_dict[first], first))
+            if count_dict[second] > 0:
+                heapq.heappush(max_heap, (-count_dict[second], second))
+        # 可能还剩下一个
+        if max_heap:
+            ans.append(heapq.heappop(max_heap)[1])
+        return "".join(ans)
+```
 ### 876.链表的中间结点
 > 给定一个头结点为` head `的非空单链表，返回链表的中间结点。  
 如果有两个中间结点，则返回第二个中间结点。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/middle-of-the-linked-list/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
 + 快慢指针
     ```
     # Definition for singly-linked list.
