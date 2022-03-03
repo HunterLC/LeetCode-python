@@ -2259,6 +2259,90 @@ class Solution:
             stack[idx] = ''
         return ''.join(stack)
 ```
+### 1438.绝对差不超过限制的最长连续子数组
+> 给你一个整数数组` nums `，和一个表示限制的整数` limit`，请你返回最长连续子数组的长度，该子数组中的任意两个元素之间的绝对差必须小于或者等于` limit `。  
+如果不存在满足条件的子数组，则返回` 0 `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 单调双端队列法 `collections.deque`
+    ```
+    class Solution:
+        def longestSubarray(self, nums: List[int], limit: int) -> int:
+            length = len(nums)
+            # 创建两个单调双端队列
+            min_queue, max_queue = collections.deque(), collections.deque()
+            # 定义滑动窗口左右边界、结果
+            left = right = ans = 0
+
+            while right < length: # 滑到最右边结束
+                # 我们需要找窗口区间内的最大值和最小值，只要最值都小于等于limit了，其余值肯定满足
+                while min_queue and min_queue[-1] > nums[right]: # 如果min_queue有元素,那就把比右窗口大的数去掉，因为我们想要的是这个区间的最小值
+                    min_queue.pop()
+                while max_queue and max_queue[-1] < nums[right]: # 如果max_queue有元素，那就把比当前滑动窗口右端的值小的数去掉，我们需要区间的最大值
+                    max_queue.pop()
+                # 把右窗口的值放进去
+                min_queue.append(nums[right])
+                max_queue.append(nums[right])
+                # 如果最值都大于limit了，那么我们的左窗口应该向右移
+                while min_queue and max_queue and max_queue[0] - min_queue[0] > limit:
+                    if nums[left] == min_queue[0]:
+                        min_queue.popleft()
+                    if nums[left] == max_queue[0]:
+                        max_queue.popleft()
+                    left += 1
+                ans = max(ans, right - left + 1)
+                right += 1
+            return ans
+    ```
++ python底层并不是平衡树的`sortedcontainers.SortedList`，**内部有序**
+    ```
+    class Solution:
+        def longestSubarray(self, nums: List[int], limit: int) -> int:
+            from sortedcontainers import SortedList
+            s = SortedList()
+            left, right = 0, 0
+            res = 0
+            while right < len(nums):
+                s.add(nums[right])
+                while s[-1] - s[0] > limit:
+                    s.remove(nums[left])
+                    left += 1
+                res = max(res, right - left + 1)
+                right += 1
+            return res
+    ```
++ 使用堆来维护`heapq`
+    ```
+    class Solution:
+        def longestSubarray(self, nums: List[int], limit: int) -> int:
+            from heapq import heappop, heappush
+            max_ = []
+            min_ = []
+            res = 0
+            l = 0
+            for r, num in enumerate(nums):
+                # 大根堆 max_
+                heappush(max_, [-num, r])
+                # 小根堆 min_
+                heappush(min_, [num, r])
+                # l 为左指针位置
+                while -max_[0][0] - min_[0][0] > limit:
+                    # 条件判断需要max,min[0][0]存的索引不在 l 左侧
+                    # 删除不在 l 右侧的元素
+                    while min_[0][1] <= l:
+                        heappop(min_)
+                    while max_[0][1] <= l:
+                        heappop(max_)
+                    # 移动 l
+                    l += 1
+                # 找到最长的符合要求的窗口长度
+                if r - l + 1 > res:
+                    res = r - l + 1
+            return res
+    ```
 ### 1472.设计浏览器历史记录
 > 你有一个只支持单个标签页的` 浏览器 `，最开始你浏览的网页是` homepage `，你可以访问其他的网站` url `，也可以在浏览历史中后退` steps `步或前进` steps `步。
 
