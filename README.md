@@ -2132,6 +2132,49 @@ class Solution:
                 fast = fast.next.next
             return slow
     ```
+
+### 895.最大频率栈
+> 设计一个类似堆栈的数据结构，将元素推入堆栈，并从堆栈中弹出出现频率最高的元素。
+
+实现` FreqStack `类:
+
++ `FreqStack()` 构造一个空的堆栈。
++ `void push(int val)` 将一个整数 val 压入栈顶。
++ `int pop()` 删除并返回堆栈中出现频率最高的元素。
+如果出现频率最高的元素不只一个，则移除并返回最接近栈顶的元素。
+ 
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/maximum-frequency-stack  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class FreqStack:
+
+    def __init__(self):
+        self.freq = collections.defaultdict(lambda: 0)
+        self.freq_stack = collections.defaultdict(list)
+        self.max_freq = 0
+        
+    def push(self, x: int) -> None:
+        self.freq[x] += 1
+        if self.freq[x] > self.max_freq:
+            self.max_freq = self.freq[x]
+        self.freq_stack[self.freq[x]].append(x)    
+        
+    def pop(self) -> int:
+        ans = self.freq_stack[self.max_freq].pop()
+        self.freq[ans] -= 1
+        if not self.freq_stack[self.max_freq]:
+            self.max_freq -= 1
+        return ans
+
+
+
+# Your FreqStack object will be instantiated and called as such:
+# obj = FreqStack()
+# obj.push(val)
+# param_2 = obj.pop()
+```
 ### 973.最接近原点的K个点
 > 给定一个数组` points `，其中` points[i] = [xi, yi] `表示` X-Y `平面上的一个点，并且是一个整数` k `，返回离原点` (0,0) `最近的` k `个点。  
 这里，平面上两点之间的距离是 `欧几里德距离（ √(x1 - x2)2 + (y1 - y2)2 ）`。  
