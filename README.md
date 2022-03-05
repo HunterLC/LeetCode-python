@@ -1,6 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
+![](https://img.shields.io/badge/已覆盖-46题-green)
 
 我要刷题**冲冲冲**
 
@@ -626,6 +627,40 @@ class Solution:
                 start = start + 1
             return start
     ```
+### 34. 在排序数组中查找元素的第一个和最后一个位置
+> 给定一个按照升序排列的整数数组` nums`，和一个目标值` target`。找出给定目标值在数组中的开始位置和结束位置。  
+如果数组中不存在目标值` target`，返回` [-1, -1]`。
+
+进阶：  
+你可以设计并实现时间复杂度为` O(log n) `的算法解决此问题吗？
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        def binarySearchLeft(nums, target):
+            left = 0
+            right = len(nums)   
+            while left < right:
+                mid = (right + left) // 2
+                if nums[mid] < target:
+                    left = mid + 1
+                else:
+                    right = mid
+            return left
+        
+        if not nums:
+            return [-1,-1]
+
+        start = binarySearchLeft(nums,target)
+        end = binarySearchLeft(nums,target+1) - 1
+        if start == len(nums) or nums[start] != target:
+            return [-1,-1]
+        return [start,end]
+```
 ### 49.字母异位词分组
 > 给你一个字符串数组，请你将 **字母异位词** 组合在一起。可以按任意顺序返回结果列表。  
 **字母异位词** 是由重新排列源单词的字母得到的一个新单词，所有源单词中的字母通常恰好只用一次。
