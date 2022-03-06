@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-46题-green)
+![](https://img.shields.io/badge/已覆盖-47题-green)
 
 我要刷题**冲冲冲**
 
@@ -626,6 +626,70 @@ class Solution:
                     end = end - 1
                 start = start + 1
             return start
+    ```
+### 33.搜索旋转排序数组
+> 整数数组` nums `按升序排列，数组中的值 **互不相同** 。  
+在传递给函数之前，`nums `在预先未知的某个下标` k（0 <= k < nums.length）`上进行了 `旋转`，使数组变为 `[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]`（下标 从 `0 `开始 计数）。例如， `[0,1,2,4,5,6,7] `在下标 `3 `处经旋转后可能变为` [4,5,6,7,0,1,2] `。  
+给你 **旋转后** 的数组` nums `和一个整数` target `，如果 `nums` 中存在这个目标值` target` ，则返回它的下标，否则返回` -1 `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/search-in-rotated-sorted-array  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 时间复杂度不符合要求
+    ```
+    class Solution:
+        def search(self, nums: List[int], target: int) -> int:
+            length = len(nums)
+            if length == 1:
+                return 0 if target == nums[0] else -1
+
+            left, right = 0, length -1
+            # 可能整个数组都是单调的，这样必须判断left <= right，不然就越界了
+            while left <= right and nums[left] > target:
+                left += 1
+            while left <= right and nums[right] < target:
+                right -= 1
+
+            while left <= right:
+                # 左右区间已经固定好
+                mid = (left + right) // 2
+                if nums[mid] == target:
+                    return mid
+                elif nums[mid] < target:
+                    left = mid + 1
+                else:
+                    right = mid - 1
+            return -1
+    ```
++ 虽然不能直接二分查找，但是算mid之后总有一半是有序的
+    ```
+    class Solution:
+        def search(self, nums: List[int], target: int) -> int:
+            length = len(nums)
+            if length == 1:
+                return 0 if target == nums[0] else -1
+
+            left, right = 0, length -1
+
+            while left <= right:
+                # 左右区间已经固定好
+                mid = (left + right) // 2
+                if nums[mid] == target:
+                    return mid
+                # 左边的区间是有序的
+                if nums[left] <= nums[mid]:
+                    if nums[left] <= target < nums[mid]:  # 值在区间内
+                        right = mid - 1
+                    else:
+                        left = mid + 1
+                # 右边的区间是有序的
+                else:
+                    if nums[mid] < target <= nums[right]:  # 值在区间内
+                        left = mid + 1
+                    else:
+                        right = mid - 1
+            return -1
     ```
 ### 34. 在排序数组中查找元素的第一个和最后一个位置
 > 给定一个按照升序排列的整数数组` nums`，和一个目标值` target`。找出给定目标值在数组中的开始位置和结束位置。  
