@@ -2320,6 +2320,72 @@ class FreqStack:
             ans = [points[identity] for (_, identity) in q]
             return ans
     ```
+### 1095.山脉数组中查找目标值
+> （这是一个 交互式问题 ）  
+给你一个 **山脉数组**` mountainArr`，请你返回能够使得` mountainArr.get(index)` 等于` target `**最小** 的下标 `index` 值。  
+如果不存在这样的下标` index`，就请返回` -1`。
+
+何为山脉数组？如果数组` A `是一个山脉数组的话，那它满足如下条件：  
+1. 首先，`A.length >= 3 ` 
+2. 其次，在` 0 < i < A.length - 1 `条件下，存在` i `使得：  
+    + A[0] < A[1] < ... A[i-1] < A[i]
+    + A[i] > A[i+1] > ... > A[A.length - 1]
+ 
+
+你将 **不能**直接访问该山脉数组，必须通过 `MountainArray `接口来获取数据：  
++ `MountainArray.get(k)` - 会返回数组中索引为`k `的元素（下标从` 0 `开始）
++ `MountainArray.length()` - 会返回该数组的长度
+ 
+
+注意：  
+对` MountainArray.get` 发起超过` 100 `次调用的提交将被视为错误答案。此外，任何试图规避判题系统的解决方案都将会导致比赛资格被取消。  
+为了帮助大家更好地理解交互式问题，我们准备了一个样例 [“答案”](https://leetcode-cn.com/playground/RKhe3ave)，请注意这 **不是**一个正确答案
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/find-in-mountain-array  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# """
+# This is MountainArray's API interface.
+# You should not implement it, or speculate about its implementation
+# """
+#class MountainArray:
+#    def get(self, index: int) -> int:
+#    def length(self) -> int:
+
+class Solution:
+    def findInMountainArray(self, target: int, mountain_arr: 'MountainArray') -> int:
+        def binary_search(mountain, target, l, r, key=lambda x: x):
+            target = key(target)
+            while l <= r:
+                mid = (l + r) // 2
+                cur = key(mountain.get(mid))
+                if cur == target:
+                    return mid
+                elif cur < target:
+                    l = mid + 1
+                else:
+                    r = mid - 1
+            return -1
+ 
+        left, right = 0, mountain_arr.length() - 1
+        # 寻找峰值
+        while left < right:
+            mid = (left + right) // 2
+            if mountain_arr.get(mid) < mountain_arr.get(mid + 1): # 说明峰值在mid+1到right之间
+                left = mid + 1
+            else:
+                right = mid  # 说明峰值在left到mid之间
+        peak = left
+        # 搜索左半部分
+        index = binary_search(mountain_arr, target, 0, peak)
+        if index != -1:
+            return index
+        # 左半部分没有，那就搜索右半部分，key函数相当于继续使用从小到大的排列
+        index = binary_search(mountain_arr, target, peak + 1, mountain_arr.length() - 1, lambda x: -x)
+        return index
+```
 ### 1209.删除字符串中的所有相邻重复项 II
 > 给你一个字符串` s`，「k 倍重复项删除操作」将会从` s `中选择` k `个相邻且相等的字母，并删除它们，使被删去的字符串的左侧和右侧连在一起。  
 你需要对` s `重复进行无限次这样的删除操作，直到无法继续为止。  
