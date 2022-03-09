@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-48题-green)
+![](https://img.shields.io/badge/已覆盖-49题-green)
 
 我要刷题**冲冲冲**
 
@@ -1881,6 +1881,38 @@ class Solution:
             if count == n:
                 return temp
         return 0
+```
+### 278.第一个错误版本
+> 你是产品经理，目前正在带领一个团队开发新的产品。不幸的是，你的产品的最新版本没有通过质量检测。由于每个版本都是基于之前的版本开发的，所以错误的版本之后的所有版本都是错的。  
+假设你有` n `个版本` [1, 2, ..., n]`，你想找出导致之后所有版本出错的第一个错误的版本。
+
+你可以通过调用` bool isBadVersion(version) `接口来判断版本号` version `是否在单元测试中出错。实现一个函数来查找第一个错误的版本。你应该尽量减少对调用` API `的次数。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/first-bad-version  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# The isBadVersion API is already defined for you.
+# @param version, an integer
+# @return an integer
+# def isBadVersion(version):
+
+class Solution:
+    def firstBadVersion(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        l = 0
+        r = n
+        while l < r:
+            mid = l + (r - l) // 2
+            if not isBadVersion(mid):
+                l = mid + 1
+            else:
+                r = mid
+        return r
 ```
 ### 295.数据流的中位数
 > 中位数是有序列表中间的数。如果列表长度是偶数，中位数则是中间两个数的平均值。  
