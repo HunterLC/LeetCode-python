@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-49题-green)
+![](https://img.shields.io/badge/已覆盖-51题-green)
 
 我要刷题**冲冲冲**
 
@@ -881,6 +881,37 @@ class Solution:
         if col_flag:
             for idx in range(len(matrix)):
                 matrix[idx][0] = 0
+```
+### 74.搜索二维矩阵
+> 编写一个高效的算法来判断` m x n `矩阵中，是否存在一个目标值。该矩阵具有如下特性：  
+每行中的整数从左到右按升序排列。
+每行的第一个整数大于前一行的最后一个整数。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/search-a-2d-matrix  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        def binary_search(nums, left, right, target):
+            while left <= right:
+                mid = left + (right - left) // 2
+                if nums[mid] == target:
+                    return True
+                if nums[mid] < target:
+                    left = mid + 1
+                else:
+                    right = mid - 1
+            return False
+
+        m, n = len(matrix), len(matrix[0])
+        for i in range(m):
+            if target > matrix[i][n - 1]:
+                continue
+            else:
+                return binary_search(matrix[i], 0, n-1, target)
+        return False
 ```
 ### 75.颜色分类
 > 给定一个包含红色、白色和蓝色、共 n 个元素的数组 nums ，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。  
@@ -1854,6 +1885,38 @@ class MyQueue:
 # param_2 = obj.pop()
 # param_3 = obj.peek()
 # param_4 = obj.empty()
+```
+### 240.搜索二维矩阵II
+> 编写一个高效的算法来搜索` m x n `矩阵` matrix `中的一个目标值` target `。该矩阵具有以下特性：  
+每行的元素从左到右升序排列。
+每列的元素从上到下升序排列。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/search-a-2d-matrix-ii  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        def binary_search(nums, left, right, target):
+            while left <= right:
+                mid = left + (right - left) // 2
+                if nums[mid] == target:
+                    return True
+                if nums[mid] < target:
+                    left = mid + 1
+                else:
+                    right = mid - 1
+            return False
+
+        m, n = len(matrix), len(matrix[0])
+        for i in range(m):
+            if matrix[i][0] > target or matrix[i][-1] < target:
+                continue
+            ans = binary_search(matrix[i], 0, n-1, target)
+            if ans:
+                return ans
+        return False
 ```
 ### 264.丑数II
 > 给你一个整数` n `，请你找出并返回第` n `个 **丑数** 。  
