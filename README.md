@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-51题-green)
+![](https://img.shields.io/badge/已覆盖-53题-green)
 
 我要刷题**冲冲冲**
 
@@ -841,6 +841,32 @@ class Solution:
             self.quick_sort(intervals,start,l-1)
             self.quick_sort(intervals,l+1,end)
     ```
+### 69.x的平方根
+> 给你一个非负整数` x `，计算并返回` x `的 **算术平方根** 。  
+由于返回类型是整数，结果只保留 **整数部分** ，小数部分将被 **舍去** 。  
+注意：不允许使用任何内置指数函数和算符，例如 `pow(x, 0.5)` 或者 `x ** 0.5 `
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/sqrtx  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        # 直接在0到x之间使用二分查找
+        if x == 0:
+            return 0
+        left, right = 1, x
+        ans = -1
+        while left <= right:
+            mid = left + (right - left) // 2
+            if mid * mid <= x:
+                ans = mid
+                left = mid + 1
+            else:
+                right = mid - 1
+        return ans
+```
 ### 73.矩阵置零
 > 给定一个` m x n `的矩阵，如果一个元素为` 0 `，则将其所在行和列的所有元素都设为` 0 `。请使用 **原地** 算法。
 
@@ -2212,6 +2238,44 @@ class RandomizedSet:
 # param_1 = obj.insert(val)
 # param_2 = obj.remove(val)
 # param_3 = obj.getRandom()
+```
+### 540.有序数组中的单一元素
+> 给你一个仅由整数组成的有序数组，其中每个元素都会出现两次，唯有一个数只会出现一次。  
+请你找出并返回只出现一次的那个数。  
+你设计的解决方案必须满足` O(log n) `时间复杂度和` O(1) `空间复杂度。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/single-element-in-a-sorted-array  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def singleNonDuplicate(self, nums: List[int]) -> int:
+        length = len(nums)
+        if length == 1:
+            return nums[0]
+        left, right = 0, length - 1
+        ans = -1
+        while left < right:
+            mid = left + (right - left) // 2
+            is_odd = True if (right - mid) % 2 == 1 else False
+            if nums[mid] == nums[mid-1]:  
+                if is_odd:  # 说明单独的那一个在右边
+                    left = mid + 1
+                    ans = nums[left]
+                else:  # 说明单独的那一个在左边
+                    right = mid - 2
+                    ans = nums[right]
+            elif nums[mid] == nums[mid+1]:
+                if is_odd:  # 说明单独的那一个在左边
+                    right = mid - 1
+                    ans = nums[right]      
+                else:  # 说明单独的那一个在右边
+                    left = mid + 2
+                    ans = nums[left]
+            else:
+                return nums[mid]
+        return ans
 ```
 ### 692.前K个高频单词
 > 给定一个单词列表` words `和一个整数` k `，返回前` k `个出现次数最多的单词。  
