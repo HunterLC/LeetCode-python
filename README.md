@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-53题-green)
+![](https://img.shields.io/badge/已覆盖-54题-green)
 
 我要刷题**冲冲冲**
 
@@ -2238,6 +2238,33 @@ class RandomizedSet:
 # param_1 = obj.insert(val)
 # param_2 = obj.remove(val)
 # param_3 = obj.getRandom()
+```
+### 528.按权重随机选择
+> 给你一个 下标从` 0 `开始 的正整数数组` w `，其中` w[i] `代表第` i `个下标的权重。  
+请你实现一个函数` pickIndex `，它可以 随机地 从范围` [0, w.length - 1]` 内（含 `0` 和` w.length - 1`）选出并返回一个下标。选取下标` i` 的 概率 为` w[i] / sum(w)` 。
+
+例如，对于` w = [1, 3]`，挑选下标` 0 `的概率为` 1 / (1 + 3) = 0.25 `（即，`25%`），而选取下标` 1 `的概率为` 3 / (1 + 3) = 0.75`（即，`75%`）。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/random-pick-with-weight  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+
+    def __init__(self, w: List[int]):
+        # 计算前缀和，这样可以生成一个随机数，根据数的大小对应分布的坐标
+        self.presum = list(accumulate(w))
+
+    def pickIndex(self) -> int:
+        x = random.randint(1, self.presum[-1])
+        return bisect_left(self.presum, x)
+
+
+
+# Your Solution object will be instantiated and called as such:
+# obj = Solution(w)
+# param_1 = obj.pickIndex()
 ```
 ### 540.有序数组中的单一元素
 > 给你一个仅由整数组成的有序数组，其中每个元素都会出现两次，唯有一个数只会出现一次。  
