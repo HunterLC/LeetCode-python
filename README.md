@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-54题-green)
+![](https://img.shields.io/badge/已覆盖-55题-green)
 
 我要刷题**冲冲冲**
 
@@ -2688,6 +2688,45 @@ class Solution:
         for idx in right_index:
             stack[idx] = ''
         return ''.join(stack)
+```
+### 1300.转变数组后最接近目标值的数组和
+> 给你一个整数数组` arr `和一个目标值` target `，请你返回一个整数` value `，使得将数组中所有大于` value `的值变成` value `后，数组的和最接近`  target `（最接近表示两者之差的绝对值最小）。  
+如果有多种使得和最接近 target 的方案，请你返回这些整数中的最小值。  
+请注意，答案不一定是 arr 中的数字
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/sum-of-mutated-array-closest-to-target  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def findBestValue(self, arr: List[int], target: int) -> int:
+        # 前缀和、二分查找
+        arr.sort()
+        n = len(arr)
+        # 计算前缀和
+        prefix = [0]
+        for num in arr:
+            prefix.append(prefix[-1] + num)
+
+        # value的下界是0，因为如果value<0了，sum只会越来越小，sum与target绝对差值变大
+        # value的上界是arr数组的最大值，即原版arr全部加起来sum最大，高于这个值的value不会引起arr变化了
+        left, right, ans = 0, arr[-1], -1
+        while left <= right:
+            mid = left + (right - left) // 2   # 相当于搜索一个[0,arr[-1]]递增的数组
+            # 检索替换位置
+            it = bisect_left(arr, mid)
+            # 大于mid的值替换后的前缀和
+            curr = prefix[it] + (n - it) * mid
+            if curr <= target:
+                ans = mid
+                left = mid + 1
+            else:
+                right = mid - 1
+        
+        small = sum(ans if num >= ans else num for num in arr)
+        big = sum(ans + 1 if num >= ans + 1 else num for num in arr)
+        return ans if abs(small - target) <= abs(big - target) else ans + 1
 ```
 ### 1438.绝对差不超过限制的最长连续子数组
 > 给你一个整数数组` nums `，和一个表示限制的整数` limit`，请你返回最长连续子数组的长度，该子数组中的任意两个元素之间的绝对差必须小于或者等于` limit `。  
