@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-55题-green)
+![](https://img.shields.io/badge/已覆盖-57题-green)
 
 我要刷题**冲冲冲**
 
@@ -1134,6 +1134,31 @@ class Solution:
                 pre.next = next
             return dummy_node.next
     ```
+### 125.验证回文串
+> 给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。  
+说明：本题中，我们将空字符串定义为有效的回文串。
+
+ 
+```
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        n = len(s)
+        left, right = 0, n-1
+        while left < right:
+            while left < right and not (s[left].isalpha() or s[left].isdigit()):
+                left += 1
+            while left < right and not (s[right].isalpha() or s[right].isdigit()):
+                right -= 1
+            if left < right:
+                # 数字相等也是回文
+                # 大小写字母对应的差值为32（0和P也是，妈的，有坑）
+                if (s[left].isalpha() and s[right].isdigit()) or (s[left].isdigit() and s[right].isalpha()) or not (ord(s[left]) + 32 == ord(s[right]) or ord(s[left]) - 32 == ord(s[right]) or s[left] == s[right]):
+                    return False
+                else:
+                    left += 1
+                    right -= 1
+        return True
+```
 ### 128.最长连续序列
 > 给定一个未排序的整数数组` nums `，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。  
 请你设计并实现时间复杂度为` O(n) `的算法解决此问题。
@@ -2238,6 +2263,33 @@ class RandomizedSet:
 # param_1 = obj.insert(val)
 # param_2 = obj.remove(val)
 # param_3 = obj.getRandom()
+```
+### 409.最长回文串
+> 给定一个包含大写字母和小写字母的字符串` s `，返回 通过这些字母构造成的 **最长的回文串** 。  
+在构造过程中，请注意 **区分大小写** 。比如` "Aa" `不能当做一个回文字符串。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/longest-palindrome  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def longestPalindrome(self, s: str) -> int:
+        if len(s) == 1:
+            return 1
+        ans = 0
+        has_odd = False
+        count_dict = collections.Counter(s)
+        for key, value in count_dict.items():
+            if value % 2 == 0: # 这个字母是偶数个，肯定可以两边拆开放
+                ans += value
+            else:  # 奇数个
+                has_odd = True
+                if value != 1: # 去掉一个又成偶数了
+                    ans += (value - 1)
+        if has_odd:
+            ans += 1
+        return ans
 ```
 ### 528.按权重随机选择
 > 给你一个 下标从` 0 `开始 的正整数数组` w `，其中` w[i] `代表第` i `个下标的权重。  
