@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-57题-green)
+![](https://img.shields.io/badge/已覆盖-58题-green)
 
 我要刷题**冲冲冲**
 
@@ -534,6 +534,48 @@ class Solution(object):
                     else:
                         min_right = min(nums1[i], nums2[j])
                     return float((max_left + min_right) / 2)
+    ```
+### 5.最长回文子串
+> 给你一个字符串` s`，找到` s `中最长的回文子串。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/longest-palindromic-substring/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 动态规划，重点是找状态转移方程
+    > `dp[left][right]=True`代表着`left`到`right`是回文串，那么如果`s[left-1]==s[right+1]`,那么`dp[left-1][right+1]=True`
+
+    ```
+    class Solution:
+        def longestPalindrome(self, s: str) -> str:
+            n = len(s)
+            # 构造n*n的状态转移矩阵
+            # 想法是dp[left][right]=True代表着left到right是回文串，那么如果s[left-1]==s[right+1],那么dp[left-1][right+1]=True
+            dp = [[False]*n for _ in range(n)]
+            # 最长回文串长度
+            max_l = 1
+            # 最长回文串所对应的字符串
+            max_s = s[0]
+            # 每个字符本身就是回文串，即dp矩阵的对角线是True
+            for i in range(n):
+                dp[i][i] = True
+            
+            # 遍历所有可能的回文串长度，即2-n的情况
+            for L in range(2, n+1):
+                for i in range(n):
+                    j = i + L - 1
+                    if j > n-1:  # 下标越界了
+                        break
+                    if s[i] == s[j]:  # 相等即代表是回文串
+                        if L > 2:
+                            dp[i][j] = dp[i+1][j-1]
+                        else:
+                            dp[i][j] = True 
+                    # 出现了当前的最长回文串
+                    if L > max_l and dp[i][j]:
+                        max_s = s[i:j+1]
+                        max_l = L
+            return max_s
     ```
 ### 20.有效的括号
 > 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串` s `，判断字符串是否有效。  
