@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-58题-green)
+![](https://img.shields.io/badge/已覆盖-59题-green)
 
 我要刷题**冲冲冲**
 
@@ -2401,6 +2401,57 @@ class Solution:
                 return nums[mid]
         return ans
 ```
+### 647.回文子串（与题5可做比较）
+> 给你一个字符串` s `，请你统计并返回这个字符串中 **回文子串** 的数目。  
+**回文字符串** 是正着读和倒过来读一样的字符串。  
+**子字符串** 是字符串中的由连续字符组成的一个序列。  
+具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/palindromic-substrings  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 法一：中心扩散
+    ```
+    class Solution:
+        def countSubstrings(self, s: str) -> int:
+            ans = 0
+            for i in range(len(s)):
+                # 每个字母本身就是一个回文串，所以直接加1
+                ans += 1
+                left = right = i
+                # 假入这种情况是abba, i=1时,其实这里就相当是中心是两个一样的值
+                while right < len(s) - 1 and s[right] == s[right+1]:
+                    ans += 1
+                    right += 1
+                # 如果确定这个回文串中心是两个值，再从两端扩散，否则中心就是一个值，再扩散
+                while left > 0 and right < len(s) - 1 and s[left-1] == s[right+1]:
+                    ans += 1
+                    left -= 1
+                    right += 1
+            return ans
+    ```
++ 法二：动态规划
+    ```
+    class Solution:
+        def countSubstrings(self, s: str) -> int:
+            ans = 0
+            n = len(s)
+            # 构造n*n的状态转移矩阵
+            # 想法是dp[left][right]=True代表着left到right是回文串，那么如果s[left-1]==s[right+1],那么dp[left-1][right+1]=True
+            dp = [[False]*n for _ in range(n)]
+            for j in range(n):
+                for i in range(j+1):
+                    # j - i < 2是因为我们的回文中心最初只会有一个字符或者两个字符
+                    # 例如三个字符为中心的情况其实就是以一个字符为中心扩散的情况
+                    # 当超过两个字符时，就开始利用状态转移方程了
+                    # aba是回文了，如果两边又出现一样的字符c,那肯定就是回文咯，例如cabac
+                    # 所以cabac（i=0,j=4）是不是回文取决于aba(i=1,j=3)，即（i+1，j-1）是不是回文
+                    if s[i] == s[j] and (j - i < 2 or dp[i+1][j-1]):
+                        dp[i][j] = True
+                        ans += 1
+            return ans
+    ```
 ### 692.前K个高频单词
 > 给定一个单词列表` words `和一个整数` k `，返回前` k `个出现次数最多的单词。  
 返回的答案应该按单词出现频率由高到低排序。如果不同的单词有相同出现频率， 按**字典顺序** 排序。  
