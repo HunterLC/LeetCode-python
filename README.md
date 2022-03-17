@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-59题-green)
+![](https://img.shields.io/badge/已覆盖-61题-green)
 
 我要刷题**冲冲冲**
 
@@ -577,6 +577,45 @@ class Solution(object):
                         max_l = L
             return max_s
     ```
+### 15.三数之和
+> 给你一个包含` n `个整数的数组` nums`，判断` nums `中是否存在三个元素` a，b，c `，使得` a + b + c = 0 `？请你找出所有和为` 0 `且不重复的三元组。  
+注意：答案中不可以包含重复的三元组。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/3sum  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        ans = []
+        n = len(nums)
+        if n < 3:
+            return ans
+        nums.sort()
+        for i in range(n):
+            # 第一个元素都大于0了，那和肯定不等于0
+            if nums[i] > 0:
+                return ans
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+            left = i + 1
+            right = n - 1
+            while left < right:
+                if nums[i] + nums[left] + nums[right] == 0:
+                    ans.append([nums[i], nums[left], nums[right]])
+                    while left < right and nums[left] == nums[left+1]:
+                        left += 1
+                    while left < right and nums[right] == nums[right-1]:
+                        right -= 1
+                    left += 1
+                    right -= 1
+                elif nums[i] + nums[left] + nums[right] > 0:
+                    right -= 1
+                else:
+                    left += 1
+        return ans
+```
 ### 20.有效的括号
 > 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串` s `，判断字符串是否有效。  
 有效字符串需满足：  
