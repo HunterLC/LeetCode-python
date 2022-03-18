@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-61题-green)
+![](https://img.shields.io/badge/已覆盖-63题-green)
 
 我要刷题**冲冲冲**
 
@@ -614,6 +614,91 @@ class Solution:
                     right -= 1
                 else:
                     left += 1
+        return ans
+```
+### 16.最接近的三数之和
+> 给你一个长度为` n `的整数数组`` nums` 和 一个目标值` target`。请你从` nums `中选出三个整数，使它们的和与` target` 最接近。  
+返回这三个数的和。  
+假定每组输入只存在恰好一个解。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/3sum-closest  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def threeSumClosest(self, nums: List[int], target: int) -> int:
+        n = len(nums)
+        if n == 3:
+            return sum(nums)
+        # 先排序，再来枚举并且优化
+        nums.sort()
+        is_min = float('inf')
+        ans = 0
+        for i in range(n-2):
+            left, right = i+1, n-1
+            while left < right:
+                three_sum = nums[i] + nums[left] + nums[right]
+                if three_sum == target: #有且仅有一个解最接近，毫无疑问就是你了
+                    return three_sum
+                x = abs(three_sum - target)  # 差值
+                if x < is_min:
+                    is_min = x
+                    ans =  three_sum
+                if three_sum > target:
+                    right -= 1
+                else:
+                    left += 1
+        return ans
+```
+### 18.四数之和
+> 给你一个由` n `个整数组成的数组` nums `，和一个目标值` target `。请你找出并返回满足下述全部条件且不重复的四元组` [nums[a], nums[b], nums[c], nums[d]] `（若两个四元组元素一一对应，则认为两个四元组重复）： 
++ 0 <= a, b, c, d < n
++ a、b、c 和 d 互不相同
++ nums[a] + nums[b] + nums[c] + nums[d] == target
+你可以按 **任意顺序** 返回答案。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/4sum  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        n = len(nums)
+        if n < 4:
+            return []
+        ans = []
+        nums.sort()
+        for i in range(n-3):
+            # while错了？
+            if i > 0 and nums[i] == nums[i-1]:
+                i += 1
+                continue
+            for j in range(i+1, n-2):
+                # while错了？
+                if j > i + 1 and nums[j] == nums[j-1]:
+                    j += 1
+                    continue
+                left, right = j+1, n-1
+                while left < right:
+                    # 计算four sum
+                    four_sum = nums[i] + nums[j] + nums[left] + nums[right]
+                    # 找到了
+                    if four_sum == target:
+                        ans.append([nums[i], nums[j], nums[left], nums[right]])
+                        left += 1
+                        right -= 1
+                    elif four_sum > target:
+                        right -= 1
+                    else:
+                        left += 1
+                    # 新的left or/and right跟上一次的值一样，重复了，不能取
+                    while left < right and left > j + 1 and nums[left] == nums[left-1]:
+                        left += 1
+
+                    while left < right and right < n-1 and nums[right] == nums[right+1]:
+                        right -= 1
         return ans
 ```
 ### 20.有效的括号
