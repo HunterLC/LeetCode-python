@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-63题-green)
+![](https://img.shields.io/badge/已覆盖-65题-green)
 
 我要刷题**冲冲冲**
 
@@ -577,6 +577,33 @@ class Solution(object):
                         max_l = L
             return max_s
     ```
+### 11.盛水最多的容器
+> 给定一个长度为` n `的整数数组` height `。有` n `条垂线，第` i `条线的两个端点是` (i, 0) `和 `(i, height[i])` 。  
+找出其中的两条线，使得它们与` x `轴共同构成的容器可以容纳最多的水。  
+返回容器可以储存的最大水量。
+
+说明：你不能倾斜容器
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/container-with-most-water  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def maxArea(self, height: List[int]) -> int:
+        # 双指针做法，物理意义代表着容器的左右边界
+        left, right = 0, len(height) - 1
+        ans = 0
+        while left < right:
+            area = min(height[left], height[right]) * (right - left)
+            ans = max(ans, area)
+            # 总是移动短的那根，抛弃掉
+            if height[left] <= height[right]:
+                left += 1
+            else:
+                right -= 1
+        return ans
+```
 ### 15.三数之和
 > 给你一个包含` n `个整数的数组` nums`，判断` nums `中是否存在三个元素` a，b，c `，使得` a + b + c = 0 `？请你找出所有和为` 0 `且不重复的三元组。  
 注意：答案中不可以包含重复的三元组。
@@ -2481,6 +2508,29 @@ class Solution:
         if has_odd:
             ans += 1
         return ans
+```
+### 454. 四数相加Ⅱ
+> 给你四个整数数组` nums1`、`nums2`、`nums3` 和` nums4 `，数组长度都是` n `，请你计算有多少个元组` (i, j, k, l) `能满足：
+
++ `0 <= i, j, k, l < n`
++ `nums1[i] + nums2[j] + nums3[k] + nums4[l] == 0`
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/4sum-ii  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def fourSumCount(self, nums1: List[int], nums2: List[int], nums3: List[int], nums4: List[int]) -> int:
+        # 两两分组，妙啊
+        countAB = collections.Counter(u + v for u in nums1 for v in nums2)
+        ans = 0
+        for u in nums3:
+            for v in nums4:
+                if -u - v in countAB:
+                    ans += countAB[-u - v]
+        return ans
+
 ```
 ### 528.按权重随机选择
 > 给你一个 下标从` 0 `开始 的正整数数组` w `，其中` w[i] `代表第` i `个下标的权重。  
