@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-65题-green)
+![](https://img.shields.io/badge/已覆盖-67题-green)
 
 我要刷题**冲冲冲**
 
@@ -784,6 +784,31 @@ class Solution:
             if lists[idx]:
                 heapq.heappush(min_heap,(lists[idx].val,idx))
         return dummy_head.next
+```
+### 26.删除有序数组中的重复项
+> 给你一个 **升序排列** 的数组` nums `，请你**原地**删除重复出现的元素，使每个元素 **只出现一次** ，返回删除后数组的新长度。元素的**相对顺序** 应该保持 一致 。  
+由于在某些语言中不能改变数组的长度，所以必须将结果放在数组`nums`的第一部分。更规范地说，如果在删除重复项之后有` k `个元素，那么` nums `的前` k `个元素应该保存最终结果。  
+将最终结果插入` nums `的前` k `个位置后返回` k `。  
+不要使用额外的空间，你必须在 **原地** 修改输入数组 并在使用` O(1) `额外空间的条件下完成
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def removeDuplicates(self, nums: List[int]) -> int:
+        n = len(nums)
+        if n < 2:
+            return n
+        slow, fast = 0, 1
+        while fast < n:
+            while fast < n and nums[slow] == nums[fast]:
+                nums.pop(fast)
+                n -= 1
+            slow = fast
+            fast += 1
+        return n
 ```
 ### 27.移除元素
 > 给你一个数组 `nums` 和一个值 `val`，你需要 `原地` 移除所有数值等于` val `的元素，并返回移除后数组的新长度。不要使用额外的数组空间，你必须仅使用` O(1) `额外空间并` 原地 `修改输入数组。元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。
@@ -2245,6 +2270,36 @@ class Solution:
             else:
                 r = mid
         return r
+```
+### 283.移动零
+> 给定一个数组` nums`，编写一个函数将所有` 0 `移动到数组的末尾，同时保持非零元素的相对顺序。  
+请注意 ，必须在不复制数组的情况下原地对数组进行操作。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/move-zeroes/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def moveZeroes(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        # 同向快慢指针
+        n = len(nums)
+        if n > 1:
+            slow, fast = 0, 1
+            while fast < n:
+                while slow < n-1 and nums[slow] != 0:
+                    # 找到slow第一个为0的位置
+                    slow += 1
+                # fast则为slow的下一个位置
+                fast = slow + 1 
+                # 找到fast第一个不为0的位置   
+                while fast < n and nums[fast] == 0:
+                    fast += 1
+                if slow < fast and fast < n:
+                    nums[slow], nums[fast] = nums[fast], nums[slow] 
 ```
 ### 295.数据流的中位数
 > 中位数是有序列表中间的数。如果列表长度是偶数，中位数则是中间两个数的平均值。  
