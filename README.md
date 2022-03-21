@@ -1,12 +1,13 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-67题-green)
+![](https://img.shields.io/badge/已覆盖-68题-green)
+![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 
 我要刷题**冲冲冲**
 
 ## 基础知识
-### 排序算法（java实现）
+### No.1 排序算法（java实现）
 #### 1.选择排序
 > 简单选择排序是最简单直观的一种算法，基本思想为每一趟从待排序的数据元素中选择最小（或最大）的一个元素作为首元素，直到所有元素排完为止，简单选择排序是不稳定排序。  
 在算法实现时，每一趟确定最小元素的时候会通过不断地比较交换来使得首位置为当前最小，交换是个比较耗时的操作。其实我们很容易发现，在还未完全确定当前最小元素之前，这些交换都是无意义的。我们可以通过设置一个变量min，每一次比较仅存储较小元素的数组下标，当轮循环结束之后，那这个变量存储的就是当前最小元素的下标，此时再执行交换操作即可。 
@@ -312,6 +313,30 @@ step 2: 将堆顶元素与末尾元素进行交换，使末尾元素最大。然
     }
 ```
 
+### No.2 同向双指针/滑动窗口
+1. 常用模板
+```
+1. 定义需要用到的变量，如快慢指针int slow = 0, int fast = 0; 输入的string s; 
+Hashmap char_freq用于记录string s当中slow到fast（包含）之间所有的字母出现的频率；
+int longest记录符合题目要求的最长substring长度等
+
+2. 定义双while循环
+while fast < len(s)：
+    char_freq[s[fast]] = char_freq.get(s[fast], 0) + 1
+    ......
+    ......
+    while 符合slow指针移动的条件:
+        char_freq[s[slow]] -= 1
+        ......
+        ......
+        slow += 1
+    if 符合某些判断条件:
+        longest = max(longest, fast - slow + 1)
+    fast += 1
+return longest
+```
+2. 代表题目
+    395、340
 ## 题目
 ### 1.两数之和
 > 给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 和为目标值 `target`  的那 两个 整数，并返回它们的数组下标。
@@ -2537,6 +2562,46 @@ class RandomizedSet:
 # param_2 = obj.remove(val)
 # param_3 = obj.getRandom()
 ```
+### 395.至少有 K 个重复字符的最长子串
+> 给你一个字符串` s `和一个整数` k `，请你找出` s `中的最长子串， 要求该子串中的每一字符出现次数都不少于` k `。返回这一子串的长度。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/longest-substring-with-at-least-k-repeating-characters/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def longestSubstring(self, s: str, k: int) -> int:
+        n = len(s)
+        longest = 0  # 记录符合题目要求的最长substring长度
+        for chr_kind in range(1, 27):   # 每次要固定一个变量
+            char_freq = defaultdict(int)  # 记录string s当中slow到fast（包含）之间所有的字母出现的频率
+            slow, fast = 0, 0
+            total, less = 0, 0  # total:窗口内字母的种类  less:个数小于k的种类
+            while fast < n: # 滑动窗口
+                char_freq[s[fast]] += 1
+                # 当字母频率为1时
+                if char_freq[s[fast]] == 1:
+                    total += 1  # 字母种类加一
+                    less += 1   # 小于k的种类加一
+                # 当字母频率达到k时
+                if char_freq[s[fast]] == k:
+                    less -= 1  # 小于k的种类减一
+                # 符合slow指针移动的条件
+                while total > chr_kind:
+                    char_freq[s[slow]] -= 1
+                    if char_freq[s[slow]] == k - 1:
+                        less += 1
+                    if char_freq[s[slow]] == 0:
+                        total -= 1
+                        less -= 1
+                    slow += 1
+                # 符合某些判断条件
+                if less == 0:
+                    longest = max(longest, fast - slow + 1)
+                fast += 1
+        return longest
+```
 ### 409.最长回文串
 > 给定一个包含大写字母和小写字母的字符串` s `，返回 通过这些字母构造成的 **最长的回文串** 。  
 在构造过程中，请注意 **区分大小写** 。比如` "Aa" `不能当做一个回文字符串。
@@ -2563,6 +2628,32 @@ class Solution:
         if has_odd:
             ans += 1
         return ans
+```
+### 424
+```
+class Solution:
+    def characterReplacement(self, s: str, k: int) -> int:
+        n = len(s)
+        slow, fast = 0, 0
+        char_freq = defaultdict(int)
+        longest = 0
+        total = 0
+        while fast < n:
+            char_freq[s[fast]] += 1
+            if char_freq[s[fast]] == 1:  # 种类加一
+                total += 1
+            
+            # 达到slow的右移条件
+            while total > 1:
+                char_freq[s[slow]] -= 1
+                if char_freq[s[slow]] == 0:
+                    total -= 1
+                slow += 1
+            # 达到某一条件
+            if total == 1:
+                longest = max(longest, fast - slow + 1)
+            fast += 1
+        return longest
 ```
 ### 454. 四数相加Ⅱ
 > 给你四个整数数组` nums1`、`nums2`、`nums3` 和` nums4 `，数组长度都是` n `，请你计算有多少个元组` (i, j, k, l) `能满足：
