@@ -1,7 +1,7 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-70题-green)
+![](https://img.shields.io/badge/已覆盖-71题-green)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 
 我要刷题**冲冲冲**
@@ -336,7 +336,7 @@ while fast < len(s)：
 return longest
 ```
 2. 代表题目
-    395、340、424、76
+    395、340、424、76、3
 ## 题目
 ### 1.两数之和
 > 给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 和为目标值 `target`  的那 两个 整数，并返回它们的数组下标。
@@ -481,7 +481,35 @@ class Solution(object):
             
             return root.next
     ```
+### 3.无重复字符的最长子串
+> 给定一个字符串` s` ，请你找出其中不含有重复字符的 **最长子串** 的长度。
 
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+ 
+```
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        if len(s) == 0:
+            return 0
+        ans = 0
+        char_freq = defaultdict(int)
+        total = 0
+        slow, fast = 0, 0
+        while fast < len(s):
+            char_freq[s[fast]] += 1
+            if char_freq[s[fast]] == 1:
+                total += 1
+            while total < fast - slow + 1:
+                char_freq[s[slow]] -= 1
+                if char_freq[s[slow]] == 0:
+                    total -= 1
+                slow += 1
+            ans = max(ans, fast - slow + 1)
+            fast += 1
+        return ans
+```
 ### 4.寻找两个正序数组的中位数
 > 给定两个大小分别为` m `和` n `的正序（从小到大）数组` nums1 `和` nums2`。请你找出并返回这两个正序数组的 `中位数` 。  
 算法的时间复杂度应该为` O(log (m+n)) `。
