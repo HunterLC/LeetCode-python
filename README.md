@@ -1,8 +1,9 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
+![](https://img.shields.io/badge/已覆盖-73题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/已覆盖-71题-green)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
+![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
 
 我要刷题**冲冲冲**
 
@@ -336,7 +337,77 @@ while fast < len(s)：
 return longest
 ```
 2. 代表题目
-    395、340、424、76、3
+    395、340、424、76、3、1004
+
+### No.3 宽度优先搜索BFS
+> BFS常用于**层序遍历**和**最短路径**
+
+![DFS、BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/DFS和BFS示意图1.gif)
+
+1. 二叉树上 `DFS` 与 `BFS` 代码比较  
+    + DFS遍历使用**递归**
+    ```
+    def dfs(root: TreeNode):
+        if not root:
+            return 
+        dfs(root.left)
+        dfs(root.right)
+    ```
+    + BFS遍历使用**队列**
+    ```
+    def bfs(root: TreeNode):
+        if not root:
+            return
+        queue = [root]
+        while queue:
+            node = queue.pop(0)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+    ```
+
+2. BFS应用一：层序遍历
+
+什么是层序遍历呢？简单来说，层序遍历就是把二叉树分层，然后每一层从左到右遍历：
+
+![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs2.jpg)
+
+乍一看来，这个遍历顺序和 BFS 是一样的，我们可以直接用 BFS 得出层序遍历结果。然而，层序遍历要求的输入结果和 BFS 是不同的。层序遍历要求我们区分每一层，也就是返回一个二维数组。而 BFS 的遍历结果是一个一维数组，无法区分每一层。
+
+![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs3.jpg)
+
+那么，怎么给 BFS 遍历的结果分层呢？我们首先来观察一下 BFS 遍历的过程中，结点进队列和出队列的过程：
+
+![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs4.gif)
+
+截取 BFS 遍历过程中的某个时刻：
+
+![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs5.jpg)
+
+可以看到，此时队列中的结点是 3、4、5，分别来自第 1 层和第 2 层。这个时候，第 1 层的结点还没出完，第 2 层的结点就进来了，而且两层的结点在队列中紧挨在一起，我们无法区分队列中的结点来自哪一层。
+
+因此，我们需要稍微修改一下代码，在每一层遍历开始前，先记录队列中的结点数量 n（也就是这一层的结点数量），然后一口气处理完这一层的 n 个结点。
+
+```
+def bfs(root: TreeNode):
+    if not root:
+        return
+    queue = [root]
+    while queue:
+        for i in range(len(queue)):
+            node = queue.pop(0)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+```
+
+这样，我们就将 BFS 遍历改造成了层序遍历。在遍历的过程中，结点进队列和出队列的过程为：
+
+![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs6.gif)
+
+
 ## 题目
 ### 1.两数之和
 > 给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 和为目标值 `target`  的那 两个 整数，并返回它们的数组下标。
@@ -1447,6 +1518,41 @@ class Solution:
                 pre.next = next
             return dummy_node.next
     ```
+### 102.二叉树的层序遍历
+> 给你二叉树的根节点` root `，返回其节点值的 **层序遍历** 。 （即逐层地，从左到右访问所有节点）。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/binary-tree-level-order-traversal/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        # 空，这棵树没有节点
+        if not root:
+            return []
+        # queue队列用来添加节点，按照先进先出的顺序依次判断
+        queue, ans = [root], []
+        while queue:
+            # layer用来存放每一层的输出结果
+            layer = []
+            for i in range(len(queue)):
+                # 队头出
+                node = queue.pop(0)
+                if node.left:  # 这个节点有左孩子
+                    queue.append(node.left)
+                if node.right:  # 这个节点有右孩子
+                    queue.append(node.right)
+                layer.append(node.val)
+            ans.append(layer)
+        return ans
+```
 ### 125.验证回文串
 > 给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。  
 说明：本题中，我们将空字符串定义为有效的回文串。
@@ -3102,6 +3208,29 @@ class FreqStack:
             ans = [points[identity] for (_, identity) in q]
             return ans
     ```
+### 1004.最大连续1的个数 III
+> 给定一个二进制数组` nums `和一个整数` k `，如果可以翻转最多`k `个` 0` ，则返回 **数组中连续` 1 `的最大个数** 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/max-consecutive-ones-iii/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def longestOnes(self, nums: List[int], k: int) -> int:
+        # 同向双指针
+        slow, fast = 0, 0
+        num_freq = defaultdict(int)
+        longest =0
+        while fast < len(nums):
+            num_freq[nums[fast]] += 1
+            while num_freq[0] > k:
+                num_freq[nums[slow]] -= 1
+                slow += 1
+            longest = max(longest, fast - slow + 1)
+            fast += 1
+        return longest
+```
 ### 1095.山脉数组中查找目标值
 > （这是一个 交互式问题 ）  
 给你一个 **山脉数组**` mountainArr`，请你返回能够使得` mountainArr.get(index)` 等于` target `**最小** 的下标 `index` 值。  
