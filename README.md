@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-73题-green)
+![](https://img.shields.io/badge/已覆盖-74题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -1551,6 +1551,41 @@ class Solution:
                     queue.append(node.right)
                 layer.append(node.val)
             ans.append(layer)
+        return ans
+```
+### 103.二叉树的锯齿形层序遍历
+> 给你二叉树的根节点` root `，返回其节点值的 **锯齿形层序遍历** 。（即先从左往右，再从右往左进行下一层遍历，以此类推，层与层之间交替进行）。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def zigzagLevelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root:
+            return []
+        queue, ans = collections.deque(), []
+        queue.append(root)
+        while queue:
+            layer = []
+            for i in range(len(queue)):
+                node = queue.popleft()
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+                layer.append(node.val)
+            ans.append(layer)
+        for idx in range(len(ans)): # 因为要求是锯齿遍历，所以要把偶数行给翻转一下
+            if idx % 2 == 1: # 因为索引是从0开始的，所以这边判断余数是否为1
+                ans[idx].reverse() # 如果是第偶数行，翻转，reverse是一个自带的反转函数，蛮好用的
         return ans
 ```
 ### 125.验证回文串
