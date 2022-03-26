@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-74题-green)
+![](https://img.shields.io/badge/已覆盖-75题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -2586,6 +2586,112 @@ class MedianFinder:
 # obj = MedianFinder()
 # obj.addNum(num)
 # param_2 = obj.findMedian()
+```
+### 297.二叉树的序列化与反序列化
+> 序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，同时也可以通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。  
+请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。
+
+提示: 输入输出格式与` LeetCode `目前使用的方式一致，详情请参阅` LeetCode `序列化二叉树的格式。你并非必须采取这种方式，你也可以采用其他的方法解决这个问题。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/serialize-and-deserialize-binary-tree  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
++ BFS
+```
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Codec:
+
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+        
+        :type root: TreeNode
+        :rtype: str
+        """
+
+        # BFS解法
+        if not root:
+            return ''
+        queue = collections.deque([root])
+        ans = []
+        while queue:
+            node = queue.popleft()
+            if node:
+                ans.append(str(node.val))
+                queue.append(node.left)
+                queue.append(node.right)
+            else:
+                ans.append('None')
+        return '[' + ','.join(ans) + ']'
+        
+
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+        
+        :type data: str
+        :rtype: TreeNode
+        """
+        if not data:
+            return []
+        # 去掉中括号
+        node_list = data[1:-1].split(',')
+        root = TreeNode(int(node_list[0]))
+        queue = collections.deque([root])
+        idx = 1
+        while queue and idx < len(node_list):
+            node = queue.popleft()
+            # 有左节点        
+            if node_list[idx] != 'None':
+                node.left = TreeNode(int(node_list[idx]))
+                queue.append(node.left)
+            idx += 1
+            # 有右节点
+            if node_list[idx] != 'None':
+                node.right = TreeNode(int(node_list[idx]))
+                queue.append(node.right)
+            idx += 1
+        return root
+# Your Codec object will be instantiated and called as such:
+# ser = Codec()
+# deser = Codec()
+# ans = deser.deserialize(ser.serialize(root))
+```
++ DFS
+```
+class Codec:
+
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+        
+        :type root: TreeNode
+        :rtype: str
+        """
+        if not root:
+            return 'None'
+        return str(root.val) + ',' + str(self.serialize(root.left)) + ',' + str(self.serialize(root.right))
+        
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+        
+        :type data: str
+        :rtype: TreeNode
+        """
+        def dfs(dataList):
+            val = dataList.pop(0)
+            if val == 'None':
+                return None
+            root = TreeNode(int(val))
+            root.left = dfs(dataList)
+            root.right = dfs(dataList)
+            return root
+
+        dataList = data.split(',')
+        return dfs(dataList)
 ```
 ### 299.猜数字游戏
 > 你在和朋友一起玩` 猜数字（Bulls and Cows）`游戏，该游戏规则如下：  
