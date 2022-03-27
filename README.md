@@ -1,9 +1,10 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-75题-green)
+![](https://img.shields.io/badge/已覆盖-76题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
+![](https://img.shields.io/badge/深度优先搜索-DFS-purple)
 
 我要刷题**冲冲冲**
 
@@ -407,6 +408,15 @@ def bfs(root: TreeNode):
 
 ![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs6.gif)
 
+### No.4 深度优先搜索DFS
+#### 岛屿类问题
+1. 好题解  
+
+    [巨好的帖子](https://leetcode-cn.com/problems/number-of-islands/solution/dao-yu-lei-wen-ti-de-tong-yong-jie-fa-dfs-bian-li-/)
+
+2. 代表题目
+
+    200
 
 ## 题目
 ### 1.两数之和
@@ -2113,6 +2123,77 @@ class Solution:
             res='0'
         return res
 ```
+### 200.岛屿数量
+> 给你一个由` '1'`（陆地）和` '0'`（水）组成的的二维网格，请你计算网格中岛屿的数量。  
+岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。  
+此外，你可以假设该网格的四条边均被水包围。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/number-of-islands  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ BFS
+    ```
+    class Solution:
+        def numIslands(self, grid: List[List[str]]) -> int:
+            # BFS解法
+            def bfs(i, j):
+                queue = collections.deque()
+                queue.append((i, j))
+                # 当前节点已经走过了
+                visited.add((i, j))
+                while queue:
+                    i, j = queue.popleft()
+                    for x, y in [[-1, 0], [1, 0], [0, -1], [0, 1]]:
+                        temp_x = i + x
+                        temp_y = j + y
+                        # 没出界，是陆地，且没有走过
+                        if 0 <= temp_x < row and 0 <= temp_y < col and grid[temp_x][temp_y] == '1' and (temp_x, temp_y) not in visited:
+                            visited.add((temp_x, temp_y))
+                            queue.append((temp_x, temp_y))
+
+            # 记录行、列数
+            row, col = len(grid), len(grid[0])
+            visited = set()
+            ans = 0
+
+            for i in range(row):
+                for j in range(col):
+                    if grid[i][j] == '1' and (i, j) not in visited:
+                        bfs(i, j)
+                        ans += 1
+            
+            return ans
+    ```
++ DFS
+    ```
+    class Solution:
+        def numIslands(self, grid: List[List[str]]) -> int:
+            # DFS解法
+            def dfs(i, j):
+                # 判断不在格子里、不是岛屿、之前已经走过了
+                if not inArea(i, j) or grid[i][j] != '1' or (i, j) in visited:
+                    return
+                visited.add((i, j))  # 将格子标记为「已遍历过」
+                # 访问上、下、左、右四个相邻结点
+                for x, y in [[-1, 0], [1, 0], [0, -1], [0, 1]]:
+                    temp_x = i + x
+                    temp_y = j + y
+                    dfs(temp_x, temp_y)
+
+            # 判断坐标 (i, j) 是否在网格中
+            def inArea(i, j):
+                return 0 <= i < len(grid) and 0 <= j < len(grid[0])
+
+            ans = 0    
+            visited = set()
+            for i in range(len(grid)):
+                for j in range(len(grid[0])):
+                    if grid[i][j] == '1' and (i, j) not in visited:
+                        dfs(i, j)
+                        ans += 1
+            return ans
+    ```
 ### 206.反转链表
 > 给你单链表的头节点` head `，请你反转链表，并返回反转后的链表。
  
