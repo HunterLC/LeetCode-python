@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-76题-green)
+![](https://img.shields.io/badge/已覆盖-77题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -1654,6 +1654,67 @@ class Solution:
                 link[num + right] = current
         return max_length
 ```
+### 133.克隆图★
+> 给你无向 **连通** 图中一个节点的引用，请你返回该图的 **深拷贝**（克隆）。  
+图中的每个节点都包含它的值` val（int）` 和其邻居的列表`（list[Node]）`。 
+``` 
+class Node {
+    public int val;
+    public List<Node> neighbors;
+}
+```
+
+测试用例格式：  
+简单起见，每个节点的值都和它的索引相同。例如，第一个节点值为` 1（val = 1）`，第二个节点值为` 2（val = 2）`，以此类推。该图在测试用例中使用邻接列表表示。  
+**邻接列表** 是用于表示有限图的无序列表的集合。每个列表都描述了图中节点的邻居集。  
+给定节点将始终是图中的第一个节点（值为 1）。你必须将 **给定节点的拷贝** 作为对克隆图的引用返回。
+
+来源：力扣（LeetCode）   
+链接：https://leetcode-cn.com/problems/clone-graph  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ BFS
+    ```
+    class Solution:
+        def cloneGraph(self, node: 'Node') -> 'Node':
+            if not node:
+                return node
+            # BFS 写法
+
+            # 记录已经访问过的节点
+            visited = {}
+            queue = collections.deque([node])
+            visited[node] = Node(node.val, [])
+            while queue:
+                curr = queue.popleft()
+                for neighbor in curr.neighbors:
+                    if neighbor not in visited:
+                        visited[neighbor] = Node(neighbor.val, [])
+                        queue.append(neighbor)
+                    visited[curr].neighbors.append(visited[neighbor])
+            return visited[node]
+    ```
++ DFS
+    ```
+    class Solution:
+        def cloneGraph(self, node: 'Node') -> 'Node':        
+            # DFS 写法
+            # 记录已经访问过的节点
+            visited = {}
+
+            def dfs(node):
+                if not node:
+                    return node
+                if node in visited:
+                    return visited[node]
+                clone = Node(node.val, [])
+                visited[node] = clone
+                for neighbor in node.neighbors:
+                    clone.neighbors.append(dfs(neighbor))
+                return clone
+
+            return dfs(node)
+    ```
 ### 141.环形链表 I
 > 给你一个链表的头节点` head `，判断链表中是否有环。  
 如果链表中有某个节点，可以通过连续跟踪` next `指针再次到达，则链表中存在环。 为了表示给定链表中的环，评测系统内部使用整数` pos `来表示链表尾连接到链表中的位置（索引从 0 开始）。注意：`pos `不作为参数进行传递 。仅仅是为了标识链表的实际情况。  
