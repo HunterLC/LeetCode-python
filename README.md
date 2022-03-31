@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-79题-green)
+![](https://img.shields.io/badge/已覆盖-80题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -407,6 +407,11 @@ def bfs(root: TreeNode):
 这样，我们就将 BFS 遍历改造成了层序遍历。在遍历的过程中，结点进队列和出队列的过程为：
 
 ![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs6.gif)
+
+
+3. 代表题目
+
+130、752
 
 ### No.4 深度优先搜索DFS
 #### 岛屿类问题
@@ -3488,6 +3493,59 @@ class Solution:
                             pre = 1 if stack[-1] > 0 else 0
                         break
         return stack
+```
+
+### 752.打开转盘锁★
+> 你有一个带有四个圆形拨轮的转盘锁。每个拨轮都有`10`个数字： `'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'` 。每个拨轮可以自由旋转：例如把 `'9' `变为` '0'`，`'0'` 变为 `'9'` 。每次旋转都只能旋转一个拨轮的一位数字。  
+锁的初始数字为` '0000' `，一个代表四个拨轮的数字的字符串。  
+列表` deadends `包含了一组死亡数字，一旦拨轮的数字和列表里的任何一个元素相同，这个锁将会被永久锁定，无法再被旋转。  
+字符串` target `代表可以解锁的数字，你需要给出解锁需要的最小旋转次数，如果无论如何不能解锁，返回` -1 `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/open-the-lock  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+
+```
+class Solution:
+    def openLock(self, deadends: List[str], target: str) -> int:
+        # 最小旋转次数，可能就是最短路径，联想到BFS
+        if target == "0000":
+            return 0
+
+        dead = set(deadends)
+        if "0000" in dead:
+            return -1
+        
+        def num_prev(x: str) -> str:
+            return "9" if x == "0" else str(int(x) - 1)
+        
+        def num_succ(x: str) -> str:
+            return "0" if x == "9" else str(int(x) + 1)
+        
+        # 枚举 status 通过一次旋转得到的数字
+        def get(status: str) -> Generator[str, None, None]:
+            s = list(status)
+            for i in range(4):
+                num = s[i]
+                s[i] = num_prev(num)
+                yield "".join(s)
+                s[i] = num_succ(num)
+                yield "".join(s)
+                s[i] = num
+
+        q = deque([("0000", 0)])
+        seen = {"0000"}
+        while q:
+            status, step = q.popleft()
+            for next_status in get(status):
+                if next_status not in seen and next_status not in dead:
+                    if next_status == target:
+                        return step + 1
+                    q.append((next_status, step + 1))
+                    seen.add(next_status)
+        
+        return -1
 ```
 ### 767.重构字符串
 > 给定一个字符串`S`，检查是否能重新排布其中的字母，使得两相邻的字符不同。  
