@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-81题-green)
+![](https://img.shields.io/badge/已覆盖-82题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -411,7 +411,7 @@ def bfs(root: TreeNode):
 
 #### 代表题目
 
-130、752、815
+130、752、815、1091
 
 ### No.4 深度优先搜索DFS
 #### 岛屿类问题
@@ -3784,6 +3784,47 @@ class Solution:
             longest = max(longest, fast - slow + 1)
             fast += 1
         return longest
+```
+### 1091.二进制矩阵中的最短路径
+> 给你一个` n x n `的二进制矩阵` grid `中，返回矩阵中**最短 畅通路径** 的长度。如果不存在这样的路径，返回` -1 `。  
+
+二进制矩阵中的 **畅通路径** 是一条从 **左上角** 单元格（即，`(0, 0)`）到 **右下角** 单元格（即，`(n - 1, n - 1)`）的路径，该路径同时满足下述要求：  
++ 路径途经的所有单元格都的值都是` 0 `。
++ 路径中所有相邻的单元格应当在` 8 `个方向之一 上连通（即，相邻两单元之间彼此不同且共享一条边或者一个角）。  
+
+**畅通路径的长度** 是该路径途经的单元格总数。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/shortest-path-in-binary-matrix  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def shortestPathBinaryMatrix(self, grid: List[List[int]]) -> int:
+        # 看到最短畅通路径，就知道是BFS
+        if grid[0][0] != 0 or grid[len(grid)-1][len(grid)-1] != 0:
+            return -1
+        if len(grid) == 1:
+            return 1
+        steps = defaultdict(int)
+        queue = deque([((0, 0), 1)])
+        steps[(0, 0)] = 1
+
+        while queue:
+            (i, j), step = queue.popleft()
+            for x, y in [(1, 1), (0, 1), (1, 0), (1, -1), (0, -1), (-1, 1), (-1, 0), (-1, -1)]:
+                new_x = i + x
+                new_y = j + y
+                if 0 <= new_x < len(grid) and 0 <= new_y < len(grid) and grid[new_x][new_y] != 1:
+                    # 当前格子没有来过
+                    if (new_x, new_y) not in steps:
+                        # 到达右下角格子了
+                        if new_x == len(grid) - 1 and new_y  == len(grid) - 1:
+                            return step + 1
+                        steps[(new_x, new_y)] = step + 1
+                        queue.append(((new_x, new_y), steps[(new_x, new_y)]))
+        
+        return -1
 ```
 ### 1095.山脉数组中查找目标值
 > （这是一个 交互式问题 ）  
