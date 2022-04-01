@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-80题-green)
+![](https://img.shields.io/badge/已覆盖-81题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -345,7 +345,7 @@ return longest
 
 ![DFS、BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/DFS和BFS示意图1.gif)
 
-1. 二叉树上 `DFS` 与 `BFS` 代码比较  
+#### 二叉树上 `DFS` 与 `BFS` 代码比较  
     + DFS遍历使用**递归**
     ```
     def dfs(root: TreeNode):
@@ -368,7 +368,7 @@ return longest
                 queue.append(node.right)
     ```
 
-2. BFS应用一：层序遍历
+#### BFS应用一：层序遍历
 
 什么是层序遍历呢？简单来说，层序遍历就是把二叉树分层，然后每一层从左到右遍历：
 
@@ -409,9 +409,9 @@ def bfs(root: TreeNode):
 ![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs6.gif)
 
 
-3. 代表题目
+#### 代表题目
 
-130、752
+130、752、815
 
 ### No.4 深度优先搜索DFS
 #### 岛屿类问题
@@ -3586,6 +3586,69 @@ class Solution:
         if max_heap:
             ans.append(heapq.heappop(max_heap)[1])
         return "".join(ans)
+```
+### 815.公交路线★
+> 给你一个数组` routes `，表示一系列公交线路，其中每个` routes[i] `表示一条公交线路，第` i `辆公交车将会在上面循环行驶。  
+例如，路线` routes[0] = [1, 5, 7] `表示第` 0 `辆公交车会一直按序列` 1 -> 5 -> 7 -> 1 -> 5 -> 7 -> 1 -> ... `这样的车站路线行驶。  
+现在从` source `车站出发（初始时不在公交车上），要前往` target `车站。 期间仅可乘坐公交车。  
+求出 **最少乘坐的公交车数量** 。如果不可能到达终点车站，返回` -1 `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/bus-routes  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def numBusesToDestination(self, routes: List[List[int]], source: int, target: int) -> int:
+        # 看见最少乘坐公交车数量，可以推断出这又是一道基于BFS的题目
+        # 把每一条公交路线看成一个点，因为我们只需要考虑换多少班公交车，不考虑每班公交车上我们坐了多少站
+        # 针对每一个车站，我们需要记录这个车站可以到哪些路线
+        # 如果公交路线上有相同的站，就对这两个点（公交路线）连边
+        def bfs() -> int:
+            dict_to = defaultdict(set)  # 记录每个车站可以进入的路线
+            queue = Deque()  # 队列存的是经过的路线
+
+            # 哈希表记录的进入该路线所使用的距离
+            # 起始时将「起点车站」所能进入的「路线」进行入队，每次从队列中取出「路线」时，
+            # 查看该路线是否包含「终点车站」：包含「终点车站」：返回进入该线路所花费的距离
+            # 不包含「终点车站」：遍历该路线所包含的车站，将由这些车站所能进入的路线，进行入队
+            # 由于是求最短路，同一路线重复入队是没有意义的，因此将新路线入队前需要先判断是否曾经入队。
+
+            step_num = defaultdict(int)  # 存储进入某条路线所需要花费的步数
+
+            for i in range(len(routes)):
+                for station in routes[i]:
+                    #将从起点可以进入的路线加入队列
+                    if station == source:
+                        queue.append(i)
+                        step_num[i] = 1  # 到达i这条路线的步数
+                    
+                    # 更新当前车站可以到达的路线
+                    dict_to[station].add(i)
+
+            while queue:
+                # 取出当前所在的路线，与进入该路线所花费的距离
+                node = queue.popleft()
+                step = step_num[node]
+                # 遍历该路线所包含的车站
+                for station in routes[node]:
+                    # 查看该路线是否包含「终点车站」：包含「终点车站」：返回进入该线路所花费的距离
+                    if station == target: 
+                        return step
+                    lines = dict_to[station]
+                    # 将由该线路的车站发起的路线，加入队列
+                    if lines == None:
+                        continue
+                    for line in lines:
+                        # 对于当前车站可选择的每一条路线而言
+                        if line not in step_num:
+                            step_num[line] = step + 1
+                            queue.append(line)
+            return -1
+
+        if source == target: 
+            return 0
+        return bfs()
 ```
 ### 876.链表的中间结点
 > 给定一个头结点为` head `的非空单链表，返回链表的中间结点。  
