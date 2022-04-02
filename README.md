@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-82题-green)
+![](https://img.shields.io/badge/已覆盖-84题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -368,7 +368,7 @@ return longest
                 queue.append(node.right)
     ```
 
-#### BFS应用一：层序遍历
+#### BFS应用1：层序遍历
 
 什么是层序遍历呢？简单来说，层序遍历就是把二叉树分层，然后每一层从左到右遍历：
 
@@ -408,10 +408,11 @@ def bfs(root: TreeNode):
 
 ![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs6.gif)
 
+#### BFS应用2：最短路径/距离
 
 #### 代表题目
 
-130、752、815、1091
+130、752、815、1091、542、1293
 
 ### No.4 深度优先搜索DFS
 #### 岛屿类问题
@@ -3357,6 +3358,38 @@ class Solution:
                 return nums[mid]
         return ans
 ```
+### 542. 01矩阵
+> 给定一个由` 0 `和` 1 `组成的矩阵` mat `，请输出一个大小相同的矩阵，其中每一个格子是` mat `中对应位置元素到最近的` 0 `的距离。  
+两个相邻元素间的距离为` 1 `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/01-matrix  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:
+        # 看见最近距离，就联想到BFS
+        m, n = len(mat), len(mat[0])
+        # 把等于0的位置的点放进队列里面去作为起点，去搜寻最近的1
+        zero = [(i, j) for i in range(m) for j in range(n) if mat[i][j]  == 0]
+        queue = deque(zero)
+        # 已经访问过的点不再去考虑
+        visited = set(zero)
+        # 记录距离
+        dist = [[0]*n for _ in range(m)]
+
+        while queue:
+            i, j = queue.popleft()
+            # 对上下左右四个方向进行搜索
+            for x, y in [(i-1, j), (i+1, j), (i, j-1), (i, j+1)]:
+                if 0 <= x < m and 0 <= y < n and (x, y) not in visited:
+                    visited.add((x, y))
+                    dist[x][y] = dist[i][j] + 1
+                    queue.append((x, y))
+        
+        return dist
+```
 ### 647.回文子串（与题5可做比较）
 > 给你一个字符串` s `，请你统计并返回这个字符串中 **回文子串** 的数目。  
 **回文字符串** 是正着读和倒过来读一样的字符串。  
@@ -3972,6 +4005,44 @@ class Solution:
         for idx in right_index:
             stack[idx] = ''
         return ''.join(stack)
+```
+### 1293.网格中的最短路径
+> 给你一个` m * n `的网格，其中每个单元格不是` 0`（空）就是` 1`（障碍物）。每一步，您都可以在空白单元格中上、下、左、右移动。  
+如果您 最多 可以消除` k `个障碍物，请找出从左上角` (0, 0) `到右下角` (m-1, n-1) `的最短路径，并返回通过该路径所需的步数。如果找不到这样的路径，则返回` -1 `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/shortest-path-in-a-grid-with-obstacles-elimination  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def shortestPath(self, grid: List[List[int]], k: int) -> int:
+        m, n = len(grid), len(grid[0])
+        if m == 1 and n == 1:
+            return 0
+        
+        k = min(k, m + n - 3)
+
+        # （（坐标），剩余破墙次数）
+        begin = ((0, 0), k)
+        visited = set([begin])
+        queue = deque([begin])
+        step = 0
+        while queue:
+            step += 1
+            for _ in range(len(queue)):
+                (i, j), chance = queue.popleft()
+                for x, y in [(i-1, j), (i+1, j), (i, j-1), (i, j+1)]:
+                    if 0 <= x < m and 0 <= y < n:
+                        if grid[x][y] == 0 and ((x, y), chance) not in visited:
+                            if  x == m - 1 and y == n - 1:
+                                return step
+                            visited.add(((x, y), chance))
+                            queue.append(((x, y), chance))
+                        elif grid[x][y] == 1 and chance > 0 and ((x, y), chance-1) not in visited:
+                            visited.add(((x, y), chance-1))
+                            queue.append(((x, y), chance-1))
+        return -1
 ```
 ### 1300.转变数组后最接近目标值的数组和
 > 给你一个整数数组` arr `和一个目标值` target `，请你返回一个整数` value `，使得将数组中所有大于` value `的值变成` value `后，数组的和最接近`  target `（最接近表示两者之差的绝对值最小）。  
