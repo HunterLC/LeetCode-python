@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-84题-green)
+![](https://img.shields.io/badge/已覆盖-85题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -412,7 +412,7 @@ def bfs(root: TreeNode):
 
 #### 代表题目
 
-130、752、815、1091、542、1293
+130、752、815、1091、542、1293、417
 
 ### No.4 深度优先搜索DFS
 #### 岛屿类问题
@@ -422,7 +422,7 @@ def bfs(root: TreeNode):
 
 2. 代表题目
 
-    200、130
+    200、130、417
 
 ## 题目
 ### 1.两数之和
@@ -3242,6 +3242,65 @@ class Solution:
                     ans += (value - 1)
         if has_odd:
             ans += 1
+        return ans
+```
+### 417.太平洋大西洋水流问题
+> 有一个` m × n `的矩形岛屿，与 **太平洋** 和 **大西洋** 相邻。 “太平洋” 处于大陆的左边界和上边界，而 “大西洋” 处于大陆的右边界和下边界。  
+这个岛被分割成一个由若干方形单元格组成的网格。给定一个` m x n `的整数矩阵` heights `，` heights[r][c] `表示坐标` (r, c) `上单元格 **高于海平面的高度** 。  
+岛上雨水较多，如果相邻单元格的高度 小于或等于 当前单元格的高度，雨水可以直接向北、南、东、西流向相邻单元格。水可以从海洋附近的任何单元格流入海洋。
+
+返回 **网格坐标** `result` 的 `2D`列表 ，其中 `result[i] = [ri, ci]` 表示雨水可以从单元格` (ri, ci)` 流向 **太平洋和大西洋** 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/pacific-atlantic-water-flow  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
+        # BFS, 从海洋出发，逆向思维水往高处流，两边海洋都能去的点就是答案
+        m, n = len(heights), len(heights[0])
+        
+        visited = set()
+        queue = deque()
+        ans = []
+
+        def bfs(ocean=None):
+            while queue:
+                i, j = queue.popleft()
+                # 东南西北四个方向
+                for x, y in [(i+1, j), (i-1, j), (i, j+1), (i, j-1)]:
+                    # 水往高处流
+                    if 0 <= x < m and 0 <= y < n and heights[x][y] >= heights[i][j] and ((x, y), ocean) not in visited:
+                        visited.add(((x, y), ocean))
+                        queue.append((x, y))
+
+        # pacific ocean水往高处流
+        for i in range(m):
+            # set集是((坐标)，海洋类型)
+            visited.add(((i, 0), 0))
+            queue.append((i, 0))
+        for i in range(1, n):
+            visited.add(((0, i), 0))
+            queue.append((0, i))
+        bfs(ocean=0)
+
+        # atlantic ocean水往高处流
+        for i in range(m):
+            # set集是((坐标)，海洋类型)
+            visited.add(((i, n-1), 1))
+            queue.append((i, n-1))
+        for i in range(n-1):
+            visited.add(((m-1, i), 1))
+            queue.append((m-1, i))
+        bfs(ocean=1)
+
+        # 如果两边都在，就说明这个点可以到达
+        for i in range(m):
+            for j in range(n):
+                if ((i, j), 0) in visited and ((i, j), 1) in visited:
+                    ans.append([i, j])
+        
         return ans
 ```
 ### 424.替换后的最长重复字符
