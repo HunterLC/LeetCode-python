@@ -2505,7 +2505,7 @@ class Solution:
 返回你为了学完所有课程所安排的学习顺序。可能会有多个正确的顺序，你只要返回 **任意一种** 就可以了。如果不可能完成所有课程，返回 **一个空数组** 。
 
 来源：力扣（LeetCode）  
-链接：https://leetcode-cn.com/problems/course-schedule  
+链接：https://leetcode-cn.com/problems/course-schedule-ii/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 ```
 class Solution:
