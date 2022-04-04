@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-85题-green)
+![](https://img.shields.io/badge/已覆盖-87题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -412,7 +412,7 @@ def bfs(root: TreeNode):
 
 #### 代表题目
 
-130、752、815、1091、542、1293、417
+130、752、815、1091、542、1293、417、207、210
 
 ### No.4 深度优先搜索DFS
 #### 岛屿类问题
@@ -2453,6 +2453,91 @@ class Solution:
             second.next = first
             return self.reverse(second, temp)
     ```
+### 207.课程表
+> 你这个学期必须选修` numCourses `门课程，记为` 0 `到` numCourses - 1 `。  
+在选修某些课程之前需要一些先修课程。 先修课程按数组` prerequisites `给出，其中` prerequisites[i] = [ai, bi] `，表示如果要学习课程` ai` 则 **必须** 先学习课程 ` bi `。
+
++ 例如，先修课程对 [0, 1] 表示：想要学习课程 0 ，你需要先完成课程 1 。
+
+请你判断是否可能完成所有课程的学习？如果可以，返回` true `；否则，返回` false `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/course-schedule  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        # 按照先修课程数组构造有向图
+        edges = defaultdict(list)
+        # 记录每个课程节点的入度数量
+        in_degree = [0] * numCourses
+
+        for prerequisite in prerequisites:
+            # 构造边
+            edges[prerequisite[1]].append(prerequisite[0])
+            # 记录入度
+            in_degree[prerequisite[0]] += 1
+
+        # 首先入度为0 的节点先进队列
+        queue = deque([i for i in range(numCourses) if in_degree[i] == 0])
+        # 统计当前按照先修要求可以学习的课程门数
+        visited = 0
+
+        while queue:
+            course = queue.popleft()
+            visited += 1
+            # 当前course可以修，此时从有向图中删去该课程以及边
+            for node in edges[course]:
+                # 对于该课程所对应的下一门课程，入度减一
+                in_degree[node] -= 1
+                if in_degree[node] == 0:
+                    queue.append(node)
+
+        return True if visited == numCourses else False
+```
+### 210.课程表 II
+> 你这个学期必须选修` numCourses `门课程，记为` 0 `到` numCourses - 1 `。  
+在选修某些课程之前需要一些先修课程。 先修课程按数组` prerequisites `给出，其中` prerequisites[i] = [ai, bi] `，表示如果要学习课程` ai` 则 **必须** 先学习课程 ` bi `。
+
++ 例如，先修课程对 [0, 1] 表示：想要学习课程 0 ，你需要先完成课程 1 。
+
+返回你为了学完所有课程所安排的学习顺序。可能会有多个正确的顺序，你只要返回 **任意一种** 就可以了。如果不可能完成所有课程，返回 **一个空数组** 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/course-schedule  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+```
+class Solution:
+    def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
+        # 按照先修课程数组构造有向图
+        edges = defaultdict(list)
+        # 记录每个课程节点的入度数量
+        in_degree = [0] * numCourses
+
+        for prerequisite in prerequisites:
+            # 构造边
+            edges[prerequisite[1]].append(prerequisite[0])
+            # 记录入度
+            in_degree[prerequisite[0]] += 1
+
+        # 首先入度为0 的节点先进队列
+        queue = deque([i for i in range(numCourses) if in_degree[i] == 0])
+        # 统计当前按照先修要求可以学习的课程
+        visited = []
+
+        while queue:
+            course = queue.popleft()
+            visited.append(course)
+            # 当前course可以修，此时从有向图中删去该课程以及边
+            for node in edges[course]:
+                # 对于该课程所对应的下一门课程，入度减一
+                in_degree[node] -= 1
+                if in_degree[node] == 0:
+                    queue.append(node)
+
+        return visited if len(visited) == numCourses else []
+```
 ### 215.数组中的第k个最大元素
 > 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。  
 请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
