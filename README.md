@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-87题-green)
+![](https://img.shields.io/badge/已覆盖-88题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -412,7 +412,7 @@ def bfs(root: TreeNode):
 
 #### 代表题目
 
-130、752、815、1091、542、1293、417、207、210
+130、752、815、1091、542、1293、417、207、210、310
 
 ### No.4 深度优先搜索DFS
 #### 岛屿类问题
@@ -3107,6 +3107,59 @@ class Solution:
                 b += min(value,len(dict_secret[key]))
         return str(a)+'A'+str(b)+'B'
 ```
+### 310.最小高度树★
+> 树是一个无向图，其中任何两个顶点只通过一条路径连接。 换句话说，一个任何没有简单环路的连通图都是一棵树。  
+给你一棵包含` n `个节点的树，标记为` 0 `到` n - 1 `。给定数字` n `和一个有` n - 1 `条无向边的` edges `列表（每一个边都是一对标签），其中` edges[i] = [ai, bi] `表示树中节点` ai `和` bi `之间存在一条无向边。  
+可选择树中任何一个节点作为根。当选择节点` x `作为根节点时，设结果树的高度为` h `。在所有可能的树中，具有最小高度的树（即，`min(h)`）被称为 **最小高度树** 。
+
+请你找到所有的 **最小高度树** 并按 **任意顺序** 返回它们的根节点标签列表。  
+树的 **高度** 是指根节点和叶子节点之间最长向下路径上边的数量。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/minimum-height-trees  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 拓扑排序+BFS
+```
+class Solution:
+    def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
+        # 如果针对每个节点都来作为根节点计算树高度，时间性能就不好
+        # 所以我们从叶子节点出发，倒着去找根，而叶子节点明显就是度为1
+        # 特殊情况，只有一个节点
+        if n == 1:
+            return [0]
+
+        ans = []
+
+        # 统计节点度和边的情况
+        degree = [0] * n 
+        edges_dict = defaultdict(list)
+        for edge in edges:
+            degree[edge[0]] += 1
+            degree[edge[1]] += 1
+            edges_dict[edge[0]].append(edge[1])
+            edges_dict[edge[1]].append(edge[0])
+        
+        # 初始化队列，把所有叶子节点放进去
+        queue = deque([i for i in range(n) if degree[i] == 1])
+
+        while queue:
+            # ans重新赋值，为的就是最后输出的是最后一层添加进去的node，前面添加的不是根节点
+            ans = []
+            for i in range(len(queue)):
+                node = queue.popleft()
+                ans.append(node)
+                for edge in edges_dict[node]:
+                    degree[edge] -= 1
+                    # 当前节点是叶子点了
+                    if degree[edge] == 1:
+                        queue.append(edge)
+        
+        return ans
+```
+
++ [最大距离BFS/DFS](https://leetcode-cn.com/problems/minimum-height-trees/solution/zui-xiao-gao-du-shu-by-leetcode-solution-6v6f/)
+
 ### 328.奇偶链表
 > 给定单链表的头节点` head `，将所有索引为奇数的节点和索引为偶数的节点分别组合在一起，然后返回重新排序的列表。  
 第一个节点的索引被认为是` 奇数 `， 第二个节点的索引为` 偶数 `，以此类推。  
