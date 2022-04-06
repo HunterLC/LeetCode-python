@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-88题-green)
+![](https://img.shields.io/badge/已覆盖-89题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -423,6 +423,17 @@ def bfs(root: TreeNode):
 2. 代表题目
 
     200、130、417
+
+#### 树类问题
+1. 直径长度
+
+> 直径长度是任意两个结点路径长度中的最大值, 这条路径可能穿过也可能不穿过根结点。
+
+2. 路径长度
+
+> 两结点之间的路径长度是以它们之间边的数目表示
+##### 代表题目
+543
 
 ## 题目
 ### 1.两数之和
@@ -3586,6 +3597,44 @@ class Solution:
                     queue.append((x, y))
         
         return dist
+```
+### 543.二叉树的直径
+> 给定一棵二叉树，你需要计算它的直径长度。一棵二叉树的直径长度是任意两个结点路径长度中的最大值。这条路径可能穿过也可能不穿过根结点。
+
+注意：两结点之间的路径长度是以它们之间**边的数目**表示。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/diameter-of-binary-tree/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ DFS
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def diameterOfBinaryTree(self, root: TreeNode) -> int:
+        # 看见最大值，联想到DFS
+
+        # 这里不能初始化为0，假如测试用例的树为空，那直径就是-1了
+        ans = 1
+
+        def dfs(root):
+            if not root:
+                return 0
+            left = dfs(root.left)
+            right = dfs(root.right)
+            # 我们需要求解的最大直径长度是左右子树分别最大值+自己
+            nonlocal ans
+            ans = max(ans, left + right + 1)
+            return max(left, right) + 1  # 对于某个节点而言，他的高度等于他左右子树的最大高度+自己
+
+        dfs(root)
+        return ans - 1
 ```
 ### 647.回文子串（与题5可做比较）
 > 给你一个字符串` s `，请你统计并返回这个字符串中 **回文子串** 的数目。  
