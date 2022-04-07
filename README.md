@@ -1,12 +1,23 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-89题-green)
+![](https://img.shields.io/badge/已覆盖-91题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
 ![](https://img.shields.io/badge/深度优先搜索-DFS-purple)
 
 我要刷题**冲冲冲**
+
+## 目录
++ [基础知识](#基础知识)
+    + [排序算法](#no1-排序算法java实现)
+    + [同向双指针/滑动窗口](#no2-同向双指针滑动窗口)
+    + [宽度优先搜索bfs](#no3-宽度优先搜索bfs)
+    + [深度优先搜索dfs](#no4-深度优先搜索dfs)
+
++ [题目](#题目)
+    + [101.对称二叉树](#101对称二叉树)
+    + [226.翻转二叉树](#226翻转二叉树)
 
 ## 基础知识
 ### No.1 排序算法（java实现）
@@ -433,7 +444,7 @@ def bfs(root: TreeNode):
 
 > 两结点之间的路径长度是以它们之间边的数目表示
 ##### 代表题目
-543
+543、226、101
 
 ## 题目
 ### 1.两数之和
@@ -1545,6 +1556,35 @@ class Solution:
                 pre.next = next
             return dummy_node.next
     ```
+### 101.对称二叉树
+> 给你一个二叉树的根节点` root `， 检查它是否轴对称。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/symmetric-tree/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+        def check(first, second):
+            if not first and not second:
+                # 两棵树都是空
+                return True
+            if not first or not second:
+                # 其中一棵树为空
+                return False
+
+            return first.val == second.val and check(first.left, second.right) and check(first.right, second.left)
+
+        # 直接复制一棵树，然后来比
+        return check(root, root)
+```
 ### 102.二叉树的层序遍历
 > 给你二叉树的根节点` root `，返回其节点值的 **层序遍历** 。 （即逐层地，从左到右访问所有节点）。
 
@@ -2757,6 +2797,50 @@ boolean empty() 如果栈是空的，返回 true ；否则，返回 false 。
     # param_3 = obj.top()
     # param_4 = obj.empty()
     ```
+### 226.翻转二叉树
+> 给你一棵二叉树的根节点` root `，翻转这棵二叉树，并返回其根节点。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/invert-binary-tree/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 自身函数递归
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+        # 该树为空
+        if not root:
+            return root
+        left = self.invertTree(root.left)
+        right = self.invertTree(root.right)
+        # 左右交换
+        root.left, root.right = right, left
+        return root
+```
++ 新建dfs函数递归
+```
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+
+        def dfs(node):
+            # 该树为空
+            if not node:
+                return node
+            left = dfs(node.left)
+            right = dfs(node.right)
+            # 左右交换
+            node.left, node.right = right, left
+            return node
+
+        root = dfs(root)
+        return root
+```
 ### 232.用栈实现队列
 > 请你仅使用两个栈实现先入先出队列。队列应当支持一般队列支持的所有操作（push、pop、peek、empty）：
 
