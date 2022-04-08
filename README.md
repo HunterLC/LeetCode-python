@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-91题-green)
+![](https://img.shields.io/badge/已覆盖-94题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -44,6 +44,7 @@
     + [101.对称二叉树](#101对称二叉树)
     + [102.二叉树的层序遍历](#102二叉树的层序遍历)
     + [103.二叉树的锯齿形层序遍历](#103二叉树的锯齿形层序遍历)
+    + [124.二叉树中的最大路径和](#124二叉树中的最大路径和)
     + [125.验证回文串](#125验证回文串)
     + [127.单词接龙](#127单词接龙)
     + [128.最长连续序列](#128最长连续序列)
@@ -68,6 +69,7 @@
     + [225.用队列实现栈](#225用队列实现栈)
     + [226.翻转二叉树](#226翻转二叉树)
     + [232.用栈实现队列](#232用栈实现队列)
+    + [236.二叉树的最近公共祖先](#236二叉树的最近公共祖先)
     + [240.搜索二维矩阵 ii](#240搜索二维矩阵ii)
     + [264.丑数 ii](#264丑数ii)
     + [278.第一个错误版本](#278第一个错误版本)
@@ -98,6 +100,7 @@
     + [815.公交路线★](#815公交路线★)
     + [876.链表的中间结点](#876链表的中间结点)
     + [895.最大频率栈](#895最大频率栈)
+    + [951.翻转等价二叉树](#951翻转等价二叉树)
     + [973.最接近原点的k个点](#973最接近原点的k个点)
     + [1004.最大连续1的个数 iii](#1004最大连续1的个数-iii)
     + [1091.二进制矩阵中的最短路径](#1091二进制矩阵中的最短路径)
@@ -524,7 +527,7 @@ def bfs(root: TreeNode):
 
 2. 代表题目
 
-    200、130、417
+    200、130、417、951
 
 #### 树类问题
 1. 直径长度
@@ -535,7 +538,7 @@ def bfs(root: TreeNode):
 
 > 两结点之间的路径长度是以它们之间边的数目表示
 ##### 代表题目
-543、226、101
+543、226、101、124、236
 
 ## 题目
 ### 1.两数之和
@@ -1745,6 +1748,46 @@ class Solution:
             if idx % 2 == 1: # 因为索引是从0开始的，所以这边判断余数是否为1
                 ans[idx].reverse() # 如果是第偶数行，翻转，reverse是一个自带的反转函数，蛮好用的
         return ans
+```
+### 124.二叉树中的最大路径和
+> **路径** 被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中 **至多出现一次** 。该路径 **至少包含一个** 节点，且不一定经过根节点。  
+**路径和** 是路径中各节点值的总和。
+
+给你一个二叉树的根节点` root `，返回其 **最大路径和** 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/binary-tree-maximum-path-sum  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def maxPathSum(self, root: Optional[TreeNode]) -> int:
+
+        ans = float('-inf')
+
+        def dfs(root):
+            if not root:
+                return 0
+            # 递归求解
+            left_node = dfs(root.left)
+            right_node = dfs(root.right)
+            # 当前的最大路径
+            nonlocal ans
+            left = max(left_node, 0)
+            right = max(right_node, 0)
+            ans = max(ans, root.val + left + right)
+            # 返回的是当前根节点作为子树所能提供的最大路径
+            return root.val + max(left, right)
+        
+        dfs(root)
+        return ans
+
 ```
 ### 125.验证回文串
 > 给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。  
@@ -2985,6 +3028,48 @@ class MyQueue:
 # param_3 = obj.peek()
 # param_4 = obj.empty()
 ```
+### 236.二叉树的最近公共祖先
+> 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+
+**百度百科**中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        # 如果p、q在同一棵子树，谁在前面谁就是答案，如果不在一棵树，就是两者所在子树的根节点
+        if not root or root == p or root == q:
+            return root
+
+        # 在左子树里面找pq
+        left = self.lowestCommonAncestor(root.left, p, q)
+        # 在右子树里面找pq
+        right = self.lowestCommonAncestor(root.right, p, q)
+
+        # 左右子树都能找到，说明一边一个，显然当前根节点就是最近的祖先
+        if left and right:
+            return root
+
+        # pq都在左子树
+        if left:
+            return left
+
+        # pq都在右子树
+        if right:
+            return right
+            
+        return None
+```
 ### 240.搜索二维矩阵II
 > 编写一个高效的算法来搜索` m x n `矩阵` matrix `中的一个目标值` target `。该矩阵具有以下特性：  
 每行的元素从左到右升序排列。
@@ -4169,6 +4254,33 @@ class FreqStack:
 # obj = FreqStack()
 # obj.push(val)
 # param_2 = obj.pop()
+```
+### 951.翻转等价二叉树
+> 我们可以为二叉树` T `定义一个 **翻转操作** ，如下所示：选择任意节点，然后交换它的左子树和右子树。  
+只要经过一定次数的翻转操作后，能使` X `等于` Y`，我们就称二叉树` X `翻转 **等价** 于二叉树` Y`。
+
+这些树由根节点` root1 `和` root2 `给出。如果两个二叉树是否是翻转 **等价** 的函数，则返回 `true `，否则返回 `false` 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/flip-equivalent-binary-trees  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def flipEquiv(self, root1: Optional[TreeNode], root2: Optional[TreeNode]) -> bool:
+        if not root1 and not root2:
+            return True
+        if not root1 or not root2:
+            return False
+ 
+        # 等价的条件是根节点的val相等，然后要么两个根节点的左右子树分别对应相等(左=左，右=右)，要么两个根节点的左右子树相反相等(左=右，右=左)
+        return root1.val == root2.val and ((self.flipEquiv(root1.left, root2.right) and self.flipEquiv(root1.right, root2.left)) or (self.flipEquiv(root1.left, root2.left) and self.flipEquiv(root1.right, root2.right)))
 ```
 ### 973.最接近原点的K个点
 > 给定一个数组` points `，其中` points[i] = [xi, yi] `表示` X-Y `平面上的一个点，并且是一个整数` k `，返回离原点` (0,0) `最近的` k `个点。  
