@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-94题-green)
+![](https://img.shields.io/badge/已覆盖-95题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -69,6 +69,7 @@
     + [225.用队列实现栈](#225用队列实现栈)
     + [226.翻转二叉树](#226翻转二叉树)
     + [232.用栈实现队列](#232用栈实现队列)
+    + [235.二叉搜索树的最近公共祖先](#235二叉搜索树的最近公共祖先)
     + [236.二叉树的最近公共祖先](#236二叉树的最近公共祖先)
     + [240.搜索二维矩阵 ii](#240搜索二维矩阵ii)
     + [264.丑数 ii](#264丑数ii)
@@ -537,8 +538,13 @@ def bfs(root: TreeNode):
 2. 路径长度
 
 > 两结点之间的路径长度是以它们之间边的数目表示
+
+3. 二叉搜索树
+
+>左子树的所有节点都小于当前节点，右子树的所有节点都大于当前节点，并且每棵子树都具有上述特点
+
 ##### 代表题目
-543、226、101、124、236
+543、226、101、124、236、235
 
 ## 题目
 ### 1.两数之和
@@ -3027,6 +3033,34 @@ class MyQueue:
 # param_2 = obj.pop()
 # param_3 = obj.peek()
 # param_4 = obj.empty()
+```
+### 235.二叉搜索树的最近公共祖先
+> 给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。
+
+百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-search-tree  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        # pq在左子树
+        if p.val < root.val and q.val < root.val:
+            return self.lowestCommonAncestor(root.left, p, q)
+        # pq在右子树
+        elif p.val > root.val and q.val > root.val:
+            return self.lowestCommonAncestor(root.right, p, q)
+        else:
+            return root
 ```
 ### 236.二叉树的最近公共祖先
 > 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
