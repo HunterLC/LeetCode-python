@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-95题-green)
+![](https://img.shields.io/badge/已覆盖-96题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -44,6 +44,7 @@
     + [101.对称二叉树](#101对称二叉树)
     + [102.二叉树的层序遍历](#102二叉树的层序遍历)
     + [103.二叉树的锯齿形层序遍历](#103二叉树的锯齿形层序遍历)
+    + [105.从前序与中序遍历序列构造二叉树](#105从前序与中序遍历序列构造二叉树)
     + [124.二叉树中的最大路径和](#124二叉树中的最大路径和)
     + [125.验证回文串](#125验证回文串)
     + [127.单词接龙](#127单词接龙)
@@ -544,7 +545,7 @@ def bfs(root: TreeNode):
 >左子树的所有节点都小于当前节点，右子树的所有节点都大于当前节点，并且每棵子树都具有上述特点
 
 ##### 代表题目
-543、226、101、124、236、235
+543、226、101、124、236、235、105
 
 ## 题目
 ### 1.两数之和
@@ -1754,6 +1755,54 @@ class Solution:
             if idx % 2 == 1: # 因为索引是从0开始的，所以这边判断余数是否为1
                 ans[idx].reverse() # 如果是第偶数行，翻转，reverse是一个自带的反转函数，蛮好用的
         return ans
+```
+### 105.从前序与中序遍历序列构造二叉树
+> 给定两个整数数组` preorder `和` inorder` ，其中` preorder` 是二叉树的先序遍历，` inorder `是同一棵树的中序遍历，请构造二叉树并返回其根节点。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+        # 先序遍历结果[根节点，[左子树先序遍历结果]，[右子树先序遍历结果]]
+        # 中序遍历结果[[左子树中序遍历结果]，根节点，[右子树中序遍历结果]]
+
+        # 递归中止条件：树为空
+        if not preorder or not inorder:
+            return None
+  
+        # 根节点的值为前序遍历的第一个元素值
+        root_val = preorder[0]
+        # 创建根节点
+        root = TreeNode(root_val)
+  
+        # 用根节点的值去中序数组中查找对应元素下标
+        root_in = inorder.index(root_val)
+  
+        # 找出中序遍历的左子树和右子树
+        # 左子树区间为 [0, root_in),右子树区间为[root_in+1，n-1]
+        in_left = inorder[: root_in]
+        in_right = inorder[root_in + 1:]
+  
+        # 找出前序遍历的左子树和右子树
+        # 前序遍历和中序遍历的左子树和右子树长度相等，所以可以通过中序遍历左右子树的长度来确定前序遍历左右子树的位置
+        pre_left = preorder[1: len(in_left) + 1]
+        pre_right = preorder[len(in_left) + 1:]
+  
+        # 递归遍历左子树
+        root.left = self.buildTree(pre_left, in_left)
+        # 递归遍历右子树
+        root.right = self.buildTree(pre_right, in_right)
+  
+        return root
 ```
 ### 124.二叉树中的最大路径和
 > **路径** 被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中 **至多出现一次** 。该路径 **至少包含一个** 节点，且不一定经过根节点。  
