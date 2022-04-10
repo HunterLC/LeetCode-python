@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-96题-green)
+![](https://img.shields.io/badge/已覆盖-98题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -44,13 +44,14 @@
     + [101.对称二叉树](#101对称二叉树)
     + [102.二叉树的层序遍历](#102二叉树的层序遍历)
     + [103.二叉树的锯齿形层序遍历](#103二叉树的锯齿形层序遍历)
+    + [104.二叉树的最大深度](#104二叉树的最大深度)
     + [105.从前序与中序遍历序列构造二叉树](#105从前序与中序遍历序列构造二叉树)
     + [124.二叉树中的最大路径和](#124二叉树中的最大路径和)
     + [125.验证回文串](#125验证回文串)
     + [127.单词接龙](#127单词接龙)
     + [128.最长连续序列](#128最长连续序列)
-    + [130.被围绕的区域★](#130被围绕的区域★)
-    + [133.克隆图★](#133克隆图★)
+    + [130.被围绕的区域★](#130被围绕的区域)
+    + [133.克隆图★](#133克隆图)
     + [141.环形链表 i](#141环形链表-i)
     + [142.环形链表 ii](#142环形链表-ii)
     + [146.lru缓存](#146lru缓存)
@@ -79,7 +80,7 @@
     + [295.数据流的中位数](#295数据流的中位数)
     + [297.二叉树的序列化与反序列化](#297二叉树的序列化与反序列化)
     + [299.猜数字游戏](#299猜数字游戏)
-    + [310.最小高度树★](#310最小高度树★)
+    + [310.最小高度树★](#310最小高度树)
     + [328.奇偶链表](#328奇偶链表)
     + [347.前k个高频元素](#347前k个高频元素)
     + [350.两个数组的交集 ii](#350两个数组的交集ii)
@@ -97,13 +98,14 @@
     + [647.回文子串 (与题5可做比较)](#647回文子串与题5可做比较)
     + [692.前k个高频单词](#692前k个高频单词)
     + [735.行星碰撞](#735行星碰撞)
-    + [752.打开转盘锁★](#752打开转盘锁★)
+    + [752.打开转盘锁★](#752打开转盘锁)
     + [767.重构字符串](#767重构字符串)
-    + [815.公交路线★](#815公交路线★)
+    + [815.公交路线★](#815公交路线)
     + [876.链表的中间结点](#876链表的中间结点)
     + [895.最大频率栈](#895最大频率栈)
     + [951.翻转等价二叉树](#951翻转等价二叉树)
     + [973.最接近原点的k个点](#973最接近原点的k个点)
+    + [987.二叉树的垂序遍历](#987二叉树的垂序遍历)
     + [1004.最大连续1的个数 iii](#1004最大连续1的个数-iii)
     + [1091.二进制矩阵中的最短路径](#1091二进制矩阵中的最短路径)
     + [1095.山脉数组中查找目标值](#1095山脉数组中查找目标值)
@@ -538,14 +540,18 @@ def bfs(root: TreeNode):
 
 2. 路径长度
 
-> 两结点之间的路径长度是以它们之间边的数目表示
+> 两结点之间的路径长度是以它们之间**边的数目**表示
 
 3. 二叉搜索树
 
 >左子树的所有节点都小于当前节点，右子树的所有节点都大于当前节点，并且每棵子树都具有上述特点
 
+4. 二叉树的深度
+
+> 二叉树的深度为根节点到最远叶子节点的**最长路径**上的**节点数**。
+
 ##### 代表题目
-543、226、101、124、236、235、105
+543、226、101、124、236、235、105、104、987
 
 ## 题目
 ### 1.两数之和
@@ -1754,6 +1760,40 @@ class Solution:
         for idx in range(len(ans)): # 因为要求是锯齿遍历，所以要把偶数行给翻转一下
             if idx % 2 == 1: # 因为索引是从0开始的，所以这边判断余数是否为1
                 ans[idx].reverse() # 如果是第偶数行，翻转，reverse是一个自带的反转函数，蛮好用的
+        return ans
+```
+### 104.二叉树的最大深度
+> 给定一个二叉树，找出其最大深度。  
+二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。
+
+说明: 叶子节点是指没有子节点的节点。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+
+        ans = 0
+
+        def dfs(root):
+            if not root:
+                return 0
+            left = dfs(root.left)
+            right = dfs(root.right)
+            nonlocal ans
+            ans = max(ans, 1 + max(left, right))
+            return 1 + max(left, right)
+
+        dfs(root)
         return ans
 ```
 ### 105.从前序与中序遍历序列构造二叉树
@@ -4411,6 +4451,55 @@ class Solution:
             ans = [points[identity] for (_, identity) in q]
             return ans
     ```
+### 987.二叉树的垂序遍历
+> 给你二叉树的根结点 `root` ，请你设计算法计算二叉树的 **垂序遍历** 序列。 
+对位于 `(row, col)` 的每个结点而言，其左右子结点分别位于` (row + 1, col - 1) `和 `(row + 1, col + 1)` 。树的根结点位于` (0, 0)` 。
+
+二叉树的 **垂序遍历** 从最左边的列开始直到最右边的列结束，按列索引每一列上的所有结点，形成一个按出现位置从上到下排序的有序列表。如果同行同列上有多个结点，则按结点的值从小到大进行排序。
+
+返回二叉树的 **垂序遍历** 序列。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/vertical-order-traversal-of-a-binary-tree  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ DFS + 最小堆
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def verticalTraversal(self, root: TreeNode) -> List[List[int]]:
+        # 记录每个节点的行号和列号
+        # 首先按照列号从小到大排，同一列不同行的按照行号从小到大排，同一行同一列的按照值进行从小到大排
+        min_heap = []
+
+        def dfs(root, row, col):
+            if not root:
+                return None
+            dfs(root.left, row + 1, col - 1)
+            dfs(root.right, row + 1, col + 1)
+            # 构造小顶堆
+            heapq.heappush(min_heap, (col, row, root.val))
+        
+        dfs(root, 0, 0)
+
+        ans = []
+        col_change = float('-inf')
+        
+        while min_heap:
+            col, row, value = heapq.heappop(min_heap)
+            # 列号改变了，说明需要重新分组
+            if col != col_change:
+                ans.append([])
+                col_change = col
+            ans[-1].append(value)
+
+        return ans
+```
 ### 1004.最大连续1的个数 III
 > 给定一个二进制数组` nums `和一个整数` k `，如果可以翻转最多`k `个` 0` ，则返回 **数组中连续` 1 `的最大个数** 。
 
