@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-98题-green)
+![](https://img.shields.io/badge/已覆盖-101题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -41,6 +41,7 @@
     + [76.最小覆盖子串](#76最小覆盖子串)
     + [88.合并两个有序数组](#88合并两个有序数组)
     + [92.反转链表ii](#92反转链表-ii)
+    + [100.相同的树](#100相同的树)
     + [101.对称二叉树](#101对称二叉树)
     + [102.二叉树的层序遍历](#102二叉树的层序遍历)
     + [103.二叉树的锯齿形层序遍历](#103二叉树的锯齿形层序遍历)
@@ -95,12 +96,14 @@
     + [540.有序数组中的单一元素](#540有序数组中的单一元素)
     + [542.01矩阵](#542-01矩阵)
     + [543.二叉树的直径](#543二叉树的直径)
+    + [572.另一颗树的子树](#572另一颗树的子树)
     + [647.回文子串 (与题5可做比较)](#647回文子串与题5可做比较)
     + [692.前k个高频单词](#692前k个高频单词)
     + [735.行星碰撞](#735行星碰撞)
     + [752.打开转盘锁★](#752打开转盘锁)
     + [767.重构字符串](#767重构字符串)
     + [815.公交路线★](#815公交路线)
+    + [863.二叉树中所有距离为k的结点](#863二叉树中所有距离为-k-的结点)
     + [876.链表的中间结点](#876链表的中间结点)
     + [895.最大频率栈](#895最大频率栈)
     + [951.翻转等价二叉树](#951翻转等价二叉树)
@@ -551,7 +554,9 @@ def bfs(root: TreeNode):
 > 二叉树的深度为根节点到最远叶子节点的**最长路径**上的**节点数**。
 
 ##### 代表题目
-543、226、101、124、236、235、105、104、987
+543、226、101☆、124、236、235、105、104、987、572☆、100☆、863
+
+注：带☆的题目表示极度相似
 
 ## 题目
 ### 1.两数之和
@@ -1663,6 +1668,32 @@ class Solution:
                 pre.next = next
             return dummy_node.next
     ```
+### 100.相同的树
+> 给你两棵二叉树的根节点 `p `和 `q `，编写一个函数来检验这两棵树是否相同。
+
+如果两个树在结构上相同，并且节点具有相同的值，则认为它们是相同的。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/same-tree/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isSameTree(self, p: TreeNode, q: TreeNode) -> bool:
+        # 两棵树都为空
+        if not p and not q:
+            return True
+        if not p or not q:
+            return False
+        
+        return p.val == q.val and self.isSameTree(p.left, q.left) and self.isSameTree(p.right, q.right)
+```
 ### 101.对称二叉树
 > 给你一个二叉树的根节点` root `， 检查它是否轴对称。
 
@@ -4019,6 +4050,41 @@ class Solution:
         dfs(root)
         return ans - 1
 ```
+### 572.另一颗树的子树
+> 给你两棵二叉树` root `和 `subRoot` 。检验 `root` 中是否包含和 `subRoot` 具有相同结构和节点值的子树。如果存在，返回 `true` ；否则，返回` false` 。
+
+二叉树` tree `的一棵子树包括` tree `的某个节点和这个节点的所有后代节点。`tree` 也可以看做它自身的一棵子树。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/subtree-of-another-tree  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isSubtree(self, root: TreeNode, subRoot: TreeNode) -> bool:
+        # 两棵树都为空
+        if not root and not subRoot:
+            return True
+        if not root or not subRoot:
+            return False
+        
+        return self.isSame(root, subRoot) or self.isSubtree(root.left, subRoot) or self.isSubtree(root.right, subRoot)
+    
+    def isSame(self, root, subRoot):
+        # 两棵树都为空
+        if not root and not subRoot:
+            return True
+        if not root or not subRoot:
+            return False
+        
+        return root.val == subRoot.val and self.isSame(root.left, subRoot.left) and self.isSame(root.right, subRoot.right)
+```
 ### 647.回文子串（与题5可做比较）
 > 给你一个字符串` s `，请你统计并返回这个字符串中 **回文子串** 的数目。  
 **回文字符串** 是正着读和倒过来读一样的字符串。  
@@ -4311,6 +4377,61 @@ class Solution:
         if source == target: 
             return 0
         return bfs()
+```
+### 863.二叉树中所有距离为 K 的结点
+> 给定一个二叉树（具有根结点` root`）， 一个目标结点` target` ，和一个整数值 `k `。
+
+返回到目标结点` target` 距离为` k `的所有结点的值的列表。 答案可以以 **任何顺序** 返回。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/all-nodes-distance-k-in-binary-tree  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def distanceK(self, root: TreeNode, target: TreeNode, k: int) -> List[int]:
+        # 记录每个节点的父节点
+        parent = {}
+        # 记录答案
+        ans = []
+
+        # 寻找每个节点的父亲节点
+        def record_parent(root):
+            if root.left:
+                parent[root.left.val] = root
+                record_parent(root.left)
+            if root.right:
+                parent[root.right.val] = root
+                record_parent(root.right)
+        
+        # 从target开始，找距离为k的节点,node_from代表当前循环的node是从哪里进来的
+        def find_dist_k(node, step, k, node_from):
+            # 树为空
+            if not node:
+                return None
+            if step == k:
+                # 找到了,不需要再找node节点的后面那些点了
+                ans.append(node.val)
+                return None
+            if node.left != node_from:
+                find_dist_k(node.left, step + 1, k, node)
+            if node.right != node_from:
+                find_dist_k(node.right, step + 1, k, node)
+            # 不要使用parent[node.val]，因为在创建字典的时候root节点是没有父节点的，使用get才会返回None
+            # 虽然root没有父节点，但是他有子节点，所以当然可以跨左右子树循环咯
+            if parent.get(node.val) != node_from:
+                find_dist_k(parent.get(node.val), step + 1, k, node)
+        
+        record_parent(root)
+        find_dist_k(target, 0, k, None)
+        return ans
 ```
 ### 876.链表的中间结点
 > 给定一个头结点为` head `的非空单链表，返回链表的中间结点。  
