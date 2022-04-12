@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-101题-green)
+![](https://img.shields.io/badge/已覆盖-102题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -112,6 +112,7 @@
     + [1004.最大连续1的个数 iii](#1004最大连续1的个数-iii)
     + [1091.二进制矩阵中的最短路径](#1091二进制矩阵中的最短路径)
     + [1095.山脉数组中查找目标值](#1095山脉数组中查找目标值)
+    + [1110.删点成林★](#1110删点成林)
     + [1209.删除字符串中的所有相邻重复项 ii](#1209删除字符串中的所有相邻重复项-ii)
     + [1249.移除无效的括号](#1249移除无效的括号)
     + [1293.网格中的最短路径](#1293网格中的最短路径)
@@ -554,7 +555,7 @@ def bfs(root: TreeNode):
 > 二叉树的深度为根节点到最远叶子节点的**最长路径**上的**节点数**。
 
 ##### 代表题目
-543、226、101☆、124、236、235、105、104、987、572☆、100☆、863
+543、226、101☆、124、236、235、105、104、987、572☆、100☆、863、1110
 
 注：带☆的题目表示极度相似
 
@@ -4750,6 +4751,43 @@ class Solution:
         # 左半部分没有，那就搜索右半部分，key函数相当于继续使用从小到大的排列
         index = binary_search(mountain_arr, target, peak + 1, mountain_arr.length() - 1, lambda x: -x)
         return index
+```
+### 1110.删点成林★
+> 给出二叉树的根节点` root`，树上每个节点都有一个不同的值。  
+如果节点值在` to_delete `中出现，我们就把该节点从树上删去，最后得到一个森林（一些不相交的树构成的集合）。  
+返回森林中的每棵树。你可以按任意顺序组织答案。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/delete-nodes-and-return-forest  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def delNodes(self, root: TreeNode, to_delete: List[int]) -> List[TreeNode]:
+        # 把list转成set，速度更快
+        to_delete_set = set(to_delete)
+        ans = []
+
+        def dfs(root, is_root):
+            # 树为空
+            if not root:
+                return None
+            # 如果节点的值在删除集里面，那么这个节点就需要删除
+            root_deleted = root.val in to_delete_set
+            if is_root and not root_deleted:
+                ans.append(root)
+            root.left = dfs(root.left, root_deleted)
+            root.right = dfs(root.right, root_deleted)
+            return None if root_deleted else root
+            
+        dfs(root, True)
+        return ans
 ```
 ### 1209.删除字符串中的所有相邻重复项 II
 > 给你一个字符串` s`，「k 倍重复项删除操作」将会从` s `中选择` k `个相邻且相等的字母，并删除它们，使被删去的字符串的左侧和右侧连在一起。  
