@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-102题-green)
+![](https://img.shields.io/badge/已覆盖-104题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -41,6 +41,7 @@
     + [76.最小覆盖子串](#76最小覆盖子串)
     + [88.合并两个有序数组](#88合并两个有序数组)
     + [92.反转链表ii](#92反转链表-ii)
+    + [98.验证二叉搜索树](#98验证二叉搜索树)
     + [100.相同的树](#100相同的树)
     + [101.对称二叉树](#101对称二叉树)
     + [102.二叉树的层序遍历](#102二叉树的层序遍历)
@@ -71,6 +72,7 @@
     + [224.基本计算器](#224基本计算器)
     + [225.用队列实现栈](#225用队列实现栈)
     + [226.翻转二叉树](#226翻转二叉树)
+    + [230.二叉搜索树中第k小的元素](#230二叉搜索树中第k小的元素)
     + [232.用栈实现队列](#232用栈实现队列)
     + [235.二叉搜索树的最近公共祖先](#235二叉搜索树的最近公共祖先)
     + [236.二叉树的最近公共祖先](#236二叉树的最近公共祖先)
@@ -554,8 +556,14 @@ def bfs(root: TreeNode):
 
 > 二叉树的深度为根节点到最远叶子节点的**最长路径**上的**节点数**。
 
+5. 平衡二叉搜索树(AVL树)
+    + 平衡二叉搜索树中每个结点的左子树和右子树的高度最多相差`1`
+    + 平衡二叉搜索树的子树也是平衡二叉搜索树
+    + 一棵存有` n `个结点的平衡二叉搜索树的高度是$O(logn)$
+
 ##### 代表题目
-543、226、101☆、124、236、235、105、104、987、572☆、100☆、863、1110
+543、226、101☆、124、236、235、105、104、987、572☆、100☆、863、1110  
+二叉搜索树：230、98
 
 注：带☆的题目表示极度相似
 
@@ -1668,6 +1676,75 @@ class Solution:
                 next.next = pre.next
                 pre.next = next
             return dummy_node.next
+    ```
+### 98.验证二叉搜索树
+> 给你一个二叉树的根节点` root `，判断其是否是一个有效的二叉搜索树。
+
+**有效**二叉搜索树定义如下：
+
++ 节点的左子树只包含 **小于** 当前节点的数。
++ 节点的右子树只包含 **大于** 当前节点的数。
++ 所有左子树和右子树自身必须也是二叉搜索树。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/validate-binary-search-tree  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 中序遍历
+    ```
+    # Definition for a binary tree node.
+    # class TreeNode:
+    #     def __init__(self, val=0, left=None, right=None):
+    #         self.val = val
+    #         self.left = left
+    #         self.right = right
+    class Solution:
+        def isValidBST(self, root: TreeNode) -> bool:
+            # 中序遍历
+            # 错误：然后sort，判断sort前后数组是否相等即可,不行，比如树是2，2，2不是递增
+            # 正确：遍历的时候就判断
+            stack = []
+            inorder = float('-inf')
+            while root or stack:
+                while root:
+                    stack.append(root)
+                    root = root.left
+                root = stack.pop()
+                # 如果中序遍历得到的节点的值小于等于前一个 inorder，说明不是二叉搜索树
+                if root.val <= inorder:
+                    return False
+                inorder = root.val
+                root = root.right
+
+            return True
+    ```
++ 递归
+    ```
+    # Definition for a binary tree node.
+    # class TreeNode:
+    #     def __init__(self, val=0, left=None, right=None):
+    #         self.val = val
+    #         self.left = left
+    #         self.right = right
+    class Solution:
+        def isValidBST(self, root: TreeNode) -> bool:
+            # 递归
+            def helper(node, lower = float('-inf'), upper = float('inf')) -> bool:
+                if not node:
+                    return True
+                
+                val = node.val
+                if val <= lower or val >= upper:
+                    return False
+
+                if not helper(node.right, val, upper):
+                    return False
+                if not helper(node.left, lower, val):
+                    return False
+                return True
+
+            return helper(root)
+
     ```
 ### 100.相同的树
 > 给你两棵二叉树的根节点 `p `和 `q `，编写一个函数来检验这两棵树是否相同。
@@ -3102,6 +3179,79 @@ class Solution:
         root = dfs(root)
         return root
 ```
+### 230.二叉搜索树中第K小的元素
+> 给定一个二叉搜索树的根节点` root `，和一个整数` k `，请你设计一个算法查找其中第` k `个最小元素（从` 1 `开始计数）。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/kth-smallest-element-in-a-bst/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 中序遍历
+    ```
+    # Definition for a binary tree node.
+    # class TreeNode:
+    #     def __init__(self, val=0, left=None, right=None):
+    #         self.val = val
+    #         self.left = left
+    #         self.right = right
+    class Solution:
+        def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
+            # 中序遍历二叉搜索树的结果就是从小到大递增的
+            stack = []
+            while root or stack:
+                # 左子树走到底，记录这一路上遇到的节点
+                # 说白了就是pop的时候可以拿到父节点，然后去右子树罢了
+                while root:
+                    stack.append(root)
+                    root = root.left
+                root = stack.pop()
+                k -= 1
+                if k == 0:
+                    return root.val
+                root = root.right
+    ```
+
++ 记录子树的结点数(官方题解)
+    ```
+    class MyBst:
+        def __init__(self, root: TreeNode):
+            self.root = root
+
+            # 统计以每个结点为根结点的子树的结点数，并存储在哈希表中
+            self._node_num = {}
+            self._count_node_num(root)
+
+        def kth_smallest(self, k: int):
+            """返回二叉搜索树中第k小的元素"""
+            node = self.root
+            while node:
+                left = self._get_node_num(node.left)
+                if left < k - 1:
+                    node = node.right
+                    k -= left + 1
+                elif left == k - 1:
+                    return node.val
+                else:
+                    node = node.left
+
+        def _count_node_num(self, node) -> int:
+            """统计以node为根结点的子树的结点数"""
+            if not node:
+                return 0
+            self._node_num[node] = 1 + self._count_node_num(node.left) + self._count_node_num(node.right)
+            return self._node_num[node]
+
+        def _get_node_num(self, node) -> int:
+            """获取以node为根结点的子树的结点数"""
+            return self._node_num[node] if node is not None else 0
+
+
+    class Solution:
+        def kthSmallest(self, root: TreeNode, k: int) -> int:
+            bst = MyBst(root)
+            return bst.kth_smallest(k)
+
+    ```
 ### 232.用栈实现队列
 > 请你仅使用两个栈实现先入先出队列。队列应当支持一般队列支持的所有操作（push、pop、peek、empty）：
 
