@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-104题-green)
+![](https://img.shields.io/badge/已覆盖-108题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -48,6 +48,8 @@
     + [103.二叉树的锯齿形层序遍历](#103二叉树的锯齿形层序遍历)
     + [104.二叉树的最大深度](#104二叉树的最大深度)
     + [105.从前序与中序遍历序列构造二叉树](#105从前序与中序遍历序列构造二叉树)
+    + [108.将有序数组转换成二叉搜索树](#108将有序数组转换成二叉搜索树)
+    + [109.有序链表转换二叉搜索树](#109有序链表转换二叉搜索树)
     + [124.二叉树中的最大路径和](#124二叉树中的最大路径和)
     + [125.验证回文串](#125验证回文串)
     + [127.单词接龙](#127单词接龙)
@@ -100,7 +102,9 @@
     + [543.二叉树的直径](#543二叉树的直径)
     + [572.另一颗树的子树](#572另一颗树的子树)
     + [647.回文子串 (与题5可做比较)](#647回文子串与题5可做比较)
+    + [669.修剪二叉搜索树★](#669修剪二叉搜索树)
     + [692.前k个高频单词](#692前k个高频单词)
+    + [700.二叉搜索树中的搜索](#700二叉搜索树中的搜索)
     + [735.行星碰撞](#735行星碰撞)
     + [752.打开转盘锁★](#752打开转盘锁)
     + [767.重构字符串](#767重构字符串)
@@ -563,7 +567,7 @@ def bfs(root: TreeNode):
 
 ##### 代表题目
 543、226、101☆、124、236、235、105、104、987、572☆、100☆、863、1110  
-二叉搜索树：230、98
+二叉搜索树：230、98、669、700、108、109
 
 注：带☆的题目表示极度相似
 
@@ -1952,6 +1956,80 @@ class Solution:
         root.right = self.buildTree(pre_right, in_right)
   
         return root
+```
+### 108.将有序数组转换成二叉搜索树
+> 给你一个整数数组` nums `，其中元素已经按 **升序** 排列，请你将其转换为一棵 **高度平衡** 二叉搜索树。
+
+**高度平衡** 二叉树是一棵满足「每个节点的左右两个子树的高度差的绝对值不超过` 1` 」的二叉树。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def sortedArrayToBST(self, nums: List[int]) -> Optional[TreeNode]:
+        # 获取长度，根节点处于数组的中间
+        if len(nums) == 0:
+            return None
+        mid = len(nums) // 2
+        # 建立根节点
+        root = TreeNode(nums[mid])
+        root.left = self.sortedArrayToBST(nums[: mid])
+        root.right = self.sortedArrayToBST(nums[mid + 1:])
+        return root
+```
+### 109.有序链表转换二叉搜索树
+> 给定一个单链表的头节点`  head `，其中的元素 **按升序排序** ，将其转换为高度平衡的二叉搜索树。
+
+本题中，一个高度平衡二叉树是指一个二叉树每个节点 的左右两个子树的高度差不超过` 1`。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/convert-sorted-list-to-binary-search-tree  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def sortedListToBST(self, head: Optional[ListNode]) -> Optional[TreeNode]:
+        if not head:
+            return None
+
+        if not head.next:
+            return TreeNode(head.val)
+
+        # 寻找链表中点
+        mid = self.find_mid(head)
+        root = TreeNode(mid.val)
+        root.left = self.sortedListToBST(head)
+        root.right = self.sortedListToBST(mid.next)
+        return root
+
+    def find_mid(self, head):
+        pre, slow, fast = head, head.next, head.next.next
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+            pre = pre.next
+        # 把链表断开
+        pre.next = None
+        return slow
 ```
 ### 124.二叉树中的最大路径和
 > **路径** 被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中 **至多出现一次** 。该路径 **至少包含一个** 节点，且不一定经过根节点。  
@@ -4287,6 +4365,36 @@ class Solution:
                         ans += 1
             return ans
     ```
+### 669.修剪二叉搜索树★
+> 给你二叉搜索树的根节点` root `，同时给定最小边界`low `和最大边界 `high`。通过修剪二叉搜索树，使得所有节点的值在`[low, high]`中。修剪树 **不应该** 改变保留在树中的元素的相对结构 (即，如果没有被移除，原有的父代子代关系都应当保留)。 可以证明，存在 **唯一**的答案 。
+
+所以结果应当返回修剪好的二叉搜索树的新的根节点。注意，根节点可能会根据给定的边界发生改变。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/trim-a-binary-search-tree  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def trimBST(self, root: Optional[TreeNode], low: int, high: int) -> Optional[TreeNode]:
+        if not root:
+            return None
+        
+        if root.val < low:
+            root = self.trimBST(root.right, low, high)
+        elif root.val > high:
+            root = self.trimBST(root.left, low, high)
+        else:
+            root.left = self.trimBST(root.left, low, high)
+            root.right = self.trimBST(root.right, low, high)
+        return root
+```
 ### 692.前K个高频单词
 > 给定一个单词列表` words `和一个整数` k `，返回前` k `个出现次数最多的单词。  
 返回的答案应该按单词出现频率由高到低排序。如果不同的单词有相同出现频率， 按**字典顺序** 排序。  
@@ -4324,6 +4432,32 @@ class Solution:
             count += 1
         ans.sort(reverse=True)
         return [i.key for i in ans]
+```
+### 700.二叉搜索树中的搜索
+> 给定二叉搜索树（BST）的根节点` root `和一个整数值` val`。  
+你需要在` BST `中找到节点值等于` val `的节点。 返回以该节点为根的子树。 如果节点不存在，则返回 `null `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/search-in-a-binary-search-tree  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def searchBST(self, root: TreeNode, val: int) -> TreeNode:
+        if not root:
+            return None
+        if root.val < val:
+            return self.searchBST(root.right, val)
+        elif root.val > val:
+            return self.searchBST(root.left, val)
+        else:
+            return root
 ```
 ### 735.行星碰撞
 > 给定一个整数数组` asteroids`，表示在同一行的行星。  
