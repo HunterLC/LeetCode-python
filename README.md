@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-108题-green)
+![](https://img.shields.io/badge/已覆盖-110题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -82,11 +82,13 @@
     + [264.丑数 ii](#264丑数ii)
     + [278.第一个错误版本](#278第一个错误版本)
     + [283.移动零](#283移动零)
+    + [285.二叉搜索树中的中序后继(剑指offer ii 053)](#285二叉搜索树中的中序后继剑指offer-ii-053)
     + [295.数据流的中位数](#295数据流的中位数)
     + [297.二叉树的序列化与反序列化](#297二叉树的序列化与反序列化)
     + [299.猜数字游戏](#299猜数字游戏)
     + [310.最小高度树★](#310最小高度树)
     + [328.奇偶链表](#328奇偶链表)
+    + [341.扁平化嵌套列表迭代器](#341扁平化嵌套列表迭代器)
     + [347.前k个高频元素](#347前k个高频元素)
     + [350.两个数组的交集 ii](#350两个数组的交集ii)
     + [378.有序矩阵中的第k小的元素](#378有序矩阵中的第k小的元素)
@@ -567,9 +569,12 @@ def bfs(root: TreeNode):
 
 ##### 代表题目
 543、226、101☆、124、236、235、105、104、987、572☆、100☆、863、1110  
-二叉搜索树：230、98、669、700、108、109
+二叉搜索树：230、98、669、700、108、109、285
 
 注：带☆的题目表示极度相似
+
+
+#### 图类问题
 
 ## 题目
 ### 1.两数之和
@@ -3574,6 +3579,40 @@ class Solution:
                 if slow < fast and fast < n:
                     nums[slow], nums[fast] = nums[fast], nums[slow] 
 ```
+### 285.二叉搜索树中的中序后继(剑指Offer II 053)
+> 给定一棵二叉搜索树和其中的一个节点` p `，找到该节点在树中的中序后继。如果节点没有中序后继，请返回` null `。
+
+节点` p `的后继是值比` p.val `大的节点中键值最小的节点，即按中序遍历的顺序节点` p `的下一个节点。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/P5rCT8  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def inorderSuccessor(self, root: 'TreeNode', p: 'TreeNode') -> 'TreeNode':
+        # 中序遍历
+        stack = []
+        pre = None
+        while root or stack:
+            while root:
+                stack.append(root)
+                root = root.left
+            root = stack.pop()
+            if pre == p:
+                return root
+            else:
+                pre = root
+            root = root.right
+        return None
+```
 ### 295.数据流的中位数
 > 中位数是有序列表中间的数。如果列表长度是偶数，中位数则是中间两个数的平均值。  
 例如，  
@@ -3844,6 +3883,133 @@ class Solution:
         odd.next = succ
         return head
 ```
+### 341.扁平化嵌套列表迭代器
+> 给你一个嵌套的整数列表` nestedList `。每个元素要么是一个整数，要么是一个列表；该列表的元素也可能是整数或者是其他列表。请你实现一个迭代器将其扁平化，使之能够遍历这个列表中的所有整数。
+
+实现扁平迭代器类` NestedIterator `：
+
++ `NestedIterator(List<NestedInteger> nestedList)` 用嵌套列表` nestedList` 初始化迭代器。
++ `int next()` 返回嵌套列表的下一个整数。
++ `boolean hasNext()` 如果仍然存在待迭代的整数，返回 `true` ；否则，返回 `false` 。
+
+你的代码将会用下述伪代码检测：
+```
+initialize iterator with nestedList
+res = []
+while iterator.hasNext()
+    append iterator.next() to the end of res
+return res
+```
+
+如果` res `与预期的扁平化列表匹配，那么你的代码将会被判为正确。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/flatten-nested-list-iterator  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 递归
+    ```
+    # """
+    # This is the interface that allows for creating nested lists.
+    # You should not implement it, or speculate about its implementation
+    # """
+    #class NestedInteger:
+    #    def isInteger(self) -> bool:
+    #        """
+    #        @return True if this NestedInteger holds a single integer, rather than a nested list.
+    #        """
+    #
+    #    def getInteger(self) -> int:
+    #        """
+    #        @return the single integer that this NestedInteger holds, if it holds a single integer
+    #        Return None if this NestedInteger holds a nested list
+    #        """
+    #
+    #    def getList(self) -> [NestedInteger]:
+    #        """
+    #        @return the nested list that this NestedInteger holds, if it holds a nested list
+    #        Return None if this NestedInteger holds a single integer
+    #        """
+
+    class NestedIterator:
+        def __init__(self, nestedList: [NestedInteger]):
+            self.queue = deque()
+            self.__dfs(nestedList)
+            
+        
+        def next(self) -> int:
+            return self.queue.popleft()
+        
+        def hasNext(self) -> bool:
+            return True if len(self.queue) > 0 else False
+        
+        def __dfs(self, nestedList):
+            for item in nestedList:
+                # 是数字，直接添加
+                if item.isInteger():
+                    self.queue.append(item.getInteger())
+                else:
+                    # 是列表, 递归求解
+                    self.__dfs(item.getList())
+                    
+    # Your NestedIterator object will be instantiated and called as such:
+    # i, v = NestedIterator(nestedList), []
+    # while i.hasNext(): v.append(i.next())
+    ```
+
++ 迭代
+    ```
+    # """
+    # This is the interface that allows for creating nested lists.
+    # You should not implement it, or speculate about its implementation
+    # """
+    #class NestedInteger:
+    #    def isInteger(self) -> bool:
+    #        """
+    #        @return True if this NestedInteger holds a single integer, rather than a nested list.
+    #        """
+    #
+    #    def getInteger(self) -> int:
+    #        """
+    #        @return the single integer that this NestedInteger holds, if it holds a single integer
+    #        Return None if this NestedInteger holds a nested list
+    #        """
+    #
+    #    def getList(self) -> [NestedInteger]:
+    #        """
+    #        @return the nested list that this NestedInteger holds, if it holds a nested list
+    #        Return None if this NestedInteger holds a single integer
+    #        """
+
+    class NestedIterator:
+        def __init__(self, nestedList):
+            self.stack = []
+            # 把nestedList中的元素逆序放进栈里
+            for i in range(len(nestedList) - 1, -1, -1):
+                self.stack.append(nestedList[i])
+            
+
+        def next(self):
+            # next方法调用的时候必为Integer
+            return self.stack.pop().getInteger()
+
+        def hasNext(self):
+            while self.stack:
+                # 访问栈顶元素
+                cur = self.stack[-1]
+                # 是Integer，不用处理，直接next调用就好了
+                if cur.isInteger():
+                    return True
+                # 是list，那就把list再次拿出来，逆序放进栈里
+                cur = self.stack.pop()
+                for i in range(len(cur.getList()) - 1, -1, -1):
+                    self.stack.append(cur.getList()[i])
+            return False
+
+    # Your NestedIterator object will be instantiated and called as such:
+    # i, v = NestedIterator(nestedList), []
+    # while i.hasNext(): v.append(i.next())
+    ```
 ### 347.前K个高频元素
 > 给你一个整数数组` nums `和一个整数` k `，请你返回其中出现频率前` k `高的元素。你可以按 **任意顺序** 返回答案。
 
