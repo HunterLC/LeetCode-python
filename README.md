@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-110题-green)
+![](https://img.shields.io/badge/已覆盖-111题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -93,6 +93,7 @@
     + [350.两个数组的交集 ii](#350两个数组的交集ii)
     + [378.有序矩阵中的第k小的元素](#378有序矩阵中的第k小的元素)
     + [380.o1时间插入删除和获取随机元素](#380o1时间插入删除和获取随机元素)
+    + [394.字符串解码★](#394字符串解码)
     + [395.至少有k个重复字符的最长子串](#395至少有-k-个重复字符的最长子串)
     + [409.最长回文串](#409最长回文串)
     + [417.太平洋大西洋水流问题](#417太平洋大西洋水流问题)
@@ -4135,6 +4136,74 @@ class RandomizedSet:
 # param_2 = obj.remove(val)
 # param_3 = obj.getRandom()
 ```
+### 394.字符串解码★
+> 给定一个经过编码的字符串，返回它解码后的字符串。  
+编码规则为: `k[encoded_string]`，表示其中方括号内部的` encoded_string `正好重复` k `次。注意` k `保证为正整数。
+
+你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。
+
+此外，你可以认为原始数据不包含数字，所有的数字只表示重复的次数` k `，例如不会出现像` 3a `或` 2[4] `的输入。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/decode-string  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 栈
+    ```
+    class Solution:
+        def decodeString(self, s: str) -> str:
+            # 典型的括号匹配问题，自然就联想到栈
+            stack, ans, multi = [], "", 0
+            for c in s:
+                if c == '[':
+                    # 遇到左括号的时候，直接将前面记录的系数和字符压入栈里
+                    stack.append([ans, multi])
+                    # 系数和字符重新置零
+                    ans, multi = "", 0
+                elif c == ']':
+                    # 遇到右括号，取出最近的系数和字符进行拼接答案
+                    last_ans, cur_multi = stack.pop()
+                    ans = last_ans + cur_multi * ans
+                elif '0' <= c <= '9':
+                    # 遇到数字，拼接成int型
+                    multi = multi * 10 + int(c)            
+                else:
+                    # 遇到字母，拼接
+                    ans += c
+            return ans
+    ```
+
++ 递归
+    ```
+    class Solution:
+        def decodeString(self, s: str) -> str:
+            # 其实括号里面的内容可以当作最原始的字符串处理，也就是递归
+            def dfs(s, i):
+                # s为待处理的字符串，i为字符串该递归轮次开始处理的下标位置
+                ans, multi = "", 0
+                # 字符串还没处理完时
+                while i < len(s):
+                    if '0' <= s[i] <= '9':
+                        # 遇到数字，组合int型系数
+                        multi = multi * 10 + int(s[i])
+                    elif s[i] == '[':
+                        # 遇到左括号，说明新一轮处理该开始了，递归
+                        i, tmp = dfs(s, i + 1)
+                        # 更新字符
+                        ans += multi * tmp
+                        # 系数置零
+                        multi = 0
+                    elif s[i] == ']':
+                        # 遇到右括号，代表这一个括号里的部分结束处理
+                        return i, ans
+                    else:
+                        # 字符拼接
+                        ans += s[i]
+                    i += 1
+                return ans
+            return dfs(s, 0)
+
+    ```
 ### 395.至少有 K 个重复字符的最长子串
 > 给你一个字符串` s `和一个整数` k `，请你找出` s `中的最长子串， 要求该子串中的每一字符出现次数都不少于` k `。返回这一子串的长度。
 
