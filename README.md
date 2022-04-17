@@ -1,10 +1,11 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-111题-green)
+![](https://img.shields.io/badge/已覆盖-112题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
 ![](https://img.shields.io/badge/深度优先搜索-DFS-purple)
+![](https://img.shields.io/badge/回溯-BackTracking-fuchsia)
 
 我要刷题**冲冲冲**
 
@@ -14,6 +15,7 @@
     + [同向双指针/滑动窗口](#no2-同向双指针滑动窗口)
     + [宽度优先搜索bfs](#no3-宽度优先搜索bfs)
     + [深度优先搜索dfs](#no4-深度优先搜索dfs)
+    + [回溯](#no5-回溯)
 
 + [题目](#题目)
     + [1.两数之和](#1两数之和)
@@ -32,6 +34,7 @@
     + [33.搜索旋转排序数组](#33搜索旋转排序数组)
     + [34.在排序数组中查找元素的第一个和最后一个位置](#34-在排序数组中查找元素的第一个和最后一个位置)
     + [49.字母异位词分组](#49字母异位词分组)
+    + [51.N皇后★](#51n皇后)
     + [54.螺旋矩阵](#54螺旋矩阵)
     + [56.合并区间](#56合并区间)
     + [69.x的平方根](#69x的平方根)
@@ -577,6 +580,9 @@ def bfs(root: TreeNode):
 
 #### 图类问题
 
+### No.5 回溯
+#### 代表题目
+51
 ## 题目
 ### 1.两数之和
 > 给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 和为目标值 `target`  的那 两个 整数，并返回它们的数组下标。
@@ -1254,6 +1260,73 @@ class Solution:
 
         return list(result.values())
 ```
+### 51.N皇后★
+> **n皇后问题** 研究的是如何将` n `个皇后放置在` n×n `的棋盘上，并且使皇后彼此之间不能相互攻击。  
+给你一个整数` n `，返回所有不同的**n皇后问题** 的解决方案。
+
+每一种解法包含一个不同的 **n 皇后问题** 的棋子放置方案，该方案中` 'Q' `和` '.' `分别代表了皇后和空位。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/n-queens  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 回溯法
+    ```
+    class Solution:
+        def solveNQueens(self, n: int) -> List[List[str]]:
+            # 回溯法，构造棋盘树，节点的子树数量等于列数，树的高度为行数
+            if not n: 
+                return []
+            # 用点来初始化二位矩阵，后面再放置Q
+            board = [['.'] * n for _ in range(n)]
+            ans = []
+
+            def is_vaild(board, row, col):
+                # 在放置Q之前先检查一下是否合法
+                # 判断同一列是否冲突
+                for i in range(row):
+                    if board[i][col] == 'Q':
+                        return False
+
+                # 判断左上角是否冲突
+                i = row -1
+                j = col -1
+                while i >= 0 and j >= 0:
+                    if board[i][j] == 'Q':
+                        return False
+                    i -= 1
+                    j -= 1
+
+                # 判断右上角是否冲突
+                i = row - 1
+                j = col + 1
+                while i >= 0 and j < len(board):
+                    if board[i][j] == 'Q':
+                        return False
+                    i -= 1
+                    j += 1
+
+                return True
+
+            def backtracking(board, row, n):
+                # 每一行都摆放完毕，而且可行，就记录答案
+                if row == n:
+                    temp_ans = []
+                    for temp in board:
+                        temp_str = "".join(temp)
+                        temp_ans.append(temp_str)
+                    ans.append(temp_ans)
+                    return None
+                for col in range(n):
+                    if not is_vaild(board, row, col):
+                        continue
+                    board[row][col] = 'Q'
+                    backtracking(board, row+1, n)
+                    board[row][col] = '.'  # 回溯
+
+            backtracking(board, 0, n)
+            return ans
+    ```
 ### 54.螺旋矩阵
 > 给你一个` m `行` n `列的矩阵` matrix `，请按照**顺时针**螺旋顺序 ，返回矩阵中的所有元素。
 
