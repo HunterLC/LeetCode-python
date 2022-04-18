@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-112题-green)
+![](https://img.shields.io/badge/已覆盖-113题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -35,6 +35,7 @@
     + [34.在排序数组中查找元素的第一个和最后一个位置](#34-在排序数组中查找元素的第一个和最后一个位置)
     + [49.字母异位词分组](#49字母异位词分组)
     + [51.N皇后★](#51n皇后)
+    + [52.N皇后ii](#52n皇后ii)
     + [54.螺旋矩阵](#54螺旋矩阵)
     + [56.合并区间](#56合并区间)
     + [69.x的平方根](#69x的平方根)
@@ -582,7 +583,8 @@ def bfs(root: TreeNode):
 
 ### No.5 回溯
 #### 代表题目
-51
+51、52
+
 ## 题目
 ### 1.两数之和
 > 给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 和为目标值 `target`  的那 两个 整数，并返回它们的数组下标。
@@ -1327,6 +1329,59 @@ class Solution:
             backtracking(board, 0, n)
             return ans
     ```
+### 52.N皇后II
+> **n 皇后问题** 研究的是如何将` n `个皇后放置在` n × n `的棋盘上，并且使皇后彼此之间不能相互攻击。  
+给你一个整数` n `，返回**n 皇后问题** 不同的解决方案的数量。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/n-queens-ii  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def totalNQueens(self, n: int) -> int:
+        # 回溯法
+        ans = 0
+        board = [['.']*n for _ in range(n)]
+
+        def is_valid(board, row, col):
+            # 检查同一列是否含有皇后
+            for i in range(row):
+                if board[i][col] == 'Q':
+                    return False
+            # 检查左上角是否含有皇后
+            i, j = row - 1, col - 1
+            while i >= 0 and j >= 0:
+                if board[i][j] == 'Q':
+                    return False
+                i -= 1
+                j -= 1
+            # 检查右上角是否含有皇后
+            i, j = row - 1, col + 1
+            while i >= 0 and j < n:
+                if board[i][j] == 'Q':
+                    return False
+                i -= 1
+                j += 1
+            return True
+
+        def backtracking(board, row):
+            # 棋盘都摆放完毕了
+            if row == n:
+                nonlocal ans
+                ans += 1
+                return None
+            for i in range(n):
+                if not is_valid(board, row, i):
+                    continue
+                board[row][i] = 'Q'
+                backtracking(board, row + 1)
+                # 回溯
+                board[row][i] = '.'
+   
+        backtracking(board, 0)
+        return ans
+```
 ### 54.螺旋矩阵
 > 给你一个` m `行` n `列的矩阵` matrix `，请按照**顺时针**螺旋顺序 ，返回矩阵中的所有元素。
 
