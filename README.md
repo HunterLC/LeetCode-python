@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-113题-green)
+![](https://img.shields.io/badge/已覆盖-115题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -56,6 +56,7 @@
     + [109.有序链表转换二叉搜索树](#109有序链表转换二叉搜索树)
     + [124.二叉树中的最大路径和](#124二叉树中的最大路径和)
     + [125.验证回文串](#125验证回文串)
+    + [126.单词接龙ii★](#126单词接龙ii)
     + [127.单词接龙](#127单词接龙)
     + [128.最长连续序列](#128最长连续序列)
     + [130.被围绕的区域★](#130被围绕的区域)
@@ -87,6 +88,7 @@
     + [278.第一个错误版本](#278第一个错误版本)
     + [283.移动零](#283移动零)
     + [285.二叉搜索树中的中序后继(剑指offer ii 053)](#285二叉搜索树中的中序后继剑指offer-ii-053)
+    + [290.单词规律](#290单词规律)
     + [295.数据流的中位数](#295数据流的中位数)
     + [297.二叉树的序列化与反序列化](#297二叉树的序列化与反序列化)
     + [299.猜数字游戏](#299猜数字游戏)
@@ -583,7 +585,7 @@ def bfs(root: TreeNode):
 
 ### No.5 回溯
 #### 代表题目
-51、52
+51、52、126★
 
 ## 题目
 ### 1.两数之和
@@ -2233,6 +2235,70 @@ class Solution:
                     right -= 1
         return True
 ```
+### 126.单词接龙II★
+> 按字典` wordList` 完成从单词 `beginWord` 到单词 `endWord` 转化，一个表示此过程的**转换序列** 是形式上像 `beginWord -> s1 -> s2 -> ... -> sk` 这样的单词序列，并满足：
+
++ 每对相邻的单词之间仅有单个字母不同。
++ 转换过程中的每个单词` si（1 <= i <= k）`必须是字典` wordList `中的单词。注意，`beginWord `不必是字典` wordList` 中的单词。
++ `sk == endWord`
+
+给你两个单词 `beginWord` 和 `endWord` ，以及一个字典` wordList` 。请你找出并返回所有从 `beginWord` 到 `endWord` 的 **最短转换序列** ，如果不存在这样的转换序列，返回一个空列表。每个序列都应该以单词列表 `[beginWord, s1, s2, ..., sk] `的形式返回。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/word-ladder-ii 
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ BFS+DFS+回溯+队列
+```
+class Solution:
+    def findLadders(self, beginWord: str, endWord: str, wordList: List[str]) -> List[List[str]]:
+        # 结尾单词并不存在于单词序列中
+        if not endWord in wordList:
+            return []
+        word_set, level, has_sequence = set(wordList), 0, False
+        # {word: a list of next words}
+        word_next = collections.defaultdict(list)
+        # {word: level of the word}
+        word_level = {beginWord: level}
+        # BFS 搜索队列
+        queue = collections.deque([beginWord])
+
+        # BFS构建word_next和word_level词典
+        while queue:
+            level += 1
+            # 取出同一level的word
+            for _ in range(len(queue)):
+                w = queue.popleft()
+                wl = list(w)
+                for idx, c in enumerate(wl):
+                    for j in range(26):
+                        wl[idx] = chr(ord("a") + j)
+                        nw = "".join(wl)
+                        # 出现了新词
+                        if nw != w and nw in word_set:
+                            word_next[w].append(nw)
+                            if nw not in word_level:
+                                word_level[nw] = level
+                                # 不是结尾单词，就加进队列
+                                if nw != endWord:
+                                    queue.append(nw)
+                    # 字符还原
+                    wl[idx] = c
+
+        def backtrack(word, path):
+            if word == endWord:
+                return [list(path)]
+            res = []
+            for nw in word_next[word]:
+                # level提升才继续回溯，否则就是同一层的词，没必要，显然不是最短路径
+                if word_level[nw] == word_level[word] + 1:
+                    path.append(nw)
+                    res.extend(backtrack(nw, path))
+                    path.pop()
+            return res
+
+        return backtrack(beginWord, [beginWord])
+```
 ### 127.单词接龙
 > 字典` wordList `中从单词` beginWord `和` endWord `的 **转换序列** 是一个按下述规格形成的序列 `beginWord -> s1 -> s2 -> ... -> sk`：  
 + 每一对相邻的单词只差一个字母。  
@@ -3741,6 +3807,32 @@ class Solution:
                 pre = root
             root = root.right
         return None
+```
+### 290.单词规律
+> 给定一种规律` pattern `和一个字符串` s `，判断` s `是否遵循相同的规律。
+
+这里的 **遵循** 指完全匹配，例如，` pattern `里的每个字母和字符串` str `中的每个非空单词之间存在着双向连接的对应规律。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/word-pattern  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def wordPattern(self, pattern: str, s: str) -> bool:
+        word2ch = dict()
+        ch2word = dict()
+        words = s.split()
+        if len(pattern) != len(words):
+            return False
+        
+        for ch, word in zip(pattern, words):
+            if (word in word2ch and word2ch[word] != ch) or (ch in ch2word and ch2word[ch] != word):
+                return False
+            word2ch[word] = ch
+            ch2word[ch] = word
+    
+        return True
 ```
 ### 295.数据流的中位数
 > 中位数是有序列表中间的数。如果列表长度是偶数，中位数则是中间两个数的平均值。  
