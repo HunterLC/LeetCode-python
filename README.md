@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-115题-green)
+![](https://img.shields.io/badge/已覆盖-116题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -45,6 +45,7 @@
     + [76.最小覆盖子串](#76最小覆盖子串)
     + [88.合并两个有序数组](#88合并两个有序数组)
     + [92.反转链表ii](#92反转链表-ii)
+    + [93.复原IP地址](#93复原ip地址)
     + [98.验证二叉搜索树](#98验证二叉搜索树)
     + [100.相同的树](#100相同的树)
     + [101.对称二叉树](#101对称二叉树)
@@ -585,7 +586,7 @@ def bfs(root: TreeNode):
 
 ### No.5 回溯
 #### 代表题目
-51、52、126★
+51、52、126★、93
 
 ## 题目
 ### 1.两数之和
@@ -1816,6 +1817,59 @@ class Solution:
                 next.next = pre.next
                 pre.next = next
             return dummy_node.next
+    ```
+### 93.复原IP地址
+> **有效 IP 地址** 正好由四个整数（每个整数位于` 0 `到` 255 `之间组成，且不能含有前导` 0`），整数之间用` '.' `分隔。  
+例如：`"0.1.2.201" `和` "192.168.1.1"` 是 **有效** `IP` 地址，但是 `"0.011.255.245"`、`"192.168.1.312"` 和 `"192.168@1.1"` 是 **无效** `IP` 地址。  
+给定一个只包含数字的字符串` s `，用以表示一个` IP `地址，返回所有可能的**有效 IP 地址**，这些地址可以通过在` s `中插入` '.' `来形成。你 **不能** 重新排序或删除` s `中的任何数字。你可以按 **任何** 顺序返回答案。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/restore-ip-addresses  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ DFS+回溯
+    ```
+    class Solution:
+        def restoreIpAddresses(self, s: str) -> List[str]:
+            if len(s) < 4 or len(s) > 12:
+                return []
+            
+            ans = []
+            
+            def is_valid(ch):
+                # 0为先导
+                if len(ch) > 1 and ch[0] == '0':
+                    return False
+                # 大于了255
+                if len(ch) > 1 and int(ch) > 255:
+                    return False
+                return True
+
+            def backtracking(tmp, split_times, n):
+                # 本次递归开始处理的下标位置已经越界
+                if n == len(s):
+                    # 分了四次，说明成功了
+                    if split_times == 4:
+                        ans.append('.'.join(tmp))
+                    return None
+                
+                # 如果还未处理的字符长度在规定次数内不够分，或者不能在规定次数内分割完
+                # 比如字符是22143，现在是221.,可以看到剩余43再怎么分也分不出3段，这就是不够分
+                # 比如字符是1112345，现在是1.1.1.,可以看到剩余2345再怎么分也不能在最后一次内分割完毕，这就是分不完
+                if len(s) - n < (4 - split_times) or len(s) - n > 3 * (4 - split_times):
+                    return None
+                for i in range(3):
+                    if n + i >= len(s):
+                        break
+                    ch = s[n: n+i+1]
+                    if is_valid(ch):
+                        tmp.append(ch)
+                        backtracking(tmp, split_times +  1, n + i + 1)
+                        # 回溯
+                        tmp.pop()
+
+            backtracking([], 0, 0)    
+            return ans
     ```
 ### 98.验证二叉搜索树
 > 给你一个二叉树的根节点` root `，判断其是否是一个有效的二叉搜索树。
