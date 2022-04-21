@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-116题-green)
+![](https://img.shields.io/badge/已覆盖-118题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -28,6 +28,7 @@
     + [16.最接近的三数之和](#16最接近的三数之和)
     + [18.四数之和](#18四数之和)
     + [20.有效的括号](#20有效的括号)
+    + [22.括号生成](#22括号生成)
     + [23.合并k个升序链表](#23合并k个升序链表)
     + [26.删除有序数组中的重复项](#26删除有序数组中的重复项)
     + [27.移除元素](#27移除元素)
@@ -119,6 +120,7 @@
     + [752.打开转盘锁★](#752打开转盘锁)
     + [767.重构字符串](#767重构字符串)
     + [815.公交路线★](#815公交路线)
+    + [856.括号的分数](#856括号的分数)
     + [863.二叉树中所有距离为k的结点](#863二叉树中所有距离为-k-的结点)
     + [876.链表的中间结点](#876链表的中间结点)
     + [895.最大频率栈](#895最大频率栈)
@@ -586,7 +588,7 @@ def bfs(root: TreeNode):
 
 ### No.5 回溯
 #### 代表题目
-51、52、126★、93
+51、52、126★、93、22
 
 ## 题目
 ### 1.两数之和
@@ -1057,6 +1059,45 @@ class Solution:
                     continue
                 return False
         return True if len(stack) == 0 else False
+```
+### 22.括号生成
+> 数字` n `代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 **有效的** 括号组合。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/generate-parentheses/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ DFS+回溯
+```
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        ans = []
+        count_dict = collections.defaultdict(int)
+
+        def backtracking(tmp, count_dict, start, n):
+            # n对括号已经生成完毕
+            if start == 2 * n:
+                if count_dict['('] == count_dict[')']:
+                    ans.append(''.join(tmp))
+                return None
+            # 右括号开头
+            if len(tmp) > 0 and tmp[0] == ')':
+                return None
+            
+            # 左括号或者右括号超过最大值了,或者右括号比左括号多
+            if count_dict['('] > n or count_dict[')'] > n or count_dict['('] < count_dict[')']:
+                return None
+
+            for i in ['(', ')']:
+                tmp.append(i)
+                count_dict[i] += 1
+                backtracking(tmp, count_dict, start + 1, n)
+                # 回溯
+                tmp.pop()
+                count_dict[i] -= 1
+        
+        backtracking([], count_dict, 0, n)
+        return ans
 ```
 ### 23.合并K个升序链表
 > 给你一个链表数组，每个链表都已经按升序排列。  
@@ -5171,6 +5212,30 @@ class Solution:
         if source == target: 
             return 0
         return bfs()
+```
+### 856.括号的分数
+> 给定一个平衡括号字符串` S`，按下述规则计算该字符串的分数：
+
++ `()` 得 `1` 分。
++ `AB` 得 `A + B` 分，其中` A `和 `B `是平衡括号字符串。
++ `(A)` 得 `2 * A` 分，其中` A `是平衡括号字符串。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/score-of-parentheses  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def scoreOfParentheses(self, s: str) -> int:
+        stack = [0]
+        for x in s:
+            if x == '(':
+                stack.append(0)
+            else:
+                value = stack.pop()
+                stack[-1] += max(2 * value, 1)
+
+        return stack.pop()
 ```
 ### 863.二叉树中所有距离为 K 的结点
 > 给定一个二叉树（具有根结点` root`）， 一个目标结点` target` ，和一个整数值 `k `。
