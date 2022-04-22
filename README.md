@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-118题-green)
+![](https://img.shields.io/badge/已覆盖-119题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -94,6 +94,7 @@
     + [295.数据流的中位数](#295数据流的中位数)
     + [297.二叉树的序列化与反序列化](#297二叉树的序列化与反序列化)
     + [299.猜数字游戏](#299猜数字游戏)
+    + [301.删除无效的括号★](#301删除无效的括号)
     + [310.最小高度树★](#310最小高度树)
     + [328.奇偶链表](#328奇偶链表)
     + [341.扁平化嵌套列表迭代器](#341扁平化嵌套列表迭代器)
@@ -588,7 +589,7 @@ def bfs(root: TreeNode):
 
 ### No.5 回溯
 #### 代表题目
-51、52、126★、93、22
+51、52、126★、93、22、301★
 
 ## 题目
 ### 1.两数之和
@@ -4116,6 +4117,64 @@ class Solution:
                 b += min(value,len(dict_secret[key]))
         return str(a)+'A'+str(b)+'B'
 ```
+### 301.删除无效的括号★
+> 给你一个由若干括号和字母组成的字符串` s `，删除最小数量的无效括号，使得输入的字符串有效。  
+返回所有可能的结果。答案可以按 **任意顺序** 返回。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/minimum-height-trees  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ DFS+回溯
+```
+class Solution:
+    def removeInvalidParentheses(self, s: str) -> List[str]:
+        ans = []
+        # 需要移除的左右括号数目
+        left, right = 0, 0
+
+        # 统计s中需要移除的左右括号数目
+        for ch in s:
+            if ch == '(':
+                left += 1
+            elif ch == ')':
+                if left == 0:
+                    right += 1
+                else:
+                    left -= 1
+
+        def is_valid(s):
+            # 判断当前字符是否合法
+            count = 0
+            for ch in s:
+                if ch == '(':
+                    count += 1
+                elif ch == ')':
+                    count -= 1
+                    # 右括号比左括号多就不合法
+                    if count < 0:
+                        return False 
+            return True if count == 0 else False
+
+        def backtracking(s, start, left, right):
+            if left == 0 and right == 0:
+                if is_valid(s):
+                    ans.append(s)
+                return None
+            for i in range(start, len(s)):
+                # 如果剩余的字符长度都不足删去，则不合法
+                if i > start and s[i] == s[i-1]:
+                    continue
+                if len(s) - i < left + right:
+                    break
+                if left > 0 and s[i]  == '(':
+                    backtracking(s[:i] + s[i+1:], i, left - 1, right)
+                if right > 0 and s[i]  == ')':
+                    backtracking(s[:i] + s[i+1:], i, left, right - 1)
+        
+        backtracking(s, 0, left, right)
+        return ans
+```
 ### 310.最小高度树★
 > 树是一个无向图，其中任何两个顶点只通过一条路径连接。 换句话说，一个任何没有简单环路的连通图都是一棵树。  
 给你一棵包含` n `个节点的树，标记为` 0 `到` n - 1 `。给定数字` n `和一个有` n - 1 `条无向边的` edges `列表（每一个边都是一对标签），其中` edges[i] = [ai, bi] `表示树中节点` ai `和` bi `之间存在一条无向边。  
@@ -4125,7 +4184,7 @@ class Solution:
 树的 **高度** 是指根节点和叶子节点之间最长向下路径上边的数量。
 
 来源：力扣（LeetCode）  
-链接：https://leetcode-cn.com/problems/minimum-height-trees  
+链接：https://leetcode-cn.com/problems/remove-invalid-parentheses/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 拓扑排序+BFS
