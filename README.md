@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-119题-green)
+![](https://img.shields.io/badge/已覆盖-120题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
 ![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
@@ -34,6 +34,7 @@
     + [27.移除元素](#27移除元素)
     + [33.搜索旋转排序数组](#33搜索旋转排序数组)
     + [34.在排序数组中查找元素的第一个和最后一个位置](#34-在排序数组中查找元素的第一个和最后一个位置)
+    + [37.解数独★](#37解数独)
     + [49.字母异位词分组](#49字母异位词分组)
     + [51.N皇后★](#51n皇后)
     + [52.N皇后ii](#52n皇后ii)
@@ -589,7 +590,7 @@ def bfs(root: TreeNode):
 
 ### No.5 回溯
 #### 代表题目
-51、52、126★、93、22、301★
+51、52、126★、93、22、301★、37★
 
 ## 题目
 ### 1.两数之和
@@ -1288,6 +1289,66 @@ class Solution:
         if start == len(nums) or nums[start] != target:
             return [-1,-1]
         return [start,end]
+```
+### 37.解数独★
+> 编写一个程序，通过填充空格来解决数独问题。
+
+数独的解法需遵循如下规则：
+
++ 数字` 1-9 `在每一行只能出现一次。
++ 数字` 1-9 `在每一列只能出现一次。
++ 数字` 1-9 `在每一个以粗实线分隔的` 3x3 `宫内只能出现一次。
+
+数独部分空格内已填入了数字，空白格用` '.'` 表示。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/sudoku-solver  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ DFS+回溯
+```
+class Solution:
+    def solveSudoku(self, board: List[List[str]]) -> None:
+        """
+        Do not return anything, modify board in-place instead.
+        """
+        def is_valid(board, row, col, val):
+            #判断行是否冲突
+            for i in range(9):
+                if board[i][col] == val:
+                    return False
+            #判断列是否冲突
+            for i in range(9):
+                if board[row][i] == val:
+                    return False
+            # 判断3*3的格子里是否冲突
+            start_i = (row // 3) * 3
+            start_j = (col // 3) * 3
+            for i in range(start_i, start_i+3):
+                for j in range(start_j, start_j+3):
+                    if board[i][j] == val:
+                        return False
+            return True
+        
+        def backtracking(board): 
+            for i in range(len(board)):
+                for j in range(len(board[0])):
+                    if board[i][j] != '.':
+                        continue
+                    # 数字是从1-9
+                    for val in range(1, 10):
+                        # 如果能把这个数字填进去，就进行下一个数字的填写
+                        if is_valid(board, i, j, str(val)):
+                            board[i][j] = str(val)
+                            # 只要找到一个满足的条件，就可以return了
+                            if backtracking(board):
+                                return True
+                            board[i][j] = '.'
+                    # 说明1-9的数字都不能填到board[i][j]里面
+                    return False
+            return True
+
+        backtracking(board)
 ```
 ### 49.字母异位词分组
 > 给你一个字符串数组，请你将 **字母异位词** 组合在一起。可以按任意顺序返回结果列表。  
