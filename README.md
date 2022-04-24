@@ -1,23 +1,25 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-120题-green)
+![](https://img.shields.io/badge/已覆盖-122题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
-![](https://img.shields.io/badge/同向双指针-滑动窗口-orange)
-![](https://img.shields.io/badge/宽度优先搜索-BFS-yellow)
-![](https://img.shields.io/badge/深度优先搜索-DFS-purple)
+![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
+![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
+![](https://img.shields.io/badge/深度优先搜索-Depth%20First%20Search|DFS-purple)
 ![](https://img.shields.io/badge/回溯-BackTracking-fuchsia)
+![](https://img.shields.io/badge/前缀树/字典树-Trie-seagreen)
 
 我要刷题**冲冲冲**
 
 ## 目录
-+ [基础知识](#基础知识)
-    + [排序算法](#no1-排序算法java实现)
-    + [同向双指针/滑动窗口](#no2-同向双指针滑动窗口)
-    + [宽度优先搜索bfs](#no3-宽度优先搜索bfs)
-    + [深度优先搜索dfs](#no4-深度优先搜索dfs)
-    + [回溯](#no5-回溯)
++ [1.基础知识](#1基础知识)
+    + [1.1排序算法](#11-排序算法java实现)
+    + [1.2 同向双指针/滑动窗口](#12-同向双指针滑动窗口)
+    + [1.3 宽度优先搜索bfs](#13-宽度优先搜索bfs)
+    + [1.4 深度优先搜索dfs](#14-深度优先搜索dfs)
+    + [1.5 回溯](#15-回溯)
+    + [1.6 字典树](#16-字典树trie)
 
-+ [题目](#题目)
++ [2.题目](#2题目)
     + [1.两数之和](#1两数之和)
     + [2.两数相加](#2两数相加)
     + [3.无重复读字符的最长字串](#3无重复字符的最长子串)
@@ -77,7 +79,9 @@
     + [200.岛屿数量](#200岛屿数量)
     + [206.反转链表](#206反转链表)
     + [207.课程表](#207课程表)
+    + [208.实现trie(前缀树)](#208实现trie前缀树)
     + [210.课程表 ii](#210课程表-ii)
+    + [212.单词搜索ii★](#212单词搜索ii)
     + [215.数组中的第k个最大元素](#215数组中的第k个最大元素)
     + [224.基本计算器](#224基本计算器)
     + [225.用队列实现栈](#225用队列实现栈)
@@ -141,9 +145,9 @@
     + [1472.设计浏览器历史记录](#1472设计浏览器历史记录)
 
 
-## 基础知识
-### No.1 排序算法（java实现）
-#### 1.选择排序
+## 1.基础知识
+### 1.1 排序算法（java实现）
+#### 1.1.1 选择排序
 > 简单选择排序是最简单直观的一种算法，基本思想为每一趟从待排序的数据元素中选择最小（或最大）的一个元素作为首元素，直到所有元素排完为止，简单选择排序是不稳定排序。  
 在算法实现时，每一趟确定最小元素的时候会通过不断地比较交换来使得首位置为当前最小，交换是个比较耗时的操作。其实我们很容易发现，在还未完全确定当前最小元素之前，这些交换都是无意义的。我们可以通过设置一个变量min，每一次比较仅存储较小元素的数组下标，当轮循环结束之后，那这个变量存储的就是当前最小元素的下标，此时再执行交换操作即可。 
 
@@ -163,7 +167,7 @@
         }
     }
 ```
-#### 2.冒泡排序
+#### 1.1.2 冒泡排序
 > 冒泡排序的基本思想是，对相邻的元素进行两两比较，顺序相反则进行交换，这样，每一趟会将最小或最大的元素`浮`到顶端，最终达到完全有序 
 
 示例：  
@@ -185,7 +189,7 @@
         }
     }
 ```
-#### 3.插入排序
+#### 1.1.3插入排序
 > 直接插入排序基本思想是每一步将一个待排序的记录，插入到前面已经排好序的有序序列中去，直到插完所有元素为止。  
 
 示例：  
@@ -202,7 +206,7 @@
         }
     }
 ```
-#### 4.快速排序
+#### 1.1.4 快速排序
 > 快速排序(Quick Sort)使用分治法策略。  
 它的基本思想是：选择一个基准数，通过一趟排序将要排序的数据分割成独立的两部分；其中一部分的所有数据都比另外一部分的所有数据都要小。然后，再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行，以此达到整个数据变成有序序列。  
 **快速排序流程**：  
@@ -247,7 +251,7 @@
     }
 ```
 
-#### 5.归并排序
+#### 1.1.5 归并排序
 > 归并排序（MERGE-SORT）是利用归并的思想实现的排序方法，该算法采用经典的分治（divide-and-conquer）策略:分治法将问题分(divide)成一些小的问题然后递归求解，而治(conquer)的阶段则将分的阶段得到的各答案"修补"在一起，即分而治之。
 + top down
 这种结构很像一棵完全二叉树，本文的归并排序我们采用递归去实现（也可采用迭代的方式去实现）。分阶段可以理解为就是递归拆分子序列的过程，递归深度为log2n。  
@@ -306,7 +310,7 @@ step=8: (1->2->3->4->5->6->7->8->9->11)
 代码参照题目148的链表写法，换汤不换药
 ```
 
-#### 6.希尔排序
+#### 1.1.6 希尔排序
 > 希尔排序是把记录按下标的一定增量分组，对每组使用直接插入排序算法排序；随着增量逐渐减少，每组包含的关键词越来越多，当增量减至1时，整个文件恰被分成一组，算法便终止。  
 希尔排序在数组中采用跳跃式分组的策略，通过某个增量将数组元素划分为若干组，然后分组进行插入排序，随后逐步缩小增量，继续按组进行插入排序操作，直至增量为1。希尔排序通过这种策略使得整个数组在初始阶段达到从宏观上看基本有序，小的基本在前，大的基本在后。然后缩小增量，到增量为1时，其实多数情况下只需微调即可，不会涉及过多的数据移动。  
 我们来看下希尔排序的基本步骤，在此我们选择增量gap=length/2，缩小增量继续以gap = gap/2的方式，这种增量选择我们可以用一个序列来表示，{n/2,(n/2)/2...1}，称为增量序列。希尔排序的增量序列的选择与证明是个数学难题，我们选择的这个增量序列是比较常用的，也是希尔建议的增量，称为希尔增量，但其实这个增量序列不是最优的。此处我们做示例使用希尔增量。
@@ -368,7 +372,7 @@ step=8: (1->2->3->4->5->6->7->8->9->11)
     }
 ```
 
-#### 7.堆排序
+#### 1.1.7 堆排序
 > 堆排序是利用堆这种数据结构而设计的一种排序算法，堆排序是一种选择排序，它的最坏，最好，平均时间复杂度均为O(nlogn)，它也是不稳定排序。  
 
 堆是具有以下性质的完全二叉树：每个结点的值都大于或等于其左右孩子结点的值，称为大顶堆；或者每个结点的值都小于或等于其左右孩子结点的值，称为小顶堆。  
@@ -448,7 +452,7 @@ step 2: 将堆顶元素与末尾元素进行交换，使末尾元素最大。然
     }
 ```
 
-### No.2 同向双指针/滑动窗口
+### 1.2 同向双指针/滑动窗口
 1. 常用模板
 ```
 1. 定义需要用到的变量，如快慢指针int slow = 0, int fast = 0; 输入的string s; 
@@ -473,12 +477,12 @@ return longest
 2. 代表题目
     395、340、424、76、3、1004
 
-### No.3 宽度优先搜索BFS
+### 1.3 宽度优先搜索BFS
 > BFS常用于**层序遍历**和**最短路径**
 
 ![DFS、BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/DFS和BFS示意图1.gif)
 
-#### 二叉树上 `DFS` 与 `BFS` 代码比较  
+#### 1.3.1 二叉树上 `DFS` 与 `BFS` 代码比较  
     + DFS遍历使用**递归**
     ```
     def dfs(root: TreeNode):
@@ -501,7 +505,7 @@ return longest
                 queue.append(node.right)
     ```
 
-#### BFS应用1：层序遍历
+#### 1.3.2 BFS应用1：层序遍历
 
 什么是层序遍历呢？简单来说，层序遍历就是把二叉树分层，然后每一层从左到右遍历：
 
@@ -541,14 +545,14 @@ def bfs(root: TreeNode):
 
 ![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs6.gif)
 
-#### BFS应用2：最短路径/距离
+#### 1.3.3 BFS应用2：最短路径/距离
 
-#### 代表题目
+#### 1.3.4 代表题目
 
 130、752、815、1091、542、1293、417、207、210、310
 
-### No.4 深度优先搜索DFS
-#### 岛屿类问题
+### 1.4 深度优先搜索DFS
+#### 1.4.1 岛屿类问题
 1. 好题解  
 
     [巨好的帖子](https://leetcode-cn.com/problems/number-of-islands/solution/dao-yu-lei-wen-ti-de-tong-yong-jie-fa-dfs-bian-li-/)
@@ -557,7 +561,7 @@ def bfs(root: TreeNode):
 
     200、130、417、951
 
-#### 树类问题
+#### 1.4.2 树类问题
 1. 直径长度
 
 > 直径长度是任意两个结点路径长度中的最大值, 这条路径可能穿过也可能不穿过根结点。
@@ -579,20 +583,25 @@ def bfs(root: TreeNode):
     + 平衡二叉搜索树的子树也是平衡二叉搜索树
     + 一棵存有` n `个结点的平衡二叉搜索树的高度是$O(logn)$
 
-##### 代表题目
+##### 1.4.2.1 代表题目
 543、226、101☆、124、236、235、105、104、987、572☆、100☆、863、1110  
 二叉搜索树：230、98、669、700、108、109、285
 
 注：带☆的题目表示极度相似
 
 
-#### 图类问题
+#### 1.4.3 图类问题
 
-### No.5 回溯
-#### 代表题目
-51、52、126★、93、22、301★、37★
+### 1.5 回溯
+#### 1.5.1 代表题目
+51、52、126★、93、22、301★、37★、212★
 
-## 题目
+### 1.6 字典树Trie 
+字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
+#### 1.6.1 代表题目
+208、212★
+
+## 2.题目
 ### 1.两数之和
 > 给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 和为目标值 `target`  的那 两个 整数，并返回它们的数组下标。
 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
@@ -3320,6 +3329,85 @@ class Solution:
 
         return True if visited == numCourses else False
 ```
+### 208.实现Trie(前缀树)
+> `Trie`（发音类似 `"try"`）或者说 **前缀树** 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的应用情景，例如自动补完和拼写检查。
+
+请你实现` Trie `类：
+
++ `Trie()` 初始化前缀树对象。
++ `void insert(String word)` 向前缀树中插入字符串 `word` 。
++ `boolean search(String word)` 如果字符串 `word `在前缀树中，返回` true`（即，在检索之前已经插入）；否则，返回 `false` 。
++ `boolean startsWith(String prefix)` 如果之前已经插入的字符串` word `的前缀之一为` prefix `，返回` true `；否则，返回 `false` 。
+ 
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/implement-trie-prefix-tree  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Trie(object):
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = TrieNode()
+
+    def insert(self, word):
+        """
+        Inserts a word into the trie.
+        :type word: str
+        :rtype: None
+        """
+        node = self.root
+        for i in range(len(word)):
+            if not node.containsKey(word[i]):
+                node.put(word[i], TrieNode())
+            node = node.get(word[i])
+        node.isEnd = True
+
+    def searchPrefix(self, word):
+        node = self.root
+        for i in range(len(word)):
+            if node.containsKey(word[i]):
+                node = node.get(word[i])
+            else:
+                return None
+        return node
+
+    def search(self, word):
+        """
+        Returns if the word is in the trie.
+        :type word: str
+        :rtype: bool
+        """
+        node = self.searchPrefix(word)
+        return node is not None and node.isEnd
+
+    def startsWith(self, prefix):
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        :type prefix: str
+        :rtype: bool
+        """
+        node = self.searchPrefix(prefix)
+        return node is not None
+
+
+class TrieNode:
+    def __init__(self):
+        self.__R = 26
+        self.isEnd = False
+        self.links = [None] * self.__R
+
+    def containsKey(self, ch):
+        return self.links[ord(ch) - ord('a')] is not None
+
+    def get(self, ch):
+        return self.links[ord(ch) - ord('a')]
+
+    def put(self, ch, node):
+        self.links[ord(ch) - ord('a')] = node
+```
 ### 210.课程表 II
 > 你这个学期必须选修` numCourses `门课程，记为` 0 `到` numCourses - 1 `。  
 在选修某些课程之前需要一些先修课程。 先修课程按数组` prerequisites `给出，其中` prerequisites[i] = [ai, bi] `，表示如果要学习课程` ai` 则 **必须** 先学习课程 ` bi `。
@@ -3362,6 +3450,119 @@ class Solution:
 
         return visited if len(visited) == numCourses else []
 ```
+### 212.单词搜索II★
+> 给定一个` m x n` 二维字符网格 `board` 和一个单词（字符串）列表 `words`， 返回所有二维网格上的单词 。
+
+单词必须按照字母顺序，通过 **相邻的单元格** 内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母在一个单词中不允许被重复使用。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/word-search-ii  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
++ 字典树(官方题解)
+    ```
+    class Trie:
+        def __init__(self):
+            self.children = defaultdict(Trie)
+            self.word = ""
+
+        def insert(self, word):
+            cur = self
+            for c in word:
+                cur = cur.children[c]
+            cur.is_word = True
+            cur.word = word
+
+
+    class Solution:
+        def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+
+            # 构造字典树
+            trie = Trie()
+            for word in words:
+                trie.insert(word)
+
+            def dfs(now, i1, j1):
+                if board[i1][j1] not in now.children:
+                    return
+
+                ch = board[i1][j1]
+
+                now = now.children[ch]
+                if now.word != "":
+                    ans.add(now.word)
+
+                board[i1][j1] = "#"
+                for i2, j2 in [(i1 + 1, j1), (i1 - 1, j1), (i1, j1 + 1), (i1, j1 - 1)]:
+                    if 0 <= i2 < m and 0 <= j2 < n:
+                        dfs(now, i2, j2)
+                board[i1][j1] = ch
+
+            ans = set()
+            m, n = len(board), len(board[0])
+
+            for i in range(m):
+                for j in range(n):
+                    dfs(trie, i, j)
+
+            return list(ans)
+    ```
++ DFS+回溯(~~虽然剪枝了一部分，但是python超时，过不了，垃圾python~~)
+    ```
+    class Solution:
+        def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+
+            def backtracking(word, start, position, visited):
+                if start == len(word):
+                    # word中所有字符都搜索到了
+                    return True
+                x, y = position
+                if x < 0 or y < 0 or x >= m or y >= n or position in visited:
+                    # 越界了，或者当前位置已经被搜索了
+                    return False
+                
+                if board[x][y] == word[start]:
+                    visited.add(position)
+                    for new_x, new_y in [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]:
+                        if backtracking(word, start + 1, (new_x, new_y), visited):
+                            return True
+                    # 回溯
+                    visited.remove(position)
+                return False
+
+            m, n = len(board), len(board[0])
+            board_count = collections.defaultdict(int)
+            # 统计board中的字符出现次数
+            for i in range(m):
+                for j in range(n):
+                    board_count[board[i][j]] += 1
+            
+            ans = []
+            # 从给定词表开始查找
+            for word in words:
+                # 统计当前词的单词频数
+                word_count = collections.Counter(word)
+                exist = True  # 当前word是否有几率存在于board中
+                for ch in word:
+                    # 当前word的某个字符比board中总的这个字符都多，肯定搜索不到，word不存在
+                    if word_count[ch] > board_count[ch]:
+                        exist = False
+                        break
+                # 当前word不存在就跳过这个单词
+                if not exist:
+                    continue
+                
+                find = False  # 当前词是否可以搜索到
+                for i in range(m):
+                    for j in range(n):
+                        if backtracking(word, 0, (i, j), set()):
+                            ans.append(word)
+                            find = True
+                            break
+                    # 找到了，直接结束这个词的搜索
+                    if find:
+                        break
+            return ans       
+    ``
 ### 215.数组中的第k个最大元素
 > 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。  
 请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
