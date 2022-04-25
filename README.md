@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-122题-green)
+![](https://img.shields.io/badge/已覆盖-123题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -47,6 +47,7 @@
     + [74.搜索二维矩阵](#74搜索二维矩阵)
     + [75.颜色分类](#75颜色分类)
     + [76.最小覆盖子串](#76最小覆盖子串)
+    + [79.单词搜索](#79单词搜索)
     + [88.合并两个有序数组](#88合并两个有序数组)
     + [92.反转链表ii](#92反转链表-ii)
     + [93.复原IP地址](#93复原ip地址)
@@ -594,7 +595,7 @@ def bfs(root: TreeNode):
 
 ### 1.5 回溯
 #### 1.5.1 代表题目
-51、52、126★、93、22、301★、37★、212★
+51、52、126★、93、22、301★、37★、212★、79
 
 ### 1.6 字典树Trie 
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
@@ -1832,6 +1833,67 @@ class Solution:
             if not ans or len(ans) > fast - slow: # 更新答案
                 ans = s[slow-1:fast]
         return ans
+```
+### 79.单词搜索
+> 给定一个` m x n `二维字符网格` board `和一个字符串单词` word `。如果` word `存在于网格中，返回 `true `；否则，返回` false `。
+
+单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/word-search  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ DFS+回溯
+```
+class Solution:
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        # 回溯
+        def is_valid(position, start):
+            x, y = position
+            # 没有越界，并且没有访问过
+            if 0 <= x < m and 0 <= y < n and position not in visited:
+                return True
+            return False
+        
+        def backtracing(position, start):
+            x, y = position
+            # 当前单词不匹配
+            if board[x][y] != word[start]:
+                return False
+            # word的每一个单词都已经查找完毕了
+            if start == len(word) - 1:
+                return True
+            # word中某个字符的总数量比board中该字符的总数量多，则不可能查找出来
+            if word_count[word[start]] > board_count[word[start]]:
+                return False
+            ans = False
+            visited.add((x, y))
+            for new_x, new_y in [(x+1,y), (x-1, y), (x, y+1), (x, y-1)]:
+                # 检查这个位置是否合法
+                if is_valid((new_x, new_y), start):
+                    if backtracing((new_x, new_y), start + 1):
+                        ans = True
+                        break
+            visited.remove((x, y))
+            return ans
+
+
+        m, n = len(board), len(board[0])
+        visited = set()
+        # 统计board的字母词频
+        board_count = collections.defaultdict(int)
+        for i in range(m):
+            for j in range(n):
+                board_count[board[i][j]] += 1
+        
+        # 统计word的字母词频
+        word_count = collections.Counter(word)
+
+        for i in range(m):
+            for j in range(n):
+                if backtracing((i, j), 0):
+                    return True
+        return False
 ```
 ### 88.合并两个有序数组
 > 给你两个按 **非递减顺序** 排列的整数数组` nums1 `和` nums2`，另有两个整数` m `和` n `，分别表示 `nums1 `和 `nums2` 中的元素数目。
