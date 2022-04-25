@@ -1,12 +1,13 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-123题-green)
+![](https://img.shields.io/badge/已覆盖-125题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
 ![](https://img.shields.io/badge/深度优先搜索-Depth%20First%20Search|DFS-purple)
 ![](https://img.shields.io/badge/回溯-BackTracking-fuchsia)
 ![](https://img.shields.io/badge/前缀树/字典树-Trie-seagreen)
+![](https://img.shields.io/badge/并查集-Union%20Find-teal)
 
 我要刷题**冲冲冲**
 
@@ -18,6 +19,7 @@
     + [1.4 深度优先搜索dfs](#14-深度优先搜索dfs)
     + [1.5 回溯](#15-回溯)
     + [1.6 字典树](#16-字典树trie)
+    + [1.7 并查集](#17-并查集)
 
 + [2.题目](#2题目)
     + [1.两数之和](#1两数之和)
@@ -110,6 +112,7 @@
     + [380.o1时间插入删除和获取随机元素](#380o1时间插入删除和获取随机元素)
     + [394.字符串解码★](#394字符串解码)
     + [395.至少有k个重复字符的最长子串](#395至少有-k-个重复字符的最长子串)
+    + [399.除法求值★](#399除法求值)
     + [409.最长回文串](#409最长回文串)
     + [417.太平洋大西洋水流问题](#417太平洋大西洋水流问题)
     + [424.替换后的最长重复字符](#424替换后的最长重复字符)
@@ -118,6 +121,7 @@
     + [540.有序数组中的单一元素](#540有序数组中的单一元素)
     + [542.01矩阵](#542-01矩阵)
     + [543.二叉树的直径](#543二叉树的直径)
+    + [547.省份数量](#547省份数量)
     + [572.另一颗树的子树](#572另一颗树的子树)
     + [647.回文子串 (与题5可做比较)](#647回文子串与题5可做比较)
     + [669.修剪二叉搜索树★](#669修剪二叉搜索树)
@@ -601,6 +605,160 @@ def bfs(root: TreeNode):
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
 #### 1.6.1 代表题目
 208、212★
+
+### 1.7 并查集
+#### 1.7.1 基本概念
++ 并查集是一种数据结构
++ 并（Union），代表合并
++ 查（Find），代表查找
++ 集（Set），代表这是一个以字典为基础的数据结构，它的基本功能是合并集合中的元素，查找集合中的元素
++ 并查集的典型应用是有关连通分量的问题
++ 并查集解决单个问题（添加，合并，查找）的时间复杂度都是$O(1)$
++ 并查集可以应用到在线算法中
+
+#### 1.7.2 实现
+##### 1.7.2.1 数据结构
+并查集跟树有些类似，只不过其与树是相反的。在树这个数据结构里面，每个节点会记录它的子节点。在并查集里，每个节点会记录它的父节点  
+![并查集](https://github.com/HunterLC/LeetCode-python/blob/main/image/union/union_1.png)
+
+如果节点是相互连通的（从一个节点可以到达另一个节点），那么他们在同一棵树里，或者说在同一个集合里，或者说他们的祖先是相同的
+
+```
+class UnionFind:
+
+    def __init__(self):
+        """
+        记录每个节点的父节点
+        """
+        self.father = {}
+```
+##### 1.7.2.2 初始化
+把一个新节点添加到并查集中，它的父节点应该为空  
+![并查集之添加](https://github.com/HunterLC/LeetCode-python/blob/main/image/union/union_2.png)
+
+```
+def add(self, x):
+        """
+        添加新节点
+        """
+        if x not in self.father:
+            self.father[x] = None
+```
+##### 1.7.2.3 合并两个节点
+如果发现两个节点是连通的，那么就要把他们合并，也就是他们的祖先是相同的。这里究竟把谁当做父节点一般是没有区别的。  
+![并查集之合并](https://github.com/HunterLC/LeetCode-python/blob/main/image/union/union_3.png)
+
+```
+def merge(self, x, y, val):
+        """
+        合并两个节点
+        """
+        root_x, root_y = self.find(x), self.find(y)
+        
+        if root_x != root_y:
+            self.father[root_x] = root_y
+```
+##### 1.7.2.4 查找祖先
+查找祖先的方法是：如果节点的父节点不为空，那就不断迭代。  
+![并查集之查找祖先](https://github.com/HunterLC/LeetCode-python/blob/main/image/union/union_4.png)
+
+```
+def find(self, x):
+        """
+        查找根节点
+        """
+        root = x
+
+        while self.father[root] != None:
+            root = self.father[root]
+
+        return root
+```
+
+如果我们树很深，比如说退化成链表，那么每次查询的效率都会非常低。所以我们要做一下**路径压缩**，也就是**把树的深度固定为2**。这么做可行的原因是，并查集只是记录了节点之间的连通关系，而节点相互连通只需要有一个相同的祖先就可以了。路径压缩可以用**递归**，也可以**迭代**。  
+|压缩之前|压缩之后|
+|:-----:|:-----:|
+|![并查集之路径压缩1](https://github.com/HunterLC/LeetCode-python/blob/main/image/union/union_5.png)|![并查集之路径压缩2](https://github.com/HunterLC/LeetCode-python/blob/main/image/union/union_6.png)|
+```
+def find(self, x):
+        """
+        查找根节点
+        路径压缩
+        """
+        root = x
+
+        while self.father[root] != None:
+            root = self.father[root]
+
+        # 路径压缩
+        while x != root:
+            original_father = self.father[x]
+            self.father[x] = root
+            x = original_father
+         
+        return root
+```
+
+##### 1.7.2.5 两节点是否连通
+我们判断两个节点是否处于同一个连通分量的时候，就需要判断它们的祖先是否相同  
+```
+def is_connected(self,x,y):
+        """
+        判断两节点是否相连
+        """
+        return self.find(x) == self.find(y)
+```
+#### 1.7.3 总体模板
+```
+class UnionFind:
+    def __init__(self):
+        """
+        记录每个节点的父节点
+        """
+        self.father = {}
+    
+    def find(self,x):
+        """
+        查找根节点
+        路径压缩
+        """
+        root = x
+
+        while self.father[root] != None:
+            root = self.father[root]
+
+        # 路径压缩
+        while x != root:
+            original_father = self.father[x]
+            self.father[x] = root
+            x = original_father
+         
+        return root
+    
+    def merge(self,x,y,val):
+        """
+        合并两个节点
+        """
+        root_x,root_y = self.find(x),self.find(y)
+        
+        if root_x != root_y:
+            self.father[root_x] = root_y
+
+    def is_connected(self,x,y):
+        """
+        判断两节点是否相连
+        """
+        return self.find(x) == self.find(y)
+    
+    def add(self,x):
+        """
+        添加新节点
+        """
+        if x not in self.father:
+            self.father[x] = None
+```
+#### 1.7.4 代表题目
+547、399
 
 ## 2.题目
 ### 1.两数之和
@@ -4942,6 +5100,73 @@ class Solution:
                 fast += 1
         return longest
 ```
+### 399.除法求值★
+> 给你一个变量对数组` equations `和一个实数值数组` values `作为已知条件，其中` equations[i] = [Ai, Bi] `和` values[i] `共同表示等式` Ai / Bi = values[i] `。每个 `Ai `或 `Bi` 是一个表示单个变量的字符串。  
+另有一些以数组 `queries` 表示的问题，其中` queries[j] = [Cj, Dj] `表示第 `j` 个问题，请你根据已知条件找出` Cj / Dj = ? `的结果作为答案。  
+返回 **所有问题的答案** 。如果存在某个无法确定的答案，则用 `-1.0 `替代这个答案。如果问题中出现了给定的已知条件中没有出现的字符串，也需要用` -1.0` 替代这个答案。
+
+注意：输入总是有效的。你可以假设除法运算中不会出现除数为` 0` 的情况，且不存在任何矛盾的结果。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/evaluate-division  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
++ 并查集
+    ```
+    class UnionFind:
+        def __init__(self):
+            # 记录每个节点的父节点
+            self.father = {}
+            # 记录每个节点到根节点的值
+            self.values = {}
+
+        def add(self, x):
+            if x not in self.father:
+                self.father[x] = None
+                self.values[x] = 1.0
+
+        def merge(self, x, y, val):
+            root_x, root_y = self.find(x), self.find(y)
+            if root_x != root_y:
+                self.father[root_x] = root_y
+                self.values[root_x] = self.values[y] * val / self.values[x]
+        
+        def find(self, x):
+            root = x
+            # 倍数
+            base = 1
+            while self.father[root] is not None:
+                root = self.father[root]
+                base *= self.values[root]
+            
+            while root != x:
+                origin_father = self.father[x]
+                # 更新倍数
+                self.values[x] *= base
+                base /= self.values[origin_father]
+                self.father[x] = root
+                x = origin_father
+
+            return root
+
+        def is_connected(self, x, y):
+            return x in self.values and y in self.values and self.find(x) == self.find(y)
+
+    class Solution:
+        def calcEquation(self, equations: List[List[str]], values: List[float], queries: List[List[str]]) -> List[float]:
+            union = UnionFind()
+            # 遍历算式
+            for (a, b), val in zip(equations, values):
+                union.add(a)
+                union.add(b)
+                union.merge(a, b, val)
+        
+            res = [-1.0] * len(queries)
+
+            for i, (a, b) in enumerate(queries):
+                if union.is_connected(a, b):
+                    res[i] = union.values[a] / union.values[b]
+            return res
+    ```
 ### 409.最长回文串
 > 给定一个包含大写字母和小写字母的字符串` s `，返回 通过这些字母构造成的 **最长的回文串** 。  
 在构造过程中，请注意 **区分大小写** 。比如` "Aa" `不能当做一个回文字符串。
@@ -5212,6 +5437,58 @@ class Solution:
         dfs(root)
         return ans - 1
 ```
+### 547.省份数量
+> 有` n `个城市，其中一些彼此相连，另一些没有相连。如果城市` a `与城市` b `直接相连，且城市` b `与城市` c `直接相连，那么城市` a `与城市` c `间接相连。  
+**省份** 是一组直接或间接相连的城市，组内不含其他没有相连的城市。  
+给你一个` n x n `的矩阵` isConnected `，其中` isConnected[i][j] = 1 `表示第` i `个城市和第` j `个城市直接相连，而` isConnected[i][j] = 0 `表示二者不直接相连。
+
+返回矩阵中 **省份** 的数量
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/number-of-provinces  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 并查集
+    ```
+    class UnionFind:
+        def __init__(self): 
+            self.father = {}
+            self.num_set = 0
+
+        def find(self, x):
+            root = x
+            while self.father[root] is not None:
+                root = self.father[root]
+            
+            # 路径压缩
+            while root != x:
+                origin_father = self.father[x]
+                self.father[x] = root
+                x = origin_father
+            
+            return root
+        
+        def merge(self, x, y):
+            root_x, root_y = self.find(x), self.find(y)
+            if root_x != root_y:
+                self.father[root_x] = root_y
+                self.num_set -= 1
+
+        def add(self, x):
+            if x not in self.father:
+                self.father[x] = None
+                self.num_set += 1
+
+    class Solution:
+        def findCircleNum(self, isConnected: List[List[int]]) -> int:
+            union = UnionFind()
+            for i in range(len(isConnected)):
+                union.add(i)
+                for j in range(i):
+                    if isConnected[i][j] == 1:
+                        union.merge(i, j)
+            return union.num_set
+    ```
 ### 572.另一颗树的子树
 > 给你两棵二叉树` root `和 `subRoot` 。检验 `root` 中是否包含和 `subRoot` 具有相同结构和节点值的子树。如果存在，返回 `true` ；否则，返回` false` 。
 
