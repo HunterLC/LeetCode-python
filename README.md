@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-125题-green)
+![](https://img.shields.io/badge/已覆盖-127题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -68,6 +68,7 @@
     + [127.单词接龙](#127单词接龙)
     + [128.最长连续序列](#128最长连续序列)
     + [130.被围绕的区域★](#130被围绕的区域)
+    + [131.分割回文串](#131分割回文串)
     + [133.克隆图★](#133克隆图)
     + [141.环形链表 i](#141环形链表-i)
     + [142.环形链表 ii](#142环形链表-ii)
@@ -146,6 +147,7 @@
     + [1249.移除无效的括号](#1249移除无效的括号)
     + [1293.网格中的最短路径](#1293网格中的最短路径)
     + [1300.转变数组后最接近目标值的数组和](#1300转变数组后最接近目标值的数组和)
+    + [1376.通知所有员工所需的时间](#1376通知所有员工所需的时间)
     + [1438.绝对差不超过限制的最长连续子数组](#1438绝对差不超过限制的最长连续子数组)
     + [1472.设计浏览器历史记录](#1472设计浏览器历史记录)
 
@@ -589,7 +591,7 @@ def bfs(root: TreeNode):
     + 一棵存有` n `个结点的平衡二叉搜索树的高度是$O(logn)$
 
 ##### 1.4.2.1 代表题目
-543、226、101☆、124、236、235、105、104、987、572☆、100☆、863、1110  
+543、226、101☆、124、236、235、105、104、987、572☆、100☆、863、1110、1376  
 二叉搜索树：230、98、669、700、108、109、285
 
 注：带☆的题目表示极度相似
@@ -599,7 +601,7 @@ def bfs(root: TreeNode):
 
 ### 1.5 回溯
 #### 1.5.1 代表题目
-51、52、126★、93、22、301★、37★、212★、79
+51、52、126★、93、22、301★、37★、212★、79、131
 
 ### 1.6 字典树Trie 
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
@@ -2863,6 +2865,51 @@ class Solution:
                     elif board[i][j] == "O":
                         board[i][j] = "X"
     ```
+### 131.分割回文串
+> 给你一个字符串` s`，请你将` s `分割成一些子串，使每个子串都是 **回文串** 。返回` s `所有可能的分割方案。
+
+**回文串** 是正着读和反着读都一样的字符串。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/palindrome-partitioning/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def partition(self, s: str) -> List[List[str]]:
+        if len(s) == 1:
+            return [[s]]
+        
+        ans = []
+        
+        def is_palindrome(sequence):
+            # 判断是否是回文串
+            if len(sequence) == 1:
+                return True
+            left, right = 0, len(sequence) - 1
+            while left <= right:
+                if sequence[left] != sequence[right]:
+                    return False
+                left += 1
+                right -= 1
+
+            return True
+
+        def backtracing(tmp, ans, start, n):
+            if start == n:
+                # s中的字符全部被分完了
+                # 这里不用copy函数会有问题
+                ans.append(tmp.copy())
+
+            for i in range(1, n - start + 1):
+                if is_palindrome(s[start: start + i]):
+                    tmp.append(s[start: start + i])
+                    backtracing(tmp, ans, start + i, n)
+                    tmp.pop()
+
+        backtracing([], ans, 0, len(s))
+        return ans
+```
 ### 133.克隆图★
 > 给你无向 **连通** 图中一个节点的引用，请你返回该图的 **深拷贝**（克隆）。  
 图中的每个节点都包含它的值` val（int）` 和其邻居的列表`（list[Node]）`。 
@@ -6465,6 +6512,41 @@ class Solution:
         big = sum(ans + 1 if num >= ans + 1 else num for num in arr)
         return ans if abs(small - target) <= abs(big - target) else ans + 1
 ```
+### 1376.通知所有员工所需的时间
+> 公司里有` n `名员工，每个员工的` ID `都是独一无二的，编号从` 0 `到` n - 1`。公司的总负责人通过` headID `进行标识。  
+在` manager `数组中，每个员工都有一个直属负责人，其中` manager[i] `是第` i `名员工的直属负责人。对于总负责人，`manager[headID] = -1`。题目保证从属关系可以用树结构显示。  
+公司总负责人想要向公司所有员工通告一条紧急消息。他将会首先通知他的直属下属们，然后由这些下属通知他们的下属，直到所有的员工都得知这条紧急消息。  
+第` i `名员工需要` informTime[i] `分钟来通知它的所有直属下属（也就是说在` informTime[i] `分钟后，他的所有直属下属都可以开始传播这一消息）。
+
+返回通知所有员工这一紧急消息所需要的 **分钟数** 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/time-needed-to-inform-all-employees  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ DFS
+    ```
+    class Solution:
+        def numOfMinutes(self, n: int, headID: int, manager: List[int], informTime: List[int]) -> int:
+            def dfs(root, total):
+                # 没有直属下属了
+                if not tree_dict[root]:
+                    nonlocal ans
+                    ans = max(ans, total)
+                    return None
+
+                for i in tree_dict[root]:
+                    dfs(i, informTime[root] + total)
+
+            # 构造树型结构,从上到下官职减小
+            tree_dict = collections.defaultdict(list)
+            for id, leader in enumerate(manager):
+                tree_dict[leader].append(id)
+            
+            ans = 0
+            dfs(headID, 0)        
+            return ans
+    ```
 ### 1438.绝对差不超过限制的最长连续子数组
 > 给你一个整数数组` nums `，和一个表示限制的整数` limit`，请你返回最长连续子数组的长度，该子数组中的任意两个元素之间的绝对差必须小于或者等于` limit `。  
 如果不存在满足条件的子数组，则返回` 0 `。
