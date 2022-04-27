@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-127题-green)
+![](https://img.shields.io/badge/已覆盖-129题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -30,6 +30,7 @@
     + [11.盛水最多的容器](#11盛水最多的容器)
     + [15.三数之和](#15三数之和)
     + [16.最接近的三数之和](#16最接近的三数之和)
+    + [17.电话号码的字母组合](#17电话号码的字母组合)
     + [18.四数之和](#18四数之和)
     + [20.有效的括号](#20有效的括号)
     + [22.括号生成](#22括号生成)
@@ -39,6 +40,7 @@
     + [33.搜索旋转排序数组](#33搜索旋转排序数组)
     + [34.在排序数组中查找元素的第一个和最后一个位置](#34-在排序数组中查找元素的第一个和最后一个位置)
     + [37.解数独★](#37解数独)
+    + [39.组合总和](#39组合总和)
     + [49.字母异位词分组](#49字母异位词分组)
     + [51.N皇后★](#51n皇后)
     + [52.N皇后ii](#52n皇后ii)
@@ -601,7 +603,7 @@ def bfs(root: TreeNode):
 
 ### 1.5 回溯
 #### 1.5.1 代表题目
-51、52、126★、93、22、301★、37★、212★、79、131
+51、52、126★、93、22、301★、37★、212★、79、131、17、39
 
 ### 1.6 字典树Trie 
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
@@ -1156,6 +1158,44 @@ class Solution:
                     left += 1
         return ans
 ```
+### 17.电话号码的字母组合
+> 给定一个仅包含数字` 2-9 `的字符串，返回所有它能表示的字母组合。答案可以按 **任意顺序** 返回。  
+给出数字到字母的映射如下（与电话按键相同）。注意` 1 `不对应任何字母。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ DFS+回溯
+    ```
+    class Solution:
+        def letterCombinations(self, digits: str) -> List[str]:
+            if len(digits) == 0:
+                return []
+            
+            # 字符串长度
+            n = len(digits)
+            ans = []
+
+            def backtracing(tmp, start, n):
+                if start == n:
+                    ans.append(''.join(tmp))
+                    return None
+                # 把当前位的字符转成对应的整型数字
+                num = int(digits[start])
+                # 数字7,9对应的字符有四位，其余对应的字符只有3位
+                sequence_length = 4 if num == 7 or num == 9 else 3
+                for i in range(sequence_length):
+                    # 构造当前字符
+                    ch = chr(ord('a') + (num - 2) * 3 + i) if num <= 7 else chr(ord('a') + (num - 2) * 3 + 1 + i)
+                    tmp.append(ch)
+                    backtracing(tmp, start + 1, n)
+                    # 回溯
+                    tmp.pop()
+
+            backtracing([], 0, n)
+            return ans
+    ```
 ### 18.四数之和
 > 给你一个由` n `个整数组成的数组` nums `，和一个目标值` target `。请你找出并返回满足下述全部条件且不重复的四元组` [nums[a], nums[b], nums[c], nums[d]] `（若两个四元组元素一一对应，则认为两个四元组重复）： 
 + 0 <= a, b, c, d < n
@@ -1519,6 +1559,47 @@ class Solution:
             return True
 
         backtracking(board)
+```
+### 39.组合总和
+> 给你一个 **无重复元素** 的整数数组 `candidates` 和一个目标整数 `target` ，找出 `candidates` 中可以使数字和为目标数 `target` 的 **所有** 不同组合 ，并以列表形式返回。你可以按 **任意顺序** 返回这些组合。
+
+`candidates` 中的 **同一个** 数字可以 无限制重复被选取 。如果至少一个数字的被选数量不同，则两种组合是不同的。   
+对于给定的输入，保证和为` target `的不同组合数少于` 150 `个。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/combination-sum  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        # 回溯
+        if min(candidates) > target:
+            return []
+        ans = []
+        def is_valid(total, i):
+            if total + i <= target:
+                return True
+            return False
+
+        def backtracing(tmp, total, target):
+            if total == target:
+                res = sorted(tmp)
+                if res not in ans:
+                    ans.append(res)
+                return None
+            # 当前值+最小值都大于target了
+            if min(candidates) + total > target:
+                return None
+            for i in candidates:
+                if is_valid(total, i):
+                    tmp.append(i)
+                    backtracing(tmp, total + i, target)
+                    tmp.pop()
+
+        tmp = list()
+        backtracing(tmp, 0, target)
+        return ans
 ```
 ### 49.字母异位词分组
 > 给你一个字符串数组，请你将 **字母异位词** 组合在一起。可以按任意顺序返回结果列表。  
