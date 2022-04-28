@@ -1632,7 +1632,7 @@ class Solution:
                 # 数组自增，当前都大于target了，往后的结果只会更大
                 if total + candidates[i] > target:
                     break
-                # i > start是核心，这样1，1，6的第二个1可以正常拿进去，并且1，1，1，6的第三个1会跳过
+                # i > start是核心(同一层的相邻且相同元素砍掉，相邻层的相邻相同元素保留)，这样1，1，6的第二个1可以正常拿进去，并且1，1，1，6的第三个1会跳过
                 if i > start and candidates[i] == candidates[i-1]:
                     continue
                 tmp.append(candidates[i])
