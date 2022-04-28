@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-129题-green)
+![](https://img.shields.io/badge/已覆盖-131题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -41,6 +41,7 @@
     + [34.在排序数组中查找元素的第一个和最后一个位置](#34-在排序数组中查找元素的第一个和最后一个位置)
     + [37.解数独★](#37解数独)
     + [39.组合总和](#39组合总和)
+    + [40.组合总和ⅱ](#40组合总和-ii)
     + [49.字母异位词分组](#49字母异位词分组)
     + [51.N皇后★](#51n皇后)
     + [52.N皇后ii](#52n皇后ii)
@@ -138,6 +139,7 @@
     + [863.二叉树中所有距离为k的结点](#863二叉树中所有距离为-k-的结点)
     + [876.链表的中间结点](#876链表的中间结点)
     + [895.最大频率栈](#895最大频率栈)
+    + [905.按奇偶排序数组](#905按奇偶排序数组)
     + [951.翻转等价二叉树](#951翻转等价二叉树)
     + [973.最接近原点的k个点](#973最接近原点的k个点)
     + [987.二叉树的垂序遍历](#987二叉树的垂序遍历)
@@ -603,7 +605,7 @@ def bfs(root: TreeNode):
 
 ### 1.5 回溯
 #### 1.5.1 代表题目
-51、52、126★、93、22、301★、37★、212★、79、131、17、39
+51、52、126★、93、22、301★、37★、212★、79、131、17、39、40
 
 ### 1.6 字典树Trie 
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
@@ -1599,6 +1601,46 @@ class Solution:
 
         tmp = list()
         backtracing(tmp, 0, target)
+        return ans
+```
+### 40.组合总和 II
+> 给定一个候选人编号的集合` candidates `和一个目标数` target `，找出` candidates `中所有可以使数字和为` target `的组合。  
+`candidates `中的每个数字在每个组合中只能使用 **一次** 。
+
+注意：解集不能包含重复的组合。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/combination-sum-ii  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ DFS+回溯(这道题核心是剪枝，防止重复组合纳入结果中。首先需要对数组排序，其次就是`i > start`的理解，即`1，1`不跳过，`1，1，1`就要跳过)
+```
+class Solution:
+    def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
+        # 回溯
+        candidates.sort()
+        ans = []
+        def backtracing(tmp, start, total, n):
+            if total == target:
+                ans.append(tmp.copy())
+                return None
+
+            if total > target or start == n:
+                return None
+            
+            for i in range(start, n):
+                # 数组自增，当前都大于target了，往后的结果只会更大
+                if total + candidates[i] > target:
+                    break
+                # i > start是核心，这样1，1，6的第二个1可以正常拿进去，并且1，1，1，6的第三个1会跳过
+                if i > start and candidates[i] == candidates[i-1]:
+                    continue
+                tmp.append(candidates[i])
+                backtracing(tmp, i + 1, total + candidates[i], n)
+                tmp.pop()
+
+        backtracing([], 0, 0, len(candidates))
+
         return ans
 ```
 ### 49.字母异位词分组
@@ -6145,6 +6187,35 @@ class FreqStack:
 # obj = FreqStack()
 # obj.push(val)
 # param_2 = obj.pop()
+```
+### 905.按奇偶排序数组
+> 给你一个整数数组` nums`，将` nums `中的的所有偶数元素移动到数组的前面，后跟所有奇数元素。  
+返回满足此条件的 **任一数组** 作为答案。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/sort-array-by-parity/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def sortArrayByParity(self, nums: List[int]) -> List[int]:
+        if len(nums) == 1:
+            return nums
+        n = len(nums)
+        left, right = 0, n - 1
+        while left < right:
+            # 找到第一个奇数
+            while left < n and nums[left] % 2 == 0:
+                left += 1
+            # 找到第一个偶数
+            while right >= 0 and nums[right] % 2 == 1:
+                right -= 1
+            if left < right:
+                nums[left], nums[right] = nums[right], nums[left]
+                left += 1
+                right -= 1
+        
+        return nums
 ```
 ### 951.翻转等价二叉树
 > 我们可以为二叉树` T `定义一个 **翻转操作** ，如下所示：选择任意节点，然后交换它的左子树和右子树。  
