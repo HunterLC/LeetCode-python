@@ -785,7 +785,7 @@ class UnionFind:
     ![前缀和1](https://github.com/HunterLC/LeetCode-python/blob/main/image/prefix/prefix_1.png)
 
     3. 转换成前缀和，也就是`preSum[i][j] = preSum[i−1][j] + preSum[i][j−1] − preSum[i−1][j−1] + matrix[i][j]`
-    4. 如何利用前缀和求解下图呢？
+    4. 如何利用前缀和求解下图呢？  
     ![前缀和2](https://github.com/HunterLC/LeetCode-python/blob/main/image/prefix/prefix_2.png)  
     加上子矩形` S(O, G) `面积的原因是` S(O, E) `和` S(O, F) `中都有` S(O, G) `，即减了两次` S(O, G) `，所以需要加上一次` S(O, G) `
     5. 如果要求` [row1, col1] `到` [row2, col2] `的子矩形的面积的话，用` preSum `对应了递推公式：`preSum[row2][col2] - preSum[row2][col1 - 1] - preSum[row1 - 1][col2] + preSum[row1 - 1][col1 - 1]`
