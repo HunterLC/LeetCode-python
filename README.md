@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-131题-green)
+![](https://img.shields.io/badge/已覆盖-134题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -8,6 +8,7 @@
 ![](https://img.shields.io/badge/回溯-BackTracking-fuchsia)
 ![](https://img.shields.io/badge/前缀树/字典树-Trie-seagreen)
 ![](https://img.shields.io/badge/并查集-Union%20Find-teal)
+![](https://img.shields.io/badge/前缀和-Prefix%20Sum-ultramarine)
 
 我要刷题**冲冲冲**
 
@@ -20,6 +21,7 @@
     + [1.5 回溯](#15-回溯)
     + [1.6 字典树](#16-字典树trie)
     + [1.7 并查集](#17-并查集)
+    + [1.8 前缀和](#18-前缀和)
 
 + [2.题目](#2题目)
     + [1.两数之和](#1两数之和)
@@ -107,6 +109,8 @@
     + [297.二叉树的序列化与反序列化](#297二叉树的序列化与反序列化)
     + [299.猜数字游戏](#299猜数字游戏)
     + [301.删除无效的括号★](#301删除无效的括号)
+    + [303.区域和检索](#303区域和检索)
+    + [304.二维区域和检索-矩阵不可变](#304二维区域和检索-矩阵不可变)
     + [310.最小高度树★](#310最小高度树)
     + [328.奇偶链表](#328奇偶链表)
     + [341.扁平化嵌套列表迭代器](#341扁平化嵌套列表迭代器)
@@ -120,6 +124,7 @@
     + [409.最长回文串](#409最长回文串)
     + [417.太平洋大西洋水流问题](#417太平洋大西洋水流问题)
     + [424.替换后的最长重复字符](#424替换后的最长重复字符)
+    + [427.建立四叉树](#427建立四叉树)
     + [454.四数相加 ⅱ](#454四数相加ⅱ)
     + [528.按权重随机选择](#528按权重随机选择)
     + [540.有序数组中的单一元素](#540有序数组中的单一元素)
@@ -765,6 +770,50 @@ class UnionFind:
 ```
 #### 1.7.4 代表题目
 547、399
+
+### 1.8 前缀和
+#### 1.8.1 基础概念
+> 前缀和本质上是在一个list当中，用O（N）的时间提前算好从第0个数字到第i个数字之和，在后续使用中可以在O（1）时间内计算出第i到第j个数字之和
+
++ 一维数组
+例如数组`[1, 2, 3, 4, 5, 6]`，前缀和`[1, 3, 6, 10, 15, 21]`  
+然而，实际我们在编写代码时，结果是`[0, 1, 3, 6, 10, 15, 21]`，这样前缀和的数组`index`就可以和**实际元素个数**对应起来了，比如`pre_sum[1]`代表**第1个**元素的和，`pre_sum[2]`就代表**前2个**元素的和......
+
++ 二维数组(例如[304.二维区域和检索-矩阵不可变](#304二维区域和检索-矩阵不可变))
+    1. 定义` preSum[i][j] `表示 从` [0,0] `位置到` [i,j] `位置的子矩形所有元素之和
+    2. `S(O,D) = S(O,C) + S(O,B) − S(O,A) + D`，减去` S(O, A) `的原因是` S(O, C) `和` S(O, B) `中都有` S(O, A) `，即加了两次` S(O, A) `，所以需要减去一次` S(O, A) `。  
+    ![前缀和1](https://github.com/HunterLC/LeetCode-python/blob/main/image/prefix/prefix_1.png)
+
+    3. 转换成前缀和，也就是`preSum[i][j] = preSum[i−1][j] + preSum[i][j−1] − preSum[i−1][j−1] + matrix[i][j]`
+    4. 如何利用前缀和求解下图呢？
+    ![前缀和2](https://github.com/HunterLC/LeetCode-python/blob/main/image/prefix/prefix_2.png)  
+    加上子矩形` S(O, G) `面积的原因是` S(O, E) `和` S(O, F) `中都有` S(O, G) `，即减了两次` S(O, G) `，所以需要加上一次` S(O, G) `
+    5. 如果要求` [row1, col1] `到` [row2, col2] `的子矩形的面积的话，用` preSum `对应了递推公式：`preSum[row2][col2] - preSum[row2][col1 - 1] - preSum[row1 - 1][col2] + preSum[row1 - 1][col1 - 1]`
+
+
+
+#### 1.8.2 代表题目
++ 一维数组前缀和
+    303  
+    + 一般语言而言，例如java可以
+    ```
+        # 使用前缀和
+        int n = nums.length;
+        sums = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            sums[i + 1] = sums[i] + nums[i];
+        }
+    ```
+    + 对于python而言，可以这么做
+    ```
+        # 使用前缀和
+        self.sum = [0]
+        for i in nums:
+            # self.sum[1]是nums第1个元素的和，self.sum[2]存的是nums前2个元素的和...
+            self.sum.append(self.sum[-1] + i) 
+    ```
++ 二维数组前缀和
+    304、427
 
 ## 2.题目
 ### 1.两数之和
@@ -4827,6 +4876,74 @@ class Solution:
         backtracking(s, 0, left, right)
         return ans
 ```
+### 303.区域和检索
+> 给定一个整数数组` nums`，处理以下类型的多个查询:  
+计算索引` left `和` right` （包含` left` 和` right`）之间的` nums `元素的 **和** ，其中 `left <= right`  
+
+实现 `NumArray `类：
+
++ `NumArray(int[] nums)` 使用数组 `nums` 初始化对象
++ `int sumRange(int i, int j)` 返回数组 `nums` 中索引 `left` 和 `right` 之间的元素的 **总和** ，包含 `left` 和 `right` 两点（也就是 `nums[left] + nums[left + 1] + ... + nums[right]` )
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/range-sum-query-immutable  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class NumArray:
+
+    def __init__(self, nums: List[int]):
+        # 使用前缀和
+        self.sum = [0]
+        for i in nums:
+            # self.sum[1]是nums第1个元素的和，self.sum[2]存的是nums前2个元素的和...
+            self.sum.append(self.sum[-1] + i) 
+
+    def sumRange(self, left: int, right: int) -> int:
+        # 算索引left到right，就是算第left+1个值到第right+1个值
+        # self.sum[right+1] - self.sum[left]
+        return self.sum[right+1] - self.sum[left]
+
+
+# Your NumArray object will be instantiated and called as such:
+# obj = NumArray(nums)
+# param_1 = obj.sumRange(left,right)
+```
+### 304.二维区域和检索-矩阵不可变
+> 给定一个二维矩阵` matrix`，以下类型的多个请求：  
+计算其子矩形范围内元素的总和，该子矩阵的 **左上角** 为 `(row1, col1)` ，**右下角** 为 `(row2, col2)` 。
+
+实现 `NumMatrix` 类：  
++ `NumMatrix(int[][] matrix)` 给定整数矩阵 `matrix` 进行初始化
++ `int sumRegion(int row1, int col1, int row2, int col2)` 返回 **左上角** `(row1, col1)` 、**右下角** `(row2, col2) `所描述的子矩阵的元素 **总和** 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/range-sum-query-2d-immutable  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class NumMatrix:
+
+    def __init__(self, matrix: List[List[int]]):
+        if not matrix or not matrix[0]:
+            m, n = 0, 0
+        else:
+            m, n = len(matrix), len(matrix[0])
+
+        self.sum = [[0] * (n + 1) for _ in range(m + 1)]
+        for i in range(m):
+            for j in range(n):
+                self.sum[i+1][j+1] = self.sum[i][j+1] + self.sum[i+1][j] - self.sum[i][j] + matrix[i][j]
+
+
+    def sumRegion(self, row1: int, col1: int, row2: int, col2: int) -> int:
+        return self.sum[row2+1][col2+1] - self.sum[row1][col2+1] - self.sum[row2+1][col1] + self.sum[row1][col1]
+
+
+# Your NumMatrix object will be instantiated and called as such:
+# obj = NumMatrix(matrix)
+# param_1 = obj.sumRegion(row1,col1,row2,col2)
+```
 ### 310.最小高度树★
 > 树是一个无向图，其中任何两个顶点只通过一条路径连接。 换句话说，一个任何没有简单环路的连通图都是一棵树。  
 给你一棵包含` n `个节点的树，标记为` 0 `到` n - 1 `。给定数字` n `和一个有` n - 1 `条无向边的` edges `列表（每一个边都是一对标签），其中` edges[i] = [ai, bi] `表示树中节点` ai `和` bi `之间存在一条无向边。  
@@ -5449,6 +5566,77 @@ class Solution:
             fast += 1
         return longest
 ```
+### 427.建立四叉树
+> 给你一个` n * n `矩阵` grid` ，矩阵由若干` 0 `和 `1 `组成。请你用四叉树表示该矩阵` grid `。  
+你需要返回能表示矩阵的 **四叉树** 的根结点。
+
+注意，当` isLeaf `为 `False` 时，你可以把` True `或者` False `赋值给节点，两种值都会被判题机制 **接受** 。
+
+四叉树数据结构中，每个内部节点只有四个子节点。此外，每个节点都有两个属性：
+
++ `val`：储存叶子结点所代表的区域的值。`1 `对应` True`，`0 `对应 `False`；
++ `isLeaf`: 当这个节点是一个叶子结点时为` True`，如果它有` 4 `个子节点则为` False` 。
+```
+class Node {
+    public boolean val;
+    public boolean isLeaf;
+    public Node topLeft;
+    public Node topRight;
+    public Node bottomLeft;
+    public Node bottomRight;
+}
+```
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/construct-quad-tree  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 递归+前缀和
+    ```
+    """
+    # Definition for a QuadTree node.
+    class Node:
+        def __init__(self, val, isLeaf, topLeft, topRight, bottomLeft, bottomRight):
+            self.val = val
+            self.isLeaf = isLeaf
+            self.topLeft = topLeft
+            self.topRight = topRight
+            self.bottomLeft = bottomLeft
+            self.bottomRight = bottomRight
+    """
+
+    class Solution:
+        def construct(self, grid: List[List[int]]) -> 'Node':
+            # 前缀和数组
+            n = len(grid)
+            pre = [[0]*(n + 1) for _ in range(n + 1)]
+            for i in range(1, n + 1):
+                for j in range(1, n + 1):
+                    # 构造二位前缀和
+                    pre[i][j] = pre[i-1][j] + pre[i][j-1] - pre[i-1][j-1] + grid[i-1][j-1]
+            
+            def get_sum(a, b, c, d):
+                # 代表矩阵左上角位置为(a, b)，右下角位置为(c, d)
+                return pre[c+1][d+1] - pre[a][d+1] - pre[c+1][b] + pre[a][b]
+            
+            def dfs(a, b, c, d):
+                # 当前矩阵的总和
+                curr_sum = get_sum(a, b, c, d)
+                # 当前矩阵的总格子数
+                total_grids = (c - a + 1) * (d - b + 1)
+                # 格子内全为0或者全为1，叶子节点
+                if curr_sum == 0 or curr_sum == total_grids:
+                    return Node(grid[a][b] == 1, True)
+                
+                root = Node(grid[a][b] == 1, False)
+                root.topLeft = dfs(a, b, (a + c) // 2, (b + d) // 2)
+                root.topRight = dfs(a, (b + d) // 2 + 1, (a + c) // 2, d)
+                root.bottomLeft = dfs((a + c) // 2 + 1, b, c, (b + d) // 2)
+                root.bottomRight = dfs((a + c) // 2 + 1, (b + d) // 2 + 1, c, d)
+                return root
+
+            return dfs(0, 0, n -1, n - 1)
+    ```
 ### 454.四数相加Ⅱ
 > 给你四个整数数组` nums1`、`nums2`、`nums3` 和` nums4 `，数组长度都是` n `，请你计算有多少个元组` (i, j, k, l) `能满足：
 
