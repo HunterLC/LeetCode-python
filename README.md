@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-134题-green)
+![](https://img.shields.io/badge/已覆盖-136题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -92,6 +92,7 @@
     + [210.课程表 ii](#210课程表-ii)
     + [212.单词搜索ii★](#212单词搜索ii)
     + [215.数组中的第k个最大元素](#215数组中的第k个最大元素)
+    + [216.组合总和iii](#216组合总和iii)
     + [224.基本计算器](#224基本计算器)
     + [225.用队列实现栈](#225用队列实现栈)
     + [226.翻转二叉树](#226翻转二叉树)
@@ -156,6 +157,7 @@
     + [1249.移除无效的括号](#1249移除无效的括号)
     + [1293.网格中的最短路径](#1293网格中的最短路径)
     + [1300.转变数组后最接近目标值的数组和](#1300转变数组后最接近目标值的数组和)
+    + [1305.两棵二叉搜索树中的所有元素](#1305两棵二叉搜索树中的所有元素)
     + [1376.通知所有员工所需的时间](#1376通知所有员工所需的时间)
     + [1438.绝对差不超过限制的最长连续子数组](#1438绝对差不超过限制的最长连续子数组)
     + [1472.设计浏览器历史记录](#1472设计浏览器历史记录)
@@ -601,7 +603,7 @@ def bfs(root: TreeNode):
 
 ##### 1.4.2.1 代表题目
 543、226、101☆、124、236、235、105、104、987、572☆、100☆、863、1110、1376  
-二叉搜索树：230、98、669、700、108、109、285
+二叉搜索树：230、98、669、700、108、109、285、1305
 
 注：带☆的题目表示极度相似
 
@@ -610,7 +612,7 @@ def bfs(root: TreeNode):
 
 ### 1.5 回溯
 #### 1.5.1 代表题目
-51、52、126★、93、22、301★、37★、212★、79、131、17、39、40
+51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216
 
 ### 1.6 字典树Trie 
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
@@ -4072,6 +4074,44 @@ class Solution:
         def swap(self, nums, a, b):
             nums[a], nums[b] = nums[b], nums[a]
     ```
+### 216.组合总和III
+> 找出所有相加之和为` n `的` k `个数的组合，且满足下列条件：
+
++ 只使用数字`1`到`9`
++ 每个数字 **最多使用一次** 
+
+返回 **所有可能的有效组合的列表** 。该列表不能包含相同的组合两次，组合可以以任何顺序返回。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/combination-sum-iii  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ DFS+回溯
+    ```
+    class Solution:
+        def combinationSum3(self, k: int, n: int) -> List[List[int]]:
+            # 数字列表1-9
+            nums = range(1, 10)
+            # 最小结果都大于目标，或者最大结果都小于目标
+            if sum(nums[:k]) > n or sum(nums[-k:]) < n:
+                return []
+
+            def backtracing(tmp, start, k, n, ans):
+                if len(tmp) == k and sum(tmp) == n:
+                    # 和为n，满足题意
+                    ans.append(tmp.copy())
+                    return None 
+                for i in range(start, 10):
+                    if sum(tmp) + i > n:
+                        break
+                    tmp.append(i)
+                    backtracing(tmp, i + 1, k, n, ans)    
+                    tmp.pop()
+
+            ans = []
+            backtracing([], 1, k, n, ans)
+            return ans
+    ```
 ### 224.基本计算器
 > 给你一个字符串表达式` s `，请你实现一个基本计算器来计算并返回它的值。  
 注意:不允许使用任何将字符串作为数学表达式计算的内置函数，比如` eval() `。
@@ -6852,6 +6892,63 @@ class Solution:
         big = sum(ans + 1 if num >= ans + 1 else num for num in arr)
         return ans if abs(small - target) <= abs(big - target) else ans + 1
 ```
+### 1305.两棵二叉搜索树中的所有元素
+> 给你` root1 `和` root2 `这两棵二叉搜索树。请你返回一个列表，其中包含 **两棵树** 中的所有整数并按 **升序** 排序。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/all-elements-in-two-binary-search-trees/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
++ 中序遍历+归并
+    ```
+    # Definition for a binary tree node.
+    # class TreeNode:
+    #     def __init__(self, val=0, left=None, right=None):
+    #         self.val = val
+    #         self.left = left
+    #         self.right = right
+    class Solution:
+        def getAllElements(self, root1: TreeNode, root2: TreeNode) -> List[int]:
+            # 二叉搜索树的中序遍历就是升序，两个数组在归并即可
+            if not root1 and not root2:
+                return []
+
+            def in_order(tmp, root):
+                if root:
+                    in_order(tmp, root.left)
+                    tmp.append(root.val)
+                    in_order(tmp, root.right)
+
+            
+            # 两棵树的升序集合
+            root1_list, root2_list = [], []
+            in_order(root1_list, root1)
+            in_order(root2_list, root2)
+
+            if not root1_list:
+                return root2_list
+
+            if not root2_list:
+                return root1_list
+
+            # 合并两个数组     
+            merged = []
+            p1, n1 = 0, len(root1_list)
+            p2, n2 = 0, len(root2_list)
+            while True:
+                if p1 == n1:
+                    merged.extend(root2_list[p2:])
+                    break
+                if p2 == n2:
+                    merged.extend(root1_list[p1:])
+                    break
+                if root1_list[p1] < root2_list[p2]:
+                    merged.append(root1_list[p1])
+                    p1 += 1
+                else:
+                    merged.append(root2_list[p2])
+                    p2 += 1
+            return merged
+    ```
 ### 1376.通知所有员工所需的时间
 > 公司里有` n `名员工，每个员工的` ID `都是独一无二的，编号从` 0 `到` n - 1`。公司的总负责人通过` headID `进行标识。  
 在` manager `数组中，每个员工都有一个直属负责人，其中` manager[i] `是第` i `名员工的直属负责人。对于总负责人，`manager[headID] = -1`。题目保证从属关系可以用树结构显示。  
