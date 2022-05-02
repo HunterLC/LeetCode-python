@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-136题-green)
+![](https://img.shields.io/badge/已覆盖-138题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -54,8 +54,10 @@
     + [74.搜索二维矩阵](#74搜索二维矩阵)
     + [75.颜色分类](#75颜色分类)
     + [76.最小覆盖子串](#76最小覆盖子串)
+    + [78.子集](#78子集)
     + [79.单词搜索](#79单词搜索)
     + [88.合并两个有序数组](#88合并两个有序数组)
+    + [90.子集ii](#90子集-ii)
     + [92.反转链表ii](#92反转链表-ii)
     + [93.复原IP地址](#93复原ip地址)
     + [98.验证二叉搜索树](#98验证二叉搜索树)
@@ -612,7 +614,7 @@ def bfs(root: TreeNode):
 
 ### 1.5 回溯
 #### 1.5.1 代表题目
-51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216
+51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216、78、90
 
 ### 1.6 字典树Trie 
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
@@ -2168,6 +2170,30 @@ class Solution:
                 ans = s[slow-1:fast]
         return ans
 ```
+### 78.子集
+> 给你一个整数数组` nums `，数组中的元素 **互不相同** 。返回该数组所有可能的子集（幂集）。
+
+解集 **不能** 包含重复的子集。你可以按 **任意顺序** 返回解集。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/subsets/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ DFS
+    ```
+    class Solution:
+        def subsets(self, nums: List[int]) -> List[List[int]]:
+            ans = []
+            n = len(nums)
+            
+            def dfs(start, tmp):
+                ans.append(tmp)
+                for i in range(start, n):
+                    dfs(i + 1, tmp + [nums[i]])
+                    
+            dfs(0, [])
+            return ans
+    ```
 ### 79.单词搜索
 > 给定一个` m x n `二维字符网格` board `和一个字符串单词` word `。如果` word `存在于网格中，返回 `true `；否则，返回` false `。
 
@@ -2262,6 +2288,64 @@ class Solution:
                 p1 -= 1
             tail -= 1
 ```
+### 90.子集 II
+> 给你一个整数数组` nums `，其中可能包含重复元素，请你返回该数组所有可能的子集（幂集）。
+
+解集 **不能** 包含重复的子集。返回的解集中，子集可以按**任意顺序**排列。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/subsets-ii  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ python回溯
+    ```
+    class Solution:
+        def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+            # 先排序，转换成树型结构就是同一层的节点值不能相同
+            nums.sort()
+            ans = []
+            n = len(nums)
+
+            def backtracing(tmp, start):
+                ans.append(tmp[:])
+                for i in range(start, n):
+                    if i > start and nums[i] == nums[i - 1]:
+                        continue
+                    tmp.append(nums[i])
+                    backtracing(tmp, i + 1)
+                    tmp.pop()
+
+            backtracing([], 0)
+            return ans
+    ```
+
++ java回溯
+    ```
+    class Solution {
+        //保存答案
+        public List<List<Integer>> ans = new ArrayList<List<Integer>>();
+        public int n = 0;
+
+        public List<List<Integer>> subsetsWithDup(int[] nums) {
+            this.n = nums.length;
+            List<Integer> tmp = new ArrayList<Integer>();
+            Arrays.sort(nums);
+            backtracking(tmp, nums, 0);
+            return ans;
+        }
+
+        public void backtracking(List<Integer> tmp, int[] nums, int start){
+            ans.add(new ArrayList<Integer>(tmp));
+            for(int i = start; i < n; i ++){
+                if (i > start && nums[i] == nums[i-1])
+                    continue;
+                tmp.add(nums[i]);
+                backtracking(tmp, nums, i + 1);
+                tmp.remove(tmp.size()-1);
+            }
+        }
+    }
+    ```
 ### 92.反转链表 II
 > 给你单链表的头指针` head `和两个整数` left `和` right `，其中` left <= right `。请你反转从位置` left `到位置` right `的链表节点，返回**反转后的链表**
 
