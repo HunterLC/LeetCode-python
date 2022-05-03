@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-138题-green)
+![](https://img.shields.io/badge/已覆盖-139题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -44,6 +44,7 @@
     + [37.解数独★](#37解数独)
     + [39.组合总和](#39组合总和)
     + [40.组合总和ⅱ](#40组合总和-ii)
+    + [46.全排列](#46全排列)
     + [49.字母异位词分组](#49字母异位词分组)
     + [51.N皇后★](#51n皇后)
     + [52.N皇后ii](#52n皇后ii)
@@ -614,7 +615,7 @@ def bfs(root: TreeNode):
 
 ### 1.5 回溯
 #### 1.5.1 代表题目
-51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216、78、90
+51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216、78、90、46
 
 ### 1.6 字典树Trie 
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
@@ -1696,6 +1697,59 @@ class Solution:
 
         return ans
 ```
+### 46.全排列
+> 给定一个不含重复数字的数组` nums `，返回其 所有可能的全排列 。你可以 **按任意顺序** 返回答案。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/permutations/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ python回溯
+    ```
+    class Solution:
+        def permute(self, nums: List[int]) -> List[List[int]]:
+            ans = []
+            def backtracking(start, n):
+                if start == n:
+                    ans.append(nums[:])
+                    return None
+                for i in range(start, n):
+                    nums[start] , nums[i] = nums[i], nums[start] 
+                    backtracking(start + 1, n)
+                    nums[start] , nums[i] = nums[i], nums[start] 
+
+            backtracking(0, len(nums))
+            return ans
+    ```
++ java回溯
+    ```
+    class Solution {
+
+        public List<List<Integer>> permute(int[] nums) {
+            List<List<Integer>> ans = new ArrayList<List<Integer>>();
+            List<Integer> tmp = new ArrayList<Integer>();
+
+            for(int item: nums)
+                tmp.add(item);
+            int n = nums.length;
+            backtracking(ans, tmp, 0, n);
+            return ans;
+        }
+
+        public void backtracking(List<List<Integer>> ans, List<Integer> tmp, int start, int n){
+            if (start == n){
+                ans.add(new ArrayList<Integer>(tmp));
+                return ;
+            }
+            for(int i = start; i < n; i++){
+                Collections.swap(tmp, start, i);
+                backtracking(ans, tmp, start + 1, n);
+                Collections.swap(tmp, start, i);
+            }
+        }
+
+    }
+    ```
 ### 49.字母异位词分组
 > 给你一个字符串数组，请你将 **字母异位词** 组合在一起。可以按任意顺序返回结果列表。  
 **字母异位词** 是由重新排列源单词的字母得到的一个新单词，所有源单词中的字母通常恰好只用一次。
