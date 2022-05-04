@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-139题-green)
+![](https://img.shields.io/badge/已覆盖-140题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -164,6 +164,7 @@
     + [1376.通知所有员工所需的时间](#1376通知所有员工所需的时间)
     + [1438.绝对差不超过限制的最长连续子数组](#1438绝对差不超过限制的最长连续子数组)
     + [1472.设计浏览器历史记录](#1472设计浏览器历史记录)
+    + [1823.找出游戏的获胜者](#1823找出游戏的获胜者)
 
 
 ## 1.基础知识
@@ -7265,3 +7266,69 @@ class BrowserHistory:
 # param_2 = obj.back(steps)
 # param_3 = obj.forward(steps)
 ```
+### 1823.找出游戏的获胜者
+> 共有` n `名小伙伴一起做游戏。小伙伴们围成一圈，按 **顺时针顺序** 从` 1 `到` n `编号。确切地说，从第` i `名小伙伴顺时针移动一位会到达第` (i+1) `名小伙伴的位置，其中` 1 <= i < n `，从第 `n `名小伙伴顺时针移动一位会回到第` 1 `名小伙伴的位置。
+
+游戏遵循如下规则：
+
+1. 从第` 1 `名小伙伴所在位置 **开始** 。
+2. 沿着顺时针方向数` k `名小伙伴，计数时需要 **包含** 起始时的那位小伙伴。逐个绕圈进行计数，一些小伙伴可能会被数过不止一次。
+3. 你数到的最后一名小伙伴需要离开圈子，并视作输掉游戏。
+4. 如果圈子中仍然有不止一名小伙伴，从刚刚输掉的小伙伴的 顺时针下一位 **小伙伴** 开始，回到步骤` 2 `继续执行。
+5. 否则，圈子中最后一名小伙伴赢得游戏。
+
+给你参与游戏的小伙伴总数` n `，和一个整数` k `，返回游戏的获胜者。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/find-the-winner-of-the-circular-game  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 模拟+队列
+    ```
+    # python
+    class Solution:
+        def findTheWinner(self, n: int, k: int) -> int:
+            q = deque(range(1, n + 1))
+            while len(q) > 1:
+                for _ in range(k - 1):
+                    q.append(q.popleft())
+                q.popleft()
+            return q[0]
+    
+
+    //java
+    class Solution {
+        public int findTheWinner(int n, int k) {
+            Queue<Integer> queue = new ArrayDeque<Integer>();
+            // 编号入队列
+            for(int i = 1; i <= n; i++)
+                queue.offer(i);
+            
+            while (queue.size() > 1){
+                for(int i = 1; i <= k-1; i++)
+                    queue.offer(queue.poll());
+                queue.poll();
+            }
+
+            return queue.peek();
+        }
+    }
+    ```
++ 递归
+    ```
+    class Solution:
+        def findTheWinner(self, n: int, k: int) -> int:
+            if n <= 1:
+                return n
+            ans = (self.findTheWinner(n - 1, k) + k) % n
+            return n if ans == 0 else ans
+    ```
++ 迭代    解释看[这里](https://blog.csdn.net/u011500062/article/details/72855826)
+    ```
+    class Solution:
+        def findTheWinner(self, n: int, k: int) -> int:
+            ans = 0
+            for i in range(2, n + 1):
+                ans = (ans + k) % i
+            return ans + 1
+    ```
