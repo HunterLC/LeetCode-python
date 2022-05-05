@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-141题-green)
+![](https://img.shields.io/badge/已覆盖-142题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -45,6 +45,7 @@
     + [39.组合总和](#39组合总和)
     + [40.组合总和ⅱ](#40组合总和-ii)
     + [46.全排列](#46全排列)
+    + [47.全排列ii](#47全排列ii)
     + [49.字母异位词分组](#49字母异位词分组)
     + [51.N皇后★](#51n皇后)
     + [52.N皇后ii](#52n皇后ii)
@@ -194,7 +195,7 @@
 > 冒泡排序的基本思想是，对相邻的元素进行两两比较，顺序相反则进行交换，这样，每一趟会将最小或最大的元素`浮`到顶端，最终达到完全有序 
 
 示例：  
-![冒泡排序示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/冒泡排序.png)
+![冒泡排序示例](/image/sort/冒泡排序.png)
 
 ```
     public static void bubbleSort(int[] arr) {
@@ -216,7 +217,7 @@
 > 直接插入排序基本思想是每一步将一个待排序的记录，插入到前面已经排好序的有序序列中去，直到插完所有元素为止。  
 
 示例：  
-![直接插入排序示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/直接插入排序.png)
+![直接插入排序示例](/image/sort/直接插入排序.png)
 
 ```
     public static void insertionSort(int[] arr) {
@@ -238,7 +239,7 @@
 (3) 递归地把"基准值前面的子数列"和"基准值后面的子数列"进行排序。  
 
 示例(**第一轮**)  
-![快速排序第一轮示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/快速排序.jpg)
+![快速排序第一轮示例](/image/sort/快速排序.jpg)
 
 ```
     /*
@@ -278,11 +279,11 @@
 > 归并排序（MERGE-SORT）是利用归并的思想实现的排序方法，该算法采用经典的分治（divide-and-conquer）策略:分治法将问题分(divide)成一些小的问题然后递归求解，而治(conquer)的阶段则将分的阶段得到的各答案"修补"在一起，即分而治之。
 + top down
 这种结构很像一棵完全二叉树，本文的归并排序我们采用递归去实现（也可采用迭代的方式去实现）。分阶段可以理解为就是递归拆分子序列的过程，递归深度为log2n。  
-![归并排序top down总思路](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/归并排序1.png)  
+![归并排序top down总思路](/image/sort/归并排序1.png)  
 治阶段，我们需要将两个已经有序的子序列合并成一个有序序列，比如上图中的最后一次合并，要将[4,5,7,8]和[1,2,3,6]两个已经有序的子序列，合并为最终序列[1,2,3,4,5,6,7,8]  
-![归并排序top down治思路](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/归并排序2.png)  
+![归并排序top down治思路](/image/sort/归并排序2.png)  
 最后  
-![归并排序top down思路](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/归并排序3.png)  
+![归并排序top down思路](/image/sort/归并排序3.png)  
 
 ```
     public static void sort(int []arr){
@@ -339,7 +340,7 @@ step=8: (1->2->3->4->5->6->7->8->9->11)
 我们来看下希尔排序的基本步骤，在此我们选择增量gap=length/2，缩小增量继续以gap = gap/2的方式，这种增量选择我们可以用一个序列来表示，{n/2,(n/2)/2...1}，称为增量序列。希尔排序的增量序列的选择与证明是个数学难题，我们选择的这个增量序列是比较常用的，也是希尔建议的增量，称为希尔增量，但其实这个增量序列不是最优的。此处我们做示例使用希尔增量。
 
 示例:
-![希尔排序示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/希尔排序.png)
+![希尔排序示例](/image/sort/希尔排序.png)
 ```
     /**
      * 希尔排序 针对有序序列在插入时采用交换法
@@ -399,9 +400,9 @@ step=8: (1->2->3->4->5->6->7->8->9->11)
 > 堆排序是利用堆这种数据结构而设计的一种排序算法，堆排序是一种选择排序，它的最坏，最好，平均时间复杂度均为O(nlogn)，它也是不稳定排序。  
 
 堆是具有以下性质的完全二叉树：每个结点的值都大于或等于其左右孩子结点的值，称为大顶堆；或者每个结点的值都小于或等于其左右孩子结点的值，称为小顶堆。  
-![大顶堆、小顶堆](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序1.png)  
+![大顶堆、小顶堆](/image/sort/堆排序1.png)  
 对堆中的结点按层进行编号，将这种逻辑结构映射到数组中就是下面这个样子  
-![数组表示结果](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序2.png)  
+![数组表示结果](/image/sort/堆排序2.png)  
 该数组从逻辑上讲就是一个堆结构，我们用简单的公式来描述一下堆的定义就是  
 + 大顶堆：arr[i] >= arr[2i+1] && arr[i] >= arr[2i+2] 
 + 小顶堆：arr[i] <= arr[2i+1] && arr[i] <= arr[2i+2]
@@ -412,18 +413,18 @@ step=8: (1->2->3->4->5->6->7->8->9->11)
 step 1: 构造初始堆。将给定无序序列构造成一个大顶堆（一般升序采用大顶堆，降序采用小顶堆)。  
 |序号|说明|示意图|
 |:-:|-|:-:|
-|1|假设给定无序序列结构|![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序3.png)|
-|2|从最后一个非叶子结点开始（叶结点自然不用调整，第一个非叶子结点 arr.length/2-1=5/2-1=1，也就是下面的6结点），从左至右，从下至上进行调整|![找最后一个非叶子结点](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序4.png)|
-|3|找到第二个非叶节点4，由于[4,9,8]中9元素最大，4和9交换|![找下一个相邻的非叶子节点](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序5.png)|
-|4|交换导致了子根[4,5,6]结构混乱，继续调整，[4,5,6]中6最大，交换4和6。我们就将一个无需序列构造成了一个大顶堆|![调整子树](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序6.png)|  
+|1|假设给定无序序列结构|![示例](/image/sort/堆排序3.png)|
+|2|从最后一个非叶子结点开始（叶结点自然不用调整，第一个非叶子结点 arr.length/2-1=5/2-1=1，也就是下面的6结点），从左至右，从下至上进行调整|![找最后一个非叶子结点](/image/sort/堆排序4.png)|
+|3|找到第二个非叶节点4，由于[4,9,8]中9元素最大，4和9交换|![找下一个相邻的非叶子节点](/image/sort/堆排序5.png)|
+|4|交换导致了子根[4,5,6]结构混乱，继续调整，[4,5,6]中6最大，交换4和6。我们就将一个无需序列构造成了一个大顶堆|![调整子树](/image/sort/堆排序6.png)|  
 
 step 2: 将堆顶元素与末尾元素进行交换，使末尾元素最大。然后继续调整堆，再将堆顶元素与末尾元素交换，得到第二大元素。如此反复进行交换、重建、交换。  
 |序号|说明|示意图|
 |:-:|-|:-:|
-|1|将堆顶元素9和末尾元素4进行交换|![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序7.png)|
-|2|重新调整结构，使其继续满足堆定义|![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序8.png)|
-|3|再将堆顶元素8与末尾元素5进行交换，得到第二大元素8|![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序9.png)|
-|4|后续过程，继续进行调整，交换，如此反复进行，最终使得整个序列有序|![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/sort/堆排序10.png)|
+|1|将堆顶元素9和末尾元素4进行交换|![示例](/image/sort/堆排序7.png)|
+|2|重新调整结构，使其继续满足堆定义|![示例](/image/sort/堆排序8.png)|
+|3|再将堆顶元素8与末尾元素5进行交换，得到第二大元素8|![示例](/image/sort/堆排序9.png)|
+|4|后续过程，继续进行调整，交换，如此反复进行，最终使得整个序列有序|![示例](/image/sort/堆排序10.png)|
 
 ```
     public static void sort(int []arr){
@@ -532,19 +533,19 @@ return longest
 
 什么是层序遍历呢？简单来说，层序遍历就是把二叉树分层，然后每一层从左到右遍历：
 
-![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs2.jpg)
+![BFS示意图](/image/bfs/bfs2.jpg)
 
 乍一看来，这个遍历顺序和 BFS 是一样的，我们可以直接用 BFS 得出层序遍历结果。然而，层序遍历要求的输入结果和 BFS 是不同的。层序遍历要求我们区分每一层，也就是返回一个二维数组。而 BFS 的遍历结果是一个一维数组，无法区分每一层。
 
-![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs3.jpg)
+![BFS示意图](/image/bfs/bfs3.jpg)
 
 那么，怎么给 BFS 遍历的结果分层呢？我们首先来观察一下 BFS 遍历的过程中，结点进队列和出队列的过程：
 
-![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs4.gif)
+![BFS示意图](/image/bfs/bfs4.gif)
 
 截取 BFS 遍历过程中的某个时刻：
 
-![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs5.jpg)
+![BFS示意图](/image/bfs/bfs5.jpg)
 
 可以看到，此时队列中的结点是 3、4、5，分别来自第 1 层和第 2 层。这个时候，第 1 层的结点还没出完，第 2 层的结点就进来了，而且两层的结点在队列中紧挨在一起，我们无法区分队列中的结点来自哪一层。
 
@@ -566,7 +567,7 @@ def bfs(root: TreeNode):
 
 这样，我们就将 BFS 遍历改造成了层序遍历。在遍历的过程中，结点进队列和出队列的过程为：
 
-![BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/bfs6.gif)
+![BFS示意图](/image/bfs/bfs6.gif)
 
 #### 1.3.3 BFS应用2：最短路径/距离
 
@@ -617,7 +618,7 @@ def bfs(root: TreeNode):
 
 ### 1.5 回溯
 #### 1.5.1 代表题目
-51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216、78、90、46
+51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216、78、90、46、47
 
 ### 1.6 字典树Trie 
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
@@ -637,7 +638,7 @@ def bfs(root: TreeNode):
 #### 1.7.2 实现
 ##### 1.7.2.1 数据结构
 并查集跟树有些类似，只不过其与树是相反的。在树这个数据结构里面，每个节点会记录它的子节点。在并查集里，每个节点会记录它的父节点  
-![并查集](https://github.com/HunterLC/LeetCode-python/blob/main/image/union/union_1.png)
+![并查集](/image/union/union_1.png)
 
 如果节点是相互连通的（从一个节点可以到达另一个节点），那么他们在同一棵树里，或者说在同一个集合里，或者说他们的祖先是相同的
 
@@ -652,7 +653,7 @@ class UnionFind:
 ```
 ##### 1.7.2.2 初始化
 把一个新节点添加到并查集中，它的父节点应该为空  
-![并查集之添加](https://github.com/HunterLC/LeetCode-python/blob/main/image/union/union_2.png)
+![并查集之添加](/image/union/union_2.png)
 
 ```
 def add(self, x):
@@ -664,7 +665,7 @@ def add(self, x):
 ```
 ##### 1.7.2.3 合并两个节点
 如果发现两个节点是连通的，那么就要把他们合并，也就是他们的祖先是相同的。这里究竟把谁当做父节点一般是没有区别的。  
-![并查集之合并](https://github.com/HunterLC/LeetCode-python/blob/main/image/union/union_3.png)
+![并查集之合并](/image/union/union_3.png)
 
 ```
 def merge(self, x, y, val):
@@ -678,7 +679,7 @@ def merge(self, x, y, val):
 ```
 ##### 1.7.2.4 查找祖先
 查找祖先的方法是：如果节点的父节点不为空，那就不断迭代。  
-![并查集之查找祖先](https://github.com/HunterLC/LeetCode-python/blob/main/image/union/union_4.png)
+![并查集之查找祖先](/image/union/union_4.png)
 
 ```
 def find(self, x):
@@ -696,7 +697,7 @@ def find(self, x):
 如果我们树很深，比如说退化成链表，那么每次查询的效率都会非常低。所以我们要做一下**路径压缩**，也就是**把树的深度固定为2**。这么做可行的原因是，并查集只是记录了节点之间的连通关系，而节点相互连通只需要有一个相同的祖先就可以了。路径压缩可以用**递归**，也可以**迭代**。  
 |压缩之前|压缩之后|
 |:-----:|:-----:|
-|![并查集之路径压缩1](https://github.com/HunterLC/LeetCode-python/blob/main/image/union/union_5.png)|![并查集之路径压缩2](https://github.com/HunterLC/LeetCode-python/blob/main/image/union/union_6.png)|
+|![并查集之路径压缩1](/image/union/union_5.png)|![并查集之路径压缩2](/image/union/union_6.png)|
 ```
 def find(self, x):
         """
@@ -789,11 +790,11 @@ class UnionFind:
 + 二维数组(例如[304.二维区域和检索-矩阵不可变](#304二维区域和检索-矩阵不可变))
     1. 定义` preSum[i][j] `表示 从` [0,0] `位置到` [i,j] `位置的子矩形所有元素之和
     2. `S(O,D) = S(O,C) + S(O,B) − S(O,A) + D`，减去` S(O, A) `的原因是` S(O, C) `和` S(O, B) `中都有` S(O, A) `，即加了两次` S(O, A) `，所以需要减去一次` S(O, A) `。  
-    ![前缀和1](https://github.com/HunterLC/LeetCode-python/blob/main/image/prefix/prefix_1.png)
+    ![前缀和1](/image/prefix/prefix_1.png)
 
     3. 转换成前缀和，也就是`preSum[i][j] = preSum[i−1][j] + preSum[i][j−1] − preSum[i−1][j−1] + matrix[i][j]`
     4. 如何利用前缀和求解下图呢？  
-    ![前缀和2](https://github.com/HunterLC/LeetCode-python/blob/main/image/prefix/prefix_2.png)  
+    ![前缀和2](/image/prefix/prefix_2.png)  
     加上子矩形` S(O, G) `面积的原因是` S(O, E) `和` S(O, F) `中都有` S(O, G) `，即减了两次` S(O, G) `，所以需要加上一次` S(O, G) `
     5. 如果要求` [row1, col1] `到` [row2, col2] `的子矩形的面积的话，用` preSum `对应了递推公式：`preSum[row2][col2] - preSum[row2][col1 - 1] - preSum[row1 - 1][col2] + preSum[row1 - 1][col1 - 1]`
 
@@ -1751,6 +1752,42 @@ class Solution:
         }
 
     }
+    ```
+### 47.全排列II
+> 给定一个可包含重复数字的序列` nums `，按**任意顺序** 返回所有不重复的全排列。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/permutations-ii/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 回溯
+    ```
+    class Solution:
+        def permuteUnique(self, nums: List[int]) -> List[List[int]]:
+            # 给数组排序
+            nums.sort()
+
+            ans  = []
+            visited = [False for _ in range(len(nums))]
+
+            def backtracking(tmp, n):
+                if len(tmp) == n:
+                    ans.append(tmp[:])
+                    return None
+                for i in range(n):
+                    if visited[i]:
+                        continue
+                    # 去重
+                    if i > 0 and nums[i] == nums[i-1] and not visited[i-1]:
+                        continue
+                    tmp.append(nums[i])
+                    visited[i] = True
+                    backtracking(tmp, n)
+                    tmp.pop()
+                    visited[i] = False
+
+            backtracking([], len(nums))
+            return ans
     ```
 ### 49.字母异位词分组
 > 给你一个字符串数组，请你将 **字母异位词** 组合在一起。可以按任意顺序返回结果列表。  
