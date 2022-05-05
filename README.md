@@ -1,6 +1,6 @@
 # LeetCode-python
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-140题-green)
+![](https://img.shields.io/badge/已覆盖-141题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -140,6 +140,7 @@
     + [669.修剪二叉搜索树★](#669修剪二叉搜索树)
     + [692.前k个高频单词](#692前k个高频单词)
     + [700.二叉搜索树中的搜索](#700二叉搜索树中的搜索)
+    + [713.乘积小于k的子数组](#713乘积小于k的子数组)
     + [735.行星碰撞](#735行星碰撞)
     + [752.打开转盘锁★](#752打开转盘锁)
     + [767.重构字符串](#767重构字符串)
@@ -475,7 +476,7 @@ step 2: 将堆顶元素与末尾元素进行交换，使末尾元素最大。然
 ```
 
 ### 1.2 同向双指针/滑动窗口
-1. 常用模板
+#### 1.2.1 常用模板
 ```
 1. 定义需要用到的变量，如快慢指针int slow = 0, int fast = 0; 输入的string s; 
 Hashmap char_freq用于记录string s当中slow到fast（包含）之间所有的字母出现的频率；
@@ -496,13 +497,13 @@ while fast < len(s)：
     fast += 1
 return longest
 ```
-2. 代表题目
-    395、340、424、76、3、1004
+#### 1.2.2 代表题目
+395、340、424、76、3、1004、713
 
 ### 1.3 宽度优先搜索BFS
 > BFS常用于**层序遍历**和**最短路径**
 
-![DFS、BFS示意图](https://github.com/HunterLC/LeetCode-python/blob/main/image/bfs/DFS和BFS示意图1.gif)
+![DFS、BFS示意图](/image/bfs/DFS和BFS示意图1.gif)
 
 #### 1.3.1 二叉树上 `DFS` 与 `BFS` 代码比较  
     + DFS遍历使用**递归**
@@ -6205,6 +6206,31 @@ class Solution:
             return self.searchBST(root.left, val)
         else:
             return root
+```
+### 713.乘积小于K的子数组
+> 给你一个整数数组` nums `和一个整数` k `，请你返回子数组内所有元素的乘积严格小于` k `的连续子数组的数目。
+ 
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/subarray-product-less-than-k/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def numSubarrayProductLessThanK(self, nums: List[int], k: int) -> int:
+        if k <= 1:
+            return 0
+        # 同向双指针指向开头位置
+        left, right = 0, 0
+        ans = 0
+        mul = 1
+        while right < len(nums):
+            mul *= nums[right]
+            while mul >= k:
+                mul //= nums[left]
+                left += 1
+            ans += right - left + 1
+            right += 1
+        return ans
 ```
 ### 735.行星碰撞
 > 给定一个整数数组` asteroids`，表示在同一行的行星。  
