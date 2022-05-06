@@ -1,6 +1,8 @@
 # LeetCode-python
+因为俺要找工作，所以一些题解会含有java语言解法，QAQ
+
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-142题-green)
+![](https://img.shields.io/badge/已覆盖-144题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -56,6 +58,7 @@
     + [74.搜索二维矩阵](#74搜索二维矩阵)
     + [75.颜色分类](#75颜色分类)
     + [76.最小覆盖子串](#76最小覆盖子串)
+    + [77.组合](#77组合)
     + [78.子集](#78子集)
     + [79.单词搜索](#79单词搜索)
     + [88.合并两个有序数组](#88合并两个有序数组)
@@ -151,6 +154,7 @@
     + [876.链表的中间结点](#876链表的中间结点)
     + [895.最大频率栈](#895最大频率栈)
     + [905.按奇偶排序数组](#905按奇偶排序数组)
+    + [933.最近的请求次数](#933最近的请求次数)
     + [951.翻转等价二叉树](#951翻转等价二叉树)
     + [973.最接近原点的k个点](#973最接近原点的k个点)
     + [987.二叉树的垂序遍历](#987二叉树的垂序遍历)
@@ -618,7 +622,7 @@ def bfs(root: TreeNode):
 
 ### 1.5 回溯
 #### 1.5.1 代表题目
-51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216、78、90、46、47
+51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216、78、90、46、47、77
 
 ### 1.6 字典树Trie 
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
@@ -2263,6 +2267,38 @@ class Solution:
                 ans = s[slow-1:fast]
         return ans
 ```
+### 77.组合
+> 给定两个整数` n `和` k`，返回范围` [1, n] `中所有可能的` k `个数的组合。  
+你可以按 **任何顺序** 返回答案。
+
+来源：力扣（LeetCode）  
+https://leetcode-cn.com/problems/combinations/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ Java回溯
+    ```
+    class Solution {
+        public List<List<Integer>> combine(int n, int k) {
+            List<List<Integer>> ans = new ArrayList<List<Integer>>();
+            List<Integer> tmp = new ArrayList<Integer>();
+            backtracking(ans, tmp, 1, n, k);
+            return ans;
+        }
+
+        public void backtracking(List<List<Integer>> ans, List<Integer> tmp, int start, int n, int k){
+            if(tmp.size() == k){
+                //长度满足k了
+                ans.add(new ArrayList<Integer>(tmp));
+                return ;
+            }
+            for(int i = start; i <= n; i++){
+                tmp.add(i);
+                backtracking(ans, tmp, i + 1, n, k);
+                tmp.remove(tmp.size()-1);
+            }
+        }
+    }
+    ```
 ### 78.子集
 > 给你一个整数数组` nums `，数组中的元素 **互不相同** 。返回该数组所有可能的子集（幂集）。
 
@@ -6647,6 +6683,46 @@ class Solution:
         
         return nums
 ```
+### 933.最近的请求次数
+> 写一个` RecentCounter `类来计算特定时间范围内最近的请求。
+
+请你实现` RecentCounter `类：
+
++ `RecentCounter() `初始化计数器，请求数为` 0 `。
++ `int ping(int t)` 在时间` t `添加一个新请求，其中` t `表示以毫秒为单位的某个时间，并返回过去` 3000 `毫秒内发生的所有请求数（包括新请求）。确切地说，返回在` [t-3000, t] `内发生的请求数。
+
+保证 每次对` ping `的调用都使用比之前更大的` t `值。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/number-of-recent-calls  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java队列
+    ```
+    class RecentCounter {
+        //定义队列
+        public Queue<Integer> queue;
+
+        public RecentCounter() {
+            Queue<Integer> queue = new ArrayDeque<Integer>();
+            this.queue = queue;
+        }
+        
+        public int ping(int t) {
+            //新的请求入队列
+            queue.offer(t);
+            while(queue.peek() < t - 3000)
+                queue.poll();
+            return queue.size();
+        }
+    }
+
+    /**
+    * Your RecentCounter object will be instantiated and called as such:
+    * RecentCounter obj = new RecentCounter();
+    * int param_1 = obj.ping(t);
+    */
+    ```
 ### 951.翻转等价二叉树
 > 我们可以为二叉树` T `定义一个 **翻转操作** ，如下所示：选择任意节点，然后交换它的左子树和右子树。  
 只要经过一定次数的翻转操作后，能使` X `等于` Y`，我们就称二叉树` X `翻转 **等价** 于二叉树` Y`。
