@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-144题-green)
+![](https://img.shields.io/badge/已覆盖-146题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -133,6 +133,7 @@
     + [417.太平洋大西洋水流问题](#417太平洋大西洋水流问题)
     + [424.替换后的最长重复字符](#424替换后的最长重复字符)
     + [427.建立四叉树](#427建立四叉树)
+    + [433.最小基因变化](#433最小基因变化)
     + [454.四数相加 ⅱ](#454四数相加ⅱ)
     + [528.按权重随机选择](#528按权重随机选择)
     + [540.有序数组中的单一元素](#540有序数组中的单一元素)
@@ -143,6 +144,7 @@
     + [647.回文子串 (与题5可做比较)](#647回文子串与题5可做比较)
     + [669.修剪二叉搜索树★](#669修剪二叉搜索树)
     + [692.前k个高频单词](#692前k个高频单词)
+    + [698.划分为k个相等的子集](#698划分为k个相等的子集)
     + [700.二叉搜索树中的搜索](#700二叉搜索树中的搜索)
     + [713.乘积小于k的子数组](#713乘积小于k的子数组)
     + [735.行星碰撞](#735行星碰撞)
@@ -577,7 +579,7 @@ def bfs(root: TreeNode):
 
 #### 1.3.4 代表题目
 
-130、752、815、1091、542、1293、417、207、210、310
+130、752、815、1091、542、1293、417、207、210、310、433
 
 ### 1.4 深度优先搜索DFS
 #### 1.4.1 岛屿类问题
@@ -622,7 +624,7 @@ def bfs(root: TreeNode):
 
 ### 1.5 回溯
 #### 1.5.1 代表题目
-51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216、78、90、46、47、77
+51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216、78、90、46、47、77、698
 
 ### 1.6 字典树Trie 
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
@@ -5890,6 +5892,71 @@ class Node {
 
             return dfs(0, 0, n -1, n - 1)
     ```
+### 433.最小基因变化
+> 基因序列可以表示为一条由` 8 `个字符组成的字符串，其中每个字符都是` 'A'、'C'、'G' `和` 'T' `之一。  
+假设我们需要调查从基因序列` start `变为` end `所发生的基因变化。一次基因变化就意味着这个基因序列中的一个字符发生了变化。  
+例如，`"AACCGGTT" --> "AACCGGTA" `就是一次基因变化。  
+另有一个基因库` bank `记录了所有有效的基因变化，只有基因库中的基因才是有效的基因序列。  
+给你两个基因序列` start `和` end `，以及一个基因库` bank `，请你找出并返回能够使` start `变化为` end `所需的最少变化次数。如果无法完成此基因变化，返回` -1 `。
+
+注意：起始基因序列` start `默认是有效的，但是它并不一定会出现在基因库中。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/minimum-genetic-mutation  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java的BFS
+```
+class Solution {
+    //记录基本的基因组成字符
+    public static char[] base = {'A', 'C', 'G', 'T'};
+
+    public int minMutation(String start, String end, String[] bank) {
+        //把bank转成set，这样子查找元素更快
+        Set<String> bank_set = new HashSet<>();
+        for(String s: bank)
+            bank_set.add(s);
+        //定义队列
+        Deque<String> queue = new ArrayDeque<>();
+        queue.addLast(start);
+        //记录变化步数
+        Map<String, Integer> map = new HashMap<>();
+        map.put(start, 0);
+
+        while(!queue.isEmpty()){
+            //获取队列当前元素长度
+            int size = queue.size();
+            while(size > 0){
+                String s = queue.pollFirst();
+                char[] char_s = s.toCharArray();
+                int step = map.get(s);
+                //对于基因序列里面的每一个字符
+                for(int i = 0; i < 8; i++)
+                    // 替换每一个字符为其他的三种基本字符
+                    for(char c: base){
+                        if(char_s[i] == c) continue;
+                        char[] clone = char_s.clone();
+                        //字符替换
+                        clone[i] = c;
+                        String sub = String.valueOf(clone);
+                        //不在有效基因列表里面
+                        if(!bank_set.contains(sub)) continue;
+                        //该形式的基因序列之前已经遍历到了，不需要再重复遍历了
+                        if(map.containsKey(sub)) continue;
+                        //获取到最终基因了
+                        if(sub.equals(end))
+                            return step + 1;
+                        map.put(sub, step + 1);
+                        queue.addLast(sub);
+                    }
+                size--;
+            }
+        }
+
+        return -1;
+    }
+}
+```
 ### 454.四数相加Ⅱ
 > 给你四个整数数组` nums1`、`nums2`、`nums3` 和` nums4 `，数组长度都是` n `，请你计算有多少个元组` (i, j, k, l) `能满足：
 
@@ -6254,6 +6321,75 @@ class Solution:
         ans.sort(reverse=True)
         return [i.key for i in ans]
 ```
+### 698.划分为k个相等的子集
+> 给定一个整数数组`  nums `和一个正整数` k`，找出是否有可能把这个数组分成` k `个非空子集，其总和都相等。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/partition-to-k-equal-sum-subsets/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java回溯
+    ```
+    class Solution {
+        // 备忘录，存储 used 的状态
+        private HashMap<Integer, Boolean> memo = new HashMap<>();
+
+        public boolean canPartitionKSubsets(int[] nums, int k) {
+            int sum = 0;
+            // 先求数组的总和，如果数组的总和不能平均分，那就说明不可能划分相等的子集
+            for (int i = 0; i < nums.length; i++) sum += nums[i];
+            if (sum % k != 0) return false;
+
+            int target = sum / k;
+            // 使用位图技巧
+            int used = 0;
+            int[] bucket = new int[k + 1];
+            return backtrack(nums, 0, bucket, k, target, used);
+        }
+
+        private boolean backtrack(int[] nums, int start, int[] bucket, int k, int target, int used) {
+            // k 个桶均装满
+            if (k == 0) return true;
+
+            // 当前桶装满了，开始装下一个桶
+            if (bucket[k] == target) {
+                // 注意：桶从下一个开始；球从第一个开始
+                boolean res = backtrack(nums, 0, bucket, k - 1, target, used);
+                memo.put(used, res);
+                return res;
+            }
+
+            if (memo.containsKey(used))
+                // 如果当前状态曾今计算过，就直接返回，不要再递归穷举了
+                return memo.get(used);
+
+            // 第 k 个桶开始对每一个球选择进行选择是否装入
+            for (int i = start; i < nums.length; i++) {
+                // 如果当前球已经被装入，则跳过
+                if (((used >> i) & 1) == 1) continue;
+                // 如果装入当前球，桶溢出，则跳过
+                if (bucket[k] + nums[i] > target) continue;
+
+                // 装入 && 标记已使用
+                bucket[k] += nums[i];
+                // 将第 i 位标记为 1
+                used |= 1 << i;
+
+                // 开始判断是否选择下一个球
+                // 注意：桶依旧是当前桶；球是下一个球
+                // 注意：是 i + 1
+                if (backtrack(nums, i + 1, bucket, k, target, used)) return true;
+
+                // 拿出 && 标记未使用
+                bucket[k] -= nums[i];
+                // 将第 i 位标记为 0
+                used ^= 1 << i;
+            }
+            // 如果所有球均不能使所有桶刚好装满
+            return false;
+        }
+    }
+    ```
 ### 700.二叉搜索树中的搜索
 > 给定二叉搜索树（BST）的根节点` root `和一个整数值` val`。  
 你需要在` BST `中找到节点值等于` val `的节点。 返回以该节点为根的子树。 如果节点不存在，则返回 `null `。
