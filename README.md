@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-146题-green)
+![](https://img.shields.io/badge/已覆盖-148题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -134,7 +134,9 @@
     + [424.替换后的最长重复字符](#424替换后的最长重复字符)
     + [427.建立四叉树](#427建立四叉树)
     + [433.最小基因变化](#433最小基因变化)
+    + [442.数组中的重复数字](#442数组中的重复数字)
     + [454.四数相加 ⅱ](#454四数相加ⅱ)
+    + [526.优美的排列](#526优美的排列)
     + [528.按权重随机选择](#528按权重随机选择)
     + [540.有序数组中的单一元素](#540有序数组中的单一元素)
     + [542.01矩阵](#542-01矩阵)
@@ -624,7 +626,7 @@ def bfs(root: TreeNode):
 
 ### 1.5 回溯
 #### 1.5.1 代表题目
-51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216、78、90、46、47、77、698
+51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216、78、90、46、47、77、698、526
 
 ### 1.6 字典树Trie 
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
@@ -5957,6 +5959,45 @@ class Solution {
     }
 }
 ```
+### 442.数组中的重复数字
+> 给你一个长度为` n `的整数数组` nums `，其中` nums `的所有整数都在范围` [1, n] `内，且每个整数出现 **一次** 或 **两次** 。请你找出所有出现 **两次** 的整数，并以数组形式返回。
+
+你必须设计并实现一个时间复杂度为` O(n) `且仅使用**常量额外空间**的算法解决此问题。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/find-all-duplicates-in-an-array  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java原地哈希(数字i定义到数组下标为i-1的位置)
+    ```
+    class Solution {
+        public List<Integer> findDuplicates(int[] nums) {
+            int n = nums.length;
+
+            for (int i = 0; i < n; ++i) {
+                //把数i放置在数组中下标为i-1的位置，放置到一个不冲突的位置
+                while (nums[i] != nums[nums[i] - 1]) {
+                    swap(nums, i, nums[i] - 1);
+                }
+            }
+
+            List<Integer> ans = new ArrayList<Integer>();
+            for (int i = 0; i < n; ++i) {
+                if (nums[i] - 1 != i) {
+                    ans.add(nums[i]);
+                }
+            }
+
+            return ans;
+        }
+
+        public void swap(int[] nums, int a, int b){
+            int tmp = nums[a];
+            nums[a] = nums[b];
+            nums[b] = tmp;
+        }
+    }
+    ```
 ### 454.四数相加Ⅱ
 > 给你四个整数数组` nums1`、`nums2`、`nums3` 和` nums4 `，数组长度都是` n `，请你计算有多少个元组` (i, j, k, l) `能满足：
 
@@ -5980,6 +6021,60 @@ class Solution:
         return ans
 
 ```
+### 526.优美的排列
+> 假设有从` 1 `到` n `的` n `个整数。用这些整数构造一个数组` perm`（下标从` 1 `开始），只要满足下述条件**之一** ，该数组就是一个 **优美的排列** ：
+
++ `perm[i]` 能够被` i `整除
++ `i `能够被` perm[i] `整除
+
+给你一个整数` n `，返回可以构造的 **优美排列**的 **数量** 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode-cn.com/problems/beautiful-arrangement  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java回溯
+    ```
+    class Solution {
+        //因为n个整数不重复，所以需要记录当前数字是否已经被使用了
+        public boolean[] visited;
+        //先预处理，保存每个位置可能满足整除条件的结果
+        public List<Integer>[] possible;
+        //优美排列的数量
+        public int ans = 0;
+
+        public int countArrangement(int n) {
+            //初始化数据结构
+            visited = new boolean[n + 1];
+            possible = new List[n + 1];
+            for(int i = 0; i <= n; i++)
+                possible[i] = new ArrayList<Integer>();
+            //预处理，计算可能解
+            for(int i = 1; i <= n; i++)
+                for(int j = 1; j <= n; j++)
+                    //可能的解
+                    if(i % j == 0 || j % i == 0)
+                        possible[i].add(j);
+            
+            backtracking(1, n);
+            return ans;
+        }
+
+        public void backtracking(int start, int n){
+            if(start > n){
+                ans++;
+                return ;
+            }
+            //遍历该位置的所有可能解
+            for(int num: possible[start])
+                if(!visited[num]){
+                    visited[num] = true;
+                    backtracking(start + 1, n);
+                    visited[num] = false;
+                } 
+        }
+    }
+    ```
 ### 528.按权重随机选择
 > 给你一个 下标从` 0 `开始 的正整数数组` w `，其中` w[i] `代表第` i `个下标的权重。  
 请你实现一个函数` pickIndex `，它可以 随机地 从范围` [0, w.length - 1]` 内（含 `0` 和` w.length - 1`）选出并返回一个下标。选取下标` i` 的 概率 为` w[i] / sum(w)` 。
