@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-148题-green)
+![](https://img.shields.io/badge/已覆盖-149题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -159,6 +159,7 @@
     + [895.最大频率栈](#895最大频率栈)
     + [905.按奇偶排序数组](#905按奇偶排序数组)
     + [933.最近的请求次数](#933最近的请求次数)
+    + [942.增减字符串匹配](#942增减字符串匹配)
     + [951.翻转等价二叉树](#951翻转等价二叉树)
     + [973.最接近原点的k个点](#973最接近原点的k个点)
     + [987.二叉树的垂序遍历](#987二叉树的垂序遍历)
@@ -6953,6 +6954,35 @@ class Solution:
     * RecentCounter obj = new RecentCounter();
     * int param_1 = obj.ping(t);
     */
+    ```
+### 942.增减字符串匹配
+> 由范围` [0,n] `内所有整数组成的` n + 1 `个整数的排列序列可以表示为长度为` n `的字符串` s `，其中:
++ 如果` perm[i] < perm[i + 1] `，那么` s[i] == 'I' `
++ 如果` perm[i] > perm[i + 1] `，那么` s[i] == 'D' `
+
+给定一个字符串` s `，重构排列` perm `并返回它。如果有多个有效排列`perm`，则返回其中 **任何一个** 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/di-string-match  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java贪心构造
+    ```
+    class Solution {
+        public int[] diStringMatch(String s) {
+            int n = s.length();
+            int left = 0, right = n;
+            // 记录答案
+            int[] ans = new int[n + 1];
+            int idx = 0;
+            for(int i = 0; i < n; i++)
+                ans[idx++] = s.charAt(i) == 'I' ? left++ : right--;
+            
+            //处理最后一位
+            ans[idx] = left;
+            return ans;
+        }
+    }
     ```
 ### 951.翻转等价二叉树
 > 我们可以为二叉树` T `定义一个 **翻转操作** ，如下所示：选择任意节点，然后交换它的左子树和右子树。  
