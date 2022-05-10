@@ -1,8 +1,8 @@
 # LeetCode-python
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
-![](https://img.shields.io/badge/Python%20Version-3.7-blue)
-![](https://img.shields.io/badge/已覆盖-149题-green)
+![](https://img.shields.io/badge/Python%203-Java%208-blue)
+![](https://img.shields.io/badge/已覆盖-150题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -11,6 +11,7 @@
 ![](https://img.shields.io/badge/前缀树/字典树-Trie-seagreen)
 ![](https://img.shields.io/badge/并查集-Union%20Find-teal)
 ![](https://img.shields.io/badge/前缀和-Prefix%20Sum-ultramarine)
+![](https://img.shields.io/badge/动态规划-Dynamic%20Programming-cornflowerblue)
 
 我要刷题**冲冲冲**
 
@@ -24,6 +25,7 @@
     + [1.6 字典树](#16-字典树trie)
     + [1.7 并查集](#17-并查集)
     + [1.8 前缀和](#18-前缀和)
+    + [1.9 动态规划](#19-动态规划)
 
 + [2.题目](#2题目)
     + [1.两数之和](#1两数之和)
@@ -82,6 +84,7 @@
     + [130.被围绕的区域★](#130被围绕的区域)
     + [131.分割回文串](#131分割回文串)
     + [133.克隆图★](#133克隆图)
+    + [139.单词拆分](#139单词拆分)
     + [141.环形链表 i](#141环形链表-i)
     + [142.环形链表 ii](#142环形链表-ii)
     + [146.lru缓存](#146lru缓存)
@@ -808,7 +811,6 @@ class UnionFind:
     5. 如果要求` [row1, col1] `到` [row2, col2] `的子矩形的面积的话，用` preSum `对应了递推公式：`preSum[row2][col2] - preSum[row2][col1 - 1] - preSum[row1 - 1][col2] + preSum[row1 - 1][col1 - 1]`
 
 
-
 #### 1.8.2 代表题目
 + 一维数组前缀和
     303  
@@ -832,6 +834,11 @@ class UnionFind:
 + 二维数组前缀和
     304、427
 
+### 1.9 动态规划
+> 这里指的是用`for`循环方式的动态规划，非`Memoization Search`方式。`DP`可以在多项式时间复杂度内解决`DFS`需要指数级别的问题。常见的题目包括找最大最小，找可行性，找总方案数等，一般结果是一个`Integer`或者`Boolean`。
+
+#### 1.9.1 代表题目
+139
 ## 2.题目
 ### 1.两数之和
 > 给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 和为目标值 `target`  的那 两个 整数，并返回它们的数组下标。
@@ -3362,6 +3369,60 @@ class Node {
                 return clone
 
             return dfs(node)
+    ```
+### 139.单词拆分
+> 给你一个字符串` s `和一个字符串列表` wordDict `作为字典。请你判断是否可以利用字典中出现的单词拼接出` s `。
+
+注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/word-break  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ python记忆化DFS
+    ```
+    class Solution:
+        def wordBreak(self, s: str, wordDict: List[str]) -> bool:
+            length = len(s)
+            memory = [None] * (length+1)  # default state
+            memory[-1] = True
+
+            def dfs(start):
+                nonlocal length, memory
+                # 记忆化DFS
+                if memory[start] is not None:
+                    return memory[start]
+                    
+                for end in range(start+1, length+1):
+                    if s[start:end] in wordDict and dfs(end):
+                        memory[start] = True
+                        return True
+                memory[start] = False
+                return False
+                        
+            return dfs(0)
+    ```
++ java动态规划
+    ```
+    class Solution {
+        public boolean wordBreak(String s, List<String> wordDict) {
+            int length = s.length();
+            //状态转移，dp[i]=true代表s的前i位可以被wordDict表示出来
+            boolean[] dp = new boolean[length + 1];
+
+            dp[0] = true;
+            for (int i = 0; i < length; i++) {
+                if (!dp[i])
+                    continue;
+                for (String word : wordDict)
+                    if (word.length() + i <= s.length() && s.startsWith(word, i))
+                        //这里的意思是s的前i位可以被表示了，并且i到i+word.length()这里也可以被表示，那么也就是说前i+word.length()都可以被表示了
+                        dp[i + word.length()] = true;
+            }
+            //返回最后一位的状态，如果true就代表是整个s都可以被表示
+            return dp[length];
+        }
+    }
     ```
 ### 141.环形链表 I
 > 给你一个链表的头节点` head `，判断链表中是否有环。  
