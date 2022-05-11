@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-150题-green)
+![](https://img.shields.io/badge/已覆盖-151题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -138,6 +138,7 @@
     + [427.建立四叉树](#427建立四叉树)
     + [433.最小基因变化](#433最小基因变化)
     + [442.数组中的重复数字](#442数组中的重复数字)
+    + [449.序列化和反序列化二叉搜索树](#449序列化和反序列化二叉搜索树)
     + [454.四数相加 ⅱ](#454四数相加ⅱ)
     + [526.优美的排列](#526优美的排列)
     + [528.按权重随机选择](#528按权重随机选择)
@@ -621,7 +622,7 @@ def bfs(root: TreeNode):
 
 ##### 1.4.2.1 代表题目
 543、226、101☆、124、236、235、105、104、987、572☆、100☆、863、1110、1376  
-二叉搜索树：230、98、669、700、108、109、285、1305
+二叉搜索树：230、98、669、700、108、109、285、1305、449
 
 注：带☆的题目表示极度相似
 
@@ -6059,6 +6060,125 @@ class Solution {
             nums[b] = tmp;
         }
     }
+    ```
+### 449.序列化和反序列化二叉搜索树
+> 序列化是将数据结构或对象转换为一系列位的过程，以便它可以存储在文件或内存缓冲区中，或通过网络连接链路传输，以便稍后在同一个或另一个计算机环境中重建。
+
+设计一个算法来序列化和反序列化 **二叉搜索树** 。 对序列化/反序列化算法的工作方式没有限制。 您只需确保二叉搜索树可以序列化为字符串，并且可以将该字符串反序列化为最初的二叉搜索树。
+
+**编码的字符串应尽可能紧凑**。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/serialize-and-deserialize-bst  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
++ java
+    ```
+    /**
+    * Definition for a binary tree node.
+    * public class TreeNode {
+    *     int val;
+    *     TreeNode left;
+    *     TreeNode right;
+    *     TreeNode(int x) { val = x; }
+    * }
+    */
+    public class Codec {
+
+        // Encodes a tree to a single string.
+        public String serialize(TreeNode root) {
+            List<String> vals = new ArrayList<>();
+            preOrder(vals, root);
+            StringBuilder sb = new StringBuilder();
+            // 使用逗号拼接
+            for(int i = 0; i < vals.size(); i++){
+                sb.append(vals.get(i));
+                if (i != vals.size() - 1)
+                    sb.append(",");
+            }
+
+            return sb.toString();
+        }
+
+        // Decodes your encoded data to tree.
+    public TreeNode deserialize(String s) {
+            if (s == null || s.equals("")) return null;
+            String[] ss = s.split(",");
+            return dfs(0, ss.length - 1, ss);
+        }
+
+        public TreeNode dfs(int l, int r, String[] ss) {
+            if (l > r) return null;
+            int j = l + 1, t = Integer.parseInt(ss[l]);
+            TreeNode ans = new TreeNode(t);
+            while (j <= r && Integer.parseInt(ss[j]) <= t) j++;
+            ans.left = dfs(l + 1, j - 1, ss);
+            ans.right = dfs(j, r, ss);
+            return ans;
+        }
+
+        public void preOrder(List<String> vals, TreeNode root){
+            if(root == null)
+                return ;
+            vals.add(String.valueOf(root.val));
+            preOrder(vals, root.left);
+            preOrder(vals, root.right);
+        }
+
+    }
+
+    // Your Codec object will be instantiated and called as such:
+    // Codec ser = new Codec();
+    // Codec deser = new Codec();
+    // String tree = ser.serialize(root);
+    // TreeNode ans = deser.deserialize(tree);
+    // return ans;
+    ```
++ python
+    ```
+    # Definition for a binary tree node.
+    # class TreeNode:
+    #     def __init__(self, x):
+    #         self.val = x
+    #         self.left = None
+    #         self.right = None
+
+    class Codec:
+
+        def serialize(self, root: TreeNode) -> str:
+            """Encodes a tree to a single string.
+            """
+            # 采用前序遍历将二叉搜索树节点遍历完整，使用逗号拼接
+            vals = []
+            def pre_order(root):
+                if root:
+                    # 前序遍历
+                    vals.append(root.val)
+                    pre_order(root.left)
+                    pre_order(root.right)
+            
+            pre_order(root)
+            return ','.join(map(str, vals))
+
+
+        def deserialize(self, data: str) -> TreeNode:
+            """Decodes your encoded data to tree.
+            """
+            if not data or data == '':
+                return None
+            vals = list(map(int, data.split(',')))
+            root = TreeNode(vals[0])
+            left_vals = [x for x in vals if x < vals[0]]
+            right_vals = [x for x in vals if x > vals[0]]
+            root.left = self.deserialize(','.join(map(str, left_vals)))
+            root.right = self.deserialize(','.join(map(str, right_vals)))
+            return root
+    # Your Codec object will be instantiated and called as such:
+    # Your Codec object will be instantiated and called as such:
+    # ser = Codec()
+    # deser = Codec()
+    # tree = ser.serialize(root)
+    # ans = deser.deserialize(tree)
+    # return ans
     ```
 ### 454.四数相加Ⅱ
 > 给你四个整数数组` nums1`、`nums2`、`nums3` 和` nums4 `，数组长度都是` n `，请你计算有多少个元组` (i, j, k, l) `能满足：
