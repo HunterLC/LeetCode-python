@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-151题-green)
+![](https://img.shields.io/badge/已覆盖-153题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -85,6 +85,7 @@
     + [131.分割回文串](#131分割回文串)
     + [133.克隆图★](#133克隆图)
     + [139.单词拆分](#139单词拆分)
+    + [140.单词拆分 ii](#140单词拆分-ii)
     + [141.环形链表 i](#141环形链表-i)
     + [142.环形链表 ii](#142环形链表-ii)
     + [146.lru缓存](#146lru缓存)
@@ -164,6 +165,7 @@
     + [905.按奇偶排序数组](#905按奇偶排序数组)
     + [933.最近的请求次数](#933最近的请求次数)
     + [942.增减字符串匹配](#942增减字符串匹配)
+    + [944.删列造序](#944删列造序)
     + [951.翻转等价二叉树](#951翻转等价二叉树)
     + [973.最接近原点的k个点](#973最接近原点的k个点)
     + [987.二叉树的垂序遍历](#987二叉树的垂序遍历)
@@ -3424,6 +3426,40 @@ class Node {
             return dp[length];
         }
     }
+    ```
+### 140.单词拆分 II
+> 给定一个字符串` s `和一个字符串字典` wordDict `，在字符串` s `中增加空格来构建一个句子，使得句子中所有的单词都在词典中。以任意顺序 返回所有这些可能的句子。
+
+注意：词典中的同一个单词可能在分段中被重复使用多次。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/word-break-ii  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ python记忆化dfs
+    ```
+    class Solution:
+        def wordBreak(self, s: str, wordDict: List[str]) -> List[str]:
+            # 记忆体，如果遇到重复子问题就可以直接取出答案
+            memory = [None] * (len(s) + 1)
+
+            # 记忆化回溯是需要定义返回值的
+            def dfs(start):
+                if memory[start] != None:
+                    return memory[start]
+                if start == len(s):
+                    return [[]]
+                ans = []
+                for end in range(start, len(s)):
+                    word = s[start: end + 1]
+                    if word in wordDict:
+                        rest_ans = dfs(end + 1)
+                        for i in rest_ans:
+                            ans.append([word] + i)
+                memory[start] = ans
+                return ans
+
+            return [" ".join(i) for i in dfs(0)]
     ```
 ### 141.环形链表 I
 > 给你一个链表的头节点` head `，判断链表中是否有环。  
@@ -7161,6 +7197,38 @@ class Solution:
             
             //处理最后一位
             ans[idx] = left;
+            return ans;
+        }
+    }
+    ```
+### 944.删列造序
+> 给你由` n `个小写字母字符串组成的数组` strs`，其中每个字符串长度相等。  
+这些字符串可以每个一行，排成一个网格。例如，`strs = ["abc", "bce", "cae"] `可以排列为：
+```
+abc
+bce
+cae
+```
+你需要找出并删除 不是**按字典序升序排列的** 列。在上面的例子（下标从` 0 `开始）中，列` 0（'a', 'b', 'c'）`和列` 2（'c', 'e', 'e'）`都是按升序排列的，而列` 1（'b', 'c', 'a'）`不是，所以要删除列` 1 `。
+
+返回你需要删除的列数。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/delete-columns-to-make-sorted  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java模拟
+    ```
+    class Solution {
+        public int minDeletionSize(String[] strs) {
+            int n = strs.length, m = strs[0].length(), ans = 0;
+            out:for (int i = 0; i < m; i++) {
+                for (int j = 0, cur = -1; j < n; j++) {
+                    int t = (int) strs[j].charAt(i);
+                    if (t < cur && ++ans >= 0) continue out;
+                    cur = t;
+                }
+            }
             return ans;
         }
     }
