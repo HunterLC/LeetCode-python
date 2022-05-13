@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-153题-green)
+![](https://img.shields.io/badge/已覆盖-154题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -182,6 +182,8 @@
     + [1438.绝对差不超过限制的最长连续子数组](#1438绝对差不超过限制的最长连续子数组)
     + [1472.设计浏览器历史记录](#1472设计浏览器历史记录)
     + [1823.找出游戏的获胜者](#1823找出游戏的获胜者)
++ [3.面试题系列](#3面试题系列)
+    + [01.05.一次编辑](#0105一次编辑)
 
 
 ## 1.基础知识
@@ -7980,4 +7982,44 @@ class BrowserHistory:
             for i in range(2, n + 1):
                 ans = (ans + k) % i
             return ans + 1
+    ```
+
+## 3.面试题系列
+### 01.05.一次编辑
+> 字符串有三种编辑操作:插入一个字符、删除一个字符或者替换一个字符。 给定两个字符串，编写一个函数判定它们是否只需要一次(或者零次)编辑。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/one-away-lcci/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ python双指针
+    ```
+    class Solution:
+        def oneEditAway(self, first: str, second: str) -> bool:
+            m, n = len(first), len(second)
+            # 字母长度差距大于1
+            if abs(m - n) > 1:
+                return False
+            if not first or not second:
+                return True
+            # 保证一般性，让first长度大于等于second
+            if m < n:
+                first, second = second, first
+                m, n = n, m
+            # 最多只有一次插入、替换、删除机会
+            chance = 1
+            p_m,  p_n = 0, 0
+            while p_m < m:
+                if p_n < n and first[p_m] != second[p_n]:
+                    chance -= 1
+                    p_m += 1
+                    if m == n:
+                        p_n += 1
+                else:
+                    p_m += 1
+                    p_n += 1
+                if chance < 0:
+                    return False
+
+            return True
     ```
