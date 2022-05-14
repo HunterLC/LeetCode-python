@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-154题-green)
+![](https://img.shields.io/badge/已覆盖-156题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -56,6 +56,7 @@
     + [54.螺旋矩阵](#54螺旋矩阵)
     + [56.合并区间](#56合并区间)
     + [69.x的平方根](#69x的平方根)
+    + [72.编辑距离](#72编辑距离)
     + [73.矩阵置零](#73矩阵置零)
     + [74.搜索二维矩阵](#74搜索二维矩阵)
     + [75.颜色分类](#75颜色分类)
@@ -150,6 +151,7 @@
     + [572.另一颗树的子树](#572另一颗树的子树)
     + [647.回文子串 (与题5可做比较)](#647回文子串与题5可做比较)
     + [669.修剪二叉搜索树★](#669修剪二叉搜索树)
+    + [691.贴纸拼词](#691贴纸拼词)
     + [692.前k个高频单词](#692前k个高频单词)
     + [698.划分为k个相等的子集](#698划分为k个相等的子集)
     + [700.二叉搜索树中的搜索](#700二叉搜索树中的搜索)
@@ -843,7 +845,7 @@ class UnionFind:
 > 这里指的是用`for`循环方式的动态规划，非`Memoization Search`方式。`DP`可以在多项式时间复杂度内解决`DFS`需要指数级别的问题。常见的题目包括找最大最小，找可行性，找总方案数等，一般结果是一个`Integer`或者`Boolean`。
 
 #### 1.9.1 代表题目
-139
+139、72(类似**面试题 01.05. 一次编辑**)
 ## 2.题目
 ### 1.两数之和
 > 给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 和为目标值 `target`  的那 两个 整数，并返回它们的数组下标。
@@ -2072,6 +2074,89 @@ class Solution:
                 right = mid - 1
         return ans
 ```
+### 72.编辑距离
+> 给你两个单词` word1 `和` word2`， 请返回将` word1 `转换成 `word2 `所使用的最少操作数  。
+
+你可以对一个单词进行如下三种操作：
+
++ 插入一个字符
++ 删除一个字符
++ 替换一个字符
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/edit-distance  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java 记忆化搜索DFS
+    ```
+    class Solution {
+        public int minDistance(String word1, String word2) {
+            // 记忆化DFS
+            int[][] memo = new int[word1.length() + 1][word2.length() + 1];
+            // 初始化记忆数组，值为-1，不能为0，因为0代表不需要操作，具有特殊含义
+            // memo[i][j]代表word1的下标为i的字符与word2的下标为j的字符为起点需要的最小操作数
+            for (int i = 0; i <= word1.length(); i++)
+                for (int j = 0; j <= word2.length(); j++)
+                    memo[i][j] = -1;
+
+            return dfs(word1, 0, word2, 0, memo);
+        }
+
+        private int dfs(String w1, int i, String w2, int j, int[][] memo) {
+            if (memo[i][j] != -1)
+                // 当前位置之前已经计算过，直接返回记录
+                return memo[i][j];
+            if (i == w1.length())
+                // word1已经遍历完毕，word2剩下的长度就是需要操作的长度
+                return memo[i][j] = w2.length() - j;
+            if (j == w2.length())
+                // word2已经遍历完毕，word1剩下的长度就是需要操作的长度
+                return memo[i][j] = w1.length() - i;
+            if (w1.charAt(i) == w2.charAt(j))
+                // 当前位置的两个元素相同，分别往后走一位
+                return memo[i][j] = dfs(w1, i + 1, w2, j + 1, memo);
+            // 当前位置不同，那么就有三种操作：1.word1替换一个，匹配成功，所以大家都往后走一位
+            return memo[i][j] = Math.min(dfs(w1, i + 1, w2, j + 1, memo),
+                                        // 2.word1删除一个就算匹配成功，然后word1下一个字符再来匹配  
+                                Math.min(dfs(w1, i + 1, w2, j, memo), 
+                                        // 3.word1插入一个就算匹配成功，然后word2下一个字符再来匹配
+                                        dfs(w1, i, w2, j + 1, memo))) + 1;
+        }
+
+    }
+    ```
++ java动态规划
+    ```
+    class Solution {
+        public int minDistance(String word1, String word2) {
+            // 动态规划
+            // dp[i][j]表示word1中前i个字符变成word2中前j个字符需要的最小操作次数
+            int[][] dp = new int[word1.length() + 1][word2.length() + 1];
+
+            // word1全部为空
+            for (int i = 1; i <= word2.length(); i++)
+                dp[0][i] = i;
+
+            // word2全部为空
+            for (int j = 1; j <= word1.length(); j++)
+                dp[j][0] = j;
+
+            // memo[i][j]代表word1的下标为i的字符与word2的下标为j的字符为起点需要的最小操作数
+            for (int i = 1; i <= word1.length(); i++)
+                for (int j = 1; j <= word2.length(); j++)
+                    if (word1.charAt(i - 1) == word2.charAt(j - 1))
+                        dp[i][j] = dp[i-1][j-1];
+                    else
+                        // dp[i-1][j-1] 替换
+                        // dp[i-1][j]   删除
+                        // dp[i][j-1]   插入
+                        dp[i][j] = Math.min(dp[i-1][j-1], Math.min(dp[i-1][j], dp[i][j-1])) + 1;
+
+            return dp[word1.length()][word2.length()];
+        }
+
+    }
+    ```
 ### 73.矩阵置零
 > 给定一个` m x n `的矩阵，如果一个元素为` 0 `，则将其所在行和列的所有元素都设为` 0 `。请使用 **原地** 算法。
 
@@ -6598,6 +6683,72 @@ class Solution:
             root.right = self.trimBST(root.right, low, high)
         return root
 ```
+### 691.贴纸拼词
+> 我们有` n `种不同的贴纸。每个贴纸上都有一个小写的英文单词。  
+您想要拼写出给定的字符串` target `，方法是从收集的贴纸中切割单个字母并重新排列它们。如果你愿意，你可以多次使用每个贴纸，每个贴纸的数量是无限的。  
+返回你需要拼出` target `的最小贴纸数量。如果任务不可能，则返回 `-1 `。
+
+注意：在所有的测试用例中，所有的单词都是从` 1000 `个最常见的美国英语单词中随机选择的，并且` target `被选择为两个随机单词的连接。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/stickers-to-spell-word  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
+
++ java记忆化搜索+状态压缩
+    ```
+    class Solution {
+        public int minStickers(String[] stickers, String target) {
+            int m = target.length();
+            //用数组保存状态的min，减少重复计算
+            int[] memo = new int[1 << m];
+            //设置状态初始值
+            Arrays.fill(memo, -1);
+            //递归终点，所有target字符都给撞完了
+            memo[0] = 0;
+            //开始递归调用
+            int res = dfs(stickers, target, memo, (1 << m) - 1);
+            //如果res 是m+则说明遇到了无法撞击完的情况 则返回-1
+            return res <= m ? res : -1;
+        }
+
+        public int dfs(String[] stickers, String target, int[] memo, int mask) {
+            int m = target.length();
+            if (memo[mask] < 0) {
+                //res初始值
+                int res = m + 1;
+                for (String sticker : stickers) {
+                    int left = mask;
+                    int[] cnt = new int[26];
+                    //记录当前sticker的字符出现次数
+                    for (int i = 0; i < sticker.length(); i++) {
+                        cnt[sticker.charAt(i) - 'a']++;
+                    }
+                    // 匹配target
+                    for (int i = 0; i < target.length(); i++) {
+                        char c = target.charAt(i);
+                        //如果还有这个位则 判断条件1成立
+                        if (((mask >> i) & 1) == 1 && cnt[c - 'a'] > 0) {
+                            //当前字符数量匹配成功，使用一次，总量减少
+                            cnt[c - 'a']--;
+                            //对应消耗了 target的哪一位。
+                            left ^= 1 << i;
+                        }
+                    }
+                    //如果没有发生撞击则直接下一个字符串
+                    if (left < mask) {
+                        //如果发生了撞击，则根据当前结果，递归撞击下去，只当为0。
+                        //（其中如果递归以后遇到无法撞击的结果则会反回m+1。
+                        res = Math.min(res, dfs(stickers, target, memo, left) + 1);
+                    }
+                }
+                //记录当前长度最小消耗量
+                memo[mask] = res;
+            }
+            //返回当前位置的最小值
+            return memo[mask];
+        }
+    }
+    ```
 ### 692.前K个高频单词
 > 给定一个单词列表` words `和一个整数` k `，返回前` k `个出现次数最多的单词。  
 返回的答案应该按单词出现频率由高到低排序。如果不同的单词有相同出现频率， 按**字典顺序** 排序。  
