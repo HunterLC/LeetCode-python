@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-156题-green)
+![](https://img.shields.io/badge/已覆盖-158题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -129,6 +129,7 @@
     + [341.扁平化嵌套列表迭代器](#341扁平化嵌套列表迭代器)
     + [347.前k个高频元素](#347前k个高频元素)
     + [350.两个数组的交集 ii](#350两个数组的交集ii)
+    + [377.组合总和ⅳ](#377组合总和iv)
     + [378.有序矩阵中的第k小的元素](#378有序矩阵中的第k小的元素)
     + [380.o1时间插入删除和获取随机元素](#380o1时间插入删除和获取随机元素)
     + [394.字符串解码★](#394字符串解码)
@@ -159,6 +160,7 @@
     + [735.行星碰撞](#735行星碰撞)
     + [752.打开转盘锁★](#752打开转盘锁)
     + [767.重构字符串](#767重构字符串)
+    + [812.最大三角形面积](#812最大三角形面积)
     + [815.公交路线★](#815公交路线)
     + [856.括号的分数](#856括号的分数)
     + [863.二叉树中所有距离为k的结点](#863二叉树中所有距离为-k-的结点)
@@ -5649,6 +5651,62 @@ class Solution:
                     result.append(key)
         return result
 ```
+### 377.组合总和IV
+> 给你一个由 **不同** 整数组成的数组` nums `，和一个目标整数` target `。请你从` nums `中找出并返回总和为` target `的元素组合的个数。
+
+题目数据保证答案符合` 32 `位整数范围。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/combination-sum-iv  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java 记忆化搜索
+    ```
+    class Solution {
+        public int combinationSum4(int[] nums, int target) {
+            // 记忆化递归
+            // memory[i]表示组合总数为i的情况有多少种
+            int[] memory = new int[target + 1];
+            Arrays.fill(memory, -1);
+            // 加入当前轮次递归到寻找组合总数为0的情况时，说明此时已经找到了一种解了
+            memory[0] = 1;
+            int ans = dfs(memory, nums, target);
+            return ans;
+        }
+
+        public int dfs(int[] memory, int[] nums, int target){
+            if (target < 0)
+                // 当前轮次寻找的总和已经小于0了，说明不存在
+                return 0;
+            if (memory[target] != -1)
+                // 当前轮次的计算结果已经存在了
+                return memory[target];
+            int ans = 0;
+            for (int num: nums)
+                ans += dfs(memory, nums, target - num);
+            memory[target] = ans;
+            return ans;
+        }
+    }
+    ```
++ java 动态规划
+    ```
+    class Solution {
+        public int combinationSum4(int[] nums, int target) {
+            // 动态规划
+            // dp[i]表示组合总数为i的情况有多少种
+            int[] dp = new int[target + 1];
+            // 寻找组合总数为0的情况时
+            dp[0] = 1;
+            for (int i = 0; i <= target; i++)
+                for (int num: nums)
+                    if (i - num >= 0)
+                        dp[i] += dp[i - num];
+            return dp[target];
+        }
+
+    }
+    ```
 ### 378.有序矩阵中的第K小的元素
 > 给你一个` n x n `矩阵` matrix `，其中每行和每列元素均按升序排序，找到矩阵中第` k `小的元素。  
 请注意，它是 **排序后** 的第` k `小元素，而不是第` k `个 **不同** 的元素。  
@@ -7047,6 +7105,29 @@ class Solution:
         if max_heap:
             ans.append(heapq.heappop(max_heap)[1])
         return "".join(ans)
+```
+### 812.最大三角形面积
+> 给定包含多个点的集合，从其中取三个点组成三角形，返回能组成的最大三角形的面积。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/largest-triangle-area/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def largestTriangleArea(self, points):
+        """
+        :type points: List[List[int]]
+        :rtype: float
+        """
+        res = 0
+        N = len(points)
+        for i in range(N - 2):
+            for j in range(i + 1, N - 1):
+                for k in range(i + 2, N):
+                    (x1, y1), (x2, y2), (x3, y3) = points[i], points[j], points[k]
+                    res = max(res, 0.5 * abs(x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)))
+        return res
 ```
 ### 815.公交路线★
 > 给你一个数组` routes `，表示一系列公交线路，其中每个` routes[i] `表示一条公交线路，第` i `辆公交车将会在上面循环行驶。  
