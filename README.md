@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-158题-green)
+![](https://img.shields.io/badge/已覆盖-160题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -56,6 +56,7 @@
     + [54.螺旋矩阵](#54螺旋矩阵)
     + [56.合并区间](#56合并区间)
     + [69.x的平方根](#69x的平方根)
+    + [70.爬楼梯](#70爬楼梯)
     + [72.编辑距离](#72编辑距离)
     + [73.矩阵置零](#73矩阵置零)
     + [74.搜索二维矩阵](#74搜索二维矩阵)
@@ -143,6 +144,7 @@
     + [442.数组中的重复数字](#442数组中的重复数字)
     + [449.序列化和反序列化二叉搜索树](#449序列化和反序列化二叉搜索树)
     + [454.四数相加 ⅱ](#454四数相加ⅱ)
+    + [518.零钱兑换ii](#518零钱兑换ii)
     + [526.优美的排列](#526优美的排列)
     + [528.按权重随机选择](#528按权重随机选择)
     + [540.有序数组中的单一元素](#540有序数组中的单一元素)
@@ -847,7 +849,7 @@ class UnionFind:
 > 这里指的是用`for`循环方式的动态规划，非`Memoization Search`方式。`DP`可以在多项式时间复杂度内解决`DFS`需要指数级别的问题。常见的题目包括找最大最小，找可行性，找总方案数等，一般结果是一个`Integer`或者`Boolean`。
 
 #### 1.9.1 代表题目
-139、72(类似**面试题 01.05. 一次编辑**)
+139、72(类似**面试题 01.05. 一次编辑**)、377、518、70
 ## 2.题目
 ### 1.两数之和
 > 给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 和为目标值 `target`  的那 两个 整数，并返回它们的数组下标。
@@ -2076,6 +2078,30 @@ class Solution:
                 right = mid - 1
         return ans
 ```
+### 70.爬楼梯
+> 假设你正在爬楼梯。需要` n `阶你才能到达楼顶。  
+每次你可以爬` 1 `或` 2 `个台阶。你有多少种不同的方法可以爬到楼顶呢？
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/climbing-stairs/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java 动态规划
+    ```
+    class Solution {
+        public int climbStairs(int n) {
+            // 动态规划
+            int[] dp = new int[n + 1];
+            int[] nums = {1, 2};
+            dp[0] = 1;
+            for (int i = 0; i <= n; i++)
+                for (int num: nums)
+                    if (i - num >= 0)
+                        dp[i] += dp[i - num];
+            return dp[n];
+        }
+    }
+    ```
 ### 72.编辑距离
 > 给你两个单词` word1 `和` word2`， 请返回将` word1 `转换成 `word2 `所使用的最少操作数  。
 
@@ -6383,6 +6409,32 @@ class Solution:
                     ans += countAB[-u - v]
         return ans
 
+```
+### 518.零钱兑换II
+> 给你一个整数数组` coins `表示不同面额的硬币，另给一个整数 `amount `表示总金额。  
+请你计算并返回可以凑成总金额的硬币组合数。如果任何硬币组合都无法凑出总金额，返回` 0 `。  
+假设每一种面额的硬币有无限个。 
+
+题目数据保证结果符合` 32 `位带符号整数
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/coin-change-2  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java 动态规划
+```
+class Solution {
+    public int change(int amount, int[] coins) {
+        // dp[i]代表总额i存在的兑换方法种数
+        int[] dp = new int[amount + 1];
+        dp[0] = 1;
+        for (int coin: coins)
+            for (int i = 0; i <= amount; i++)
+                if (i - coin >= 0)
+                    dp[i] += dp[i - coin];
+        return dp[amount];
+    }
+}
 ```
 ### 526.优美的排列
 > 假设有从` 1 `到` n `的` n `个整数。用这些整数构造一个数组` perm`（下标从` 1 `开始），只要满足下述条件**之一** ，该数组就是一个 **优美的排列** ：
