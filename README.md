@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-160题-green)
+![](https://img.shields.io/badge/已覆盖-162题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -180,6 +180,7 @@
     + [1095.山脉数组中查找目标值](#1095山脉数组中查找目标值)
     + [1110.删点成林★](#1110删点成林)
     + [1209.删除字符串中的所有相邻重复项 ii](#1209删除字符串中的所有相邻重复项-ii)
+    + [1235.规划兼职工作](#1235规划兼职工作)
     + [1249.移除无效的括号](#1249移除无效的括号)
     + [1293.网格中的最短路径](#1293网格中的最短路径)
     + [1300.转变数组后最接近目标值的数组和](#1300转变数组后最接近目标值的数组和)
@@ -190,6 +191,7 @@
     + [1823.找出游戏的获胜者](#1823找出游戏的获胜者)
 + [3.面试题系列](#3面试题系列)
     + [01.05.一次编辑](#0105一次编辑)
+    + [04.06.后继者](#0406后继者)
 
 
 ## 1.基础知识
@@ -641,7 +643,7 @@ def bfs(root: TreeNode):
 
 ### 1.5 回溯
 #### 1.5.1 代表题目
-51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216、78、90、46、47、77、698、526
+51、52、126★、93、22、301★、37★、212★、79、131、17、39、40、216、78、90、46、47、77、698、526、1235
 
 ### 1.6 字典树Trie 
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
@@ -7851,6 +7853,57 @@ class Solution:
                     pre = 0
         return ''.join(stack)
 ```
+### 1235.规划兼职工作
+> 你打算利用空闲时间来做兼职工作赚些零花钱。  
+这里有` n `份兼职工作，每份工作预计从` startTime[i] `开始到` endTime[i] `结束，报酬为` profit[i]`。  
+给你一份兼职工作表，包含开始时间` startTime`，结束时间` endTime `和预计报酬 `profit `三个数组，请你计算并返回可以获得的最大报酬。
+
+注意，时间上出现重叠的` 2 `份工作不能同时进行。  
+如果你选择的工作在时间` X `结束，那么你可以立刻进行在时间` X `开始的下一份工作。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/maximum-profit-in-job-scheduling  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ python 记忆化搜索
+    ```
+    class Solution:
+        def jobScheduling(self, startTime, endTime, profit):
+            # 工作数量
+            size = len(startTime)
+            # 将每种工作的的开始，结束，收益放置在一起，并以开始时间排序
+            sep = [[startTime[i], endTime[i], profit[i]] for i in range(size)]
+            sep.sort(key=lambda x: x[0])
+
+            memory = dict()
+
+            def findjob(index, pre_chose_end):
+                if index == size:
+                    return 0
+                if pre_chose_end in memory:
+                    return memory[pre_chose_end]
+                curprofit = 0
+                # 二分搜索优化，找到下一个可以开始的工作
+                left = index
+                right = size - 1
+                while left < right:
+                    mid = (left + right) // 2
+                    if sep[mid][0] < pre_chose_end:
+                        left = mid + 1
+                    else:
+                        right = mid
+
+                for i in range(left, size):
+                    if sep[i][0] > sep[left][1]:
+                        break
+                    if sep[i][0] >= pre_chose_end:
+                        curprofit = max(sep[i][2] + findjob(index + 1, sep[i][1]), curprofit)
+
+                memory[pre_chose_end] = curprofit
+                return curprofit
+
+            return findjob(0, 0)
+    ```
 ### 1249.移除无效的括号
 > 给你一个由` '('、')' `和小写字母组成的字符串` s`。  
 你需要从字符串中删除最少数目的` '(' `或者` ')' `（可以删除任意位置的括号)，使得剩下的「括号字符串」有效。  
@@ -8307,3 +8360,33 @@ class BrowserHistory:
 
             return True
     ```
+### 04.06.后继者
+> 设计一个算法，找出二叉搜索树中指定节点的“下一个”节点（也即中序后继）。  
+如果指定节点没有对应的“下一个”节点，则返回`null`。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/successor-lcci/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def inorderSuccessor(self, root: TreeNode, p: TreeNode) -> TreeNode:
+        st, pre, cur = [], None, root
+        while st or cur:
+            while cur:
+                st.append(cur)
+                cur = cur.left
+            cur = st.pop()
+            if pre == p:
+                return cur
+            pre = cur
+            cur = cur.right
+        return None
+```
