@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-162题-green)
+![](https://img.shields.io/badge/已覆盖-163题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -173,6 +173,7 @@
     + [942.增减字符串匹配](#942增减字符串匹配)
     + [944.删列造序](#944删列造序)
     + [951.翻转等价二叉树](#951翻转等价二叉树)
+    + [953.验证外星语词典](#953验证外星语词典)
     + [973.最接近原点的k个点](#973最接近原点的k个点)
     + [987.二叉树的垂序遍历](#987二叉树的垂序遍历)
     + [1004.最大连续1的个数 iii](#1004最大连续1的个数-iii)
@@ -7547,6 +7548,26 @@ class Solution:
  
         # 等价的条件是根节点的val相等，然后要么两个根节点的左右子树分别对应相等(左=左，右=右)，要么两个根节点的左右子树相反相等(左=右，右=左)
         return root1.val == root2.val and ((self.flipEquiv(root1.left, root2.right) and self.flipEquiv(root1.right, root2.left)) or (self.flipEquiv(root1.left, root2.left) and self.flipEquiv(root1.right, root2.right)))
+```
+### 953.验证外星语词典
+> 某种外星语也使用英文小写字母，但可能顺序` order `不同。字母表的顺序`（order）`是一些小写字母的排列。  
+给定一组用外星语书写的单词` words`，以及其字母表的顺序` order`，只有当给定的单词在这种外星语中按字典序排列时，返回` true`；否则，返回 `false`。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/verifying-an-alien-dictionary  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def isAlienSorted(self, words: List[str], order: str) -> bool:
+        mapping = dict()
+        for i,v in enumerate(order):
+            mapping[v] = i
+        decrypt = []
+        for word in words:
+            tmp = "".join([chr(ord('a')+(mapping[x])) for x in word])
+            decrypt.append(tmp)
+        return sorted(decrypt) == decrypt
 ```
 ### 973.最接近原点的K个点
 > 给定一个数组` points `，其中` points[i] = [xi, yi] `表示` X-Y `平面上的一个点，并且是一个整数` k `，返回离原点` (0,0) `最近的` k `个点。  
