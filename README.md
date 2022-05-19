@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-163题-green)
+![](https://img.shields.io/badge/已覆盖-165题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -69,6 +69,7 @@
     + [90.子集ii](#90子集-ii)
     + [92.反转链表ii](#92反转链表-ii)
     + [93.复原IP地址](#93复原ip地址)
+    + [97.交错字符串](#97交错字符串)
     + [98.验证二叉搜索树](#98验证二叉搜索树)
     + [100.相同的树](#100相同的树)
     + [101.对称二叉树](#101对称二叉树)
@@ -144,6 +145,7 @@
     + [442.数组中的重复数字](#442数组中的重复数字)
     + [449.序列化和反序列化二叉搜索树](#449序列化和反序列化二叉搜索树)
     + [454.四数相加 ⅱ](#454四数相加ⅱ)
+    + [462.最少移动次数使数组元素相等 ii](#462最少移动次数使数组元素相等ii)
     + [518.零钱兑换ii](#518零钱兑换ii)
     + [526.优美的排列](#526优美的排列)
     + [528.按权重随机选择](#528按权重随机选择)
@@ -852,7 +854,7 @@ class UnionFind:
 > 这里指的是用`for`循环方式的动态规划，非`Memoization Search`方式。`DP`可以在多项式时间复杂度内解决`DFS`需要指数级别的问题。常见的题目包括找最大最小，找可行性，找总方案数等，一般结果是一个`Integer`或者`Boolean`。
 
 #### 1.9.1 代表题目
-139、72(类似**面试题 01.05. 一次编辑**)、377、518、70
+139、72(类似**面试题 01.05. 一次编辑**)、377、518、70、97
 ## 2.题目
 ### 1.两数之和
 > 给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 和为目标值 `target`  的那 两个 整数，并返回它们的数组下标。
@@ -2725,6 +2727,59 @@ class Solution:
             backtracking([], 0, 0)    
             return ans
     ```
+### 97.交错字符串
+> 给定三个字符串` s1、s2、s3`，请你帮忙验证` s3 `是否是由` s1 `和` s2 `**交错** 组成的。
+
+两个字符串` s `和` t `交错 的定义与过程如下，其中每个字符串都会被分割成若干 **非空** 子字符串：
+
++ `s = s1 + s2 + ... + sn`
++ `t = t1 + t2 + ... + tm`
++ `|n - m| <= 1`
++ **交错** 是 `s1 + t1 + s2 + t2 + s3 + t3 + ... `或者` t1 + s1 + t2 + s2 + t3 + s3 + ...`
+
+注意：`a + b `意味着字符串` a `和` b `连接。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/interleaving-string  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java 动态规划
+```
+class Solution {
+    public boolean isInterleave(String s1, String s2, String s3) {
+        // 定义字符的长度
+        int len_1 = s1.length();
+        int len_2 = s2.length();
+        int len_3 = s3.length();
+        if (len_1 + len_2 != len_3)
+            return false;
+        // dp[i][j]代表s1的前i个字符和s2的前j个字符能否组成s3的前i+j个字符
+        boolean[][] dp  = new boolean[len_1 + 1][len_2 + 1];
+        dp[0][0] = true;  // "" + "" = ""，当然可以
+
+        //对dp数组的第一列进行处理
+        //即由s1构成s3
+        for (int i = 1; i <= len_1; i++)
+            if (dp[i-1][0] && s1.charAt(i-1) == s3.charAt(i-1))
+                dp[i][0] = true;
+        
+        //对dp数组的第一行进行处理
+        //即由s2构成s3
+        for (int i = 1; i <= len_2; i++)
+            if (dp[0][i-1] && s2.charAt(i-1) == s3.charAt(i-1))
+                dp[0][i] = true;
+
+        for (int i = 1; i <= len_1; i++)
+            for (int j = 1; j <= len_2; j++)
+                //s1的前i-1和s2的前j个可以组合成s3的前i+j-1个，或者s1的前i和s2的前j-1个可以组合成s3的前i+j-1个
+                if ((dp[i-1][j] && s1.charAt(i-1) == s3.charAt(i+j-1)) || (dp[i][j-1] && s2.charAt(j-1) == s3.charAt(i+j-1)))
+                    dp[i][j] = true;
+        
+        return dp[len_1][len_2];
+
+    }
+}
+```
 ### 98.验证二叉搜索树
 > 给你一个二叉树的根节点` root `，判断其是否是一个有效的二叉搜索树。
 
@@ -6412,6 +6467,29 @@ class Solution:
                     ans += countAB[-u - v]
         return ans
 
+```
+### 462.最少移动次数使数组元素相等II
+> 给你一个长度为` n `的整数数组` nums `，返回使所有数组元素相等需要的最少移动数。  
+在一步操作中，你可以使数组中的一个元素加` 1 `或者减` 1 `。
+
+Tip：一个优秀的题解，核心在于目标[为什么是中位数](https://leetcode.cn/problems/minimum-moves-to-equal-array-elements-ii/solution/by-fuxuemingzhu-13z3/)
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/minimum-moves-to-equal-array-elements-ii/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ python双指针
+```
+class Solution:
+    def minMoves2(self, nums: List[int]) -> int:
+        nums.sort()
+        left, right, ans = 0, len(nums) - 1, 0
+        while left < right:
+            ans += nums[right] - nums[left]
+            left += 1
+            right -= 1
+
+        return ans
 ```
 ### 518.零钱兑换II
 > 给你一个整数数组` coins `表示不同面额的硬币，另给一个整数 `amount `表示总金额。  
