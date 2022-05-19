@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-166题-green)
+![](https://img.shields.io/badge/已覆盖-167题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -137,6 +137,7 @@
     + [394.字符串解码★](#394字符串解码)
     + [395.至少有k个重复字符的最长子串](#395至少有-k-个重复字符的最长子串)
     + [399.除法求值★](#399除法求值)
+    + [403.青蛙过河](#403青蛙过河)
     + [409.最长回文串](#409最长回文串)
     + [417.太平洋大西洋水流问题](#417太平洋大西洋水流问题)
     + [424.替换后的最长重复字符](#424替换后的最长重复字符)
@@ -855,7 +856,8 @@ class UnionFind:
 > 这里指的是用`for`循环方式的动态规划，非`Memoization Search`方式。`DP`可以在多项式时间复杂度内解决`DFS`需要指数级别的问题。常见的题目包括找最大最小，找可行性，找总方案数等，一般结果是一个`Integer`或者`Boolean`。
 
 #### 1.9.1 代表题目
-139、72(类似**面试题 01.05. 一次编辑**)、377、518、70、97
+139、72(类似**面试题 01.05. 一次编辑**)、377、518、70、97、403
+
 ## 2.题目
 ### 1.两数之和
 > 给定一个整数数组 `nums` 和一个整数目标值 `target`，请你在该数组中找出 和为目标值 `target`  的那 两个 整数，并返回它们的数组下标。
@@ -6102,6 +6104,49 @@ class Solution:
                     res[i] = union.values[a] / union.values[b]
             return res
     ```
+### 403.青蛙过河
+> 一只青蛙想要过河。 假定河流被等分为若干个单元格，并且在每一个单元格内都有可能放有一块石子（也有可能没有）。 青蛙可以跳上石子，但是不可以跳入水中。  
+给你石子的位置列表` stones`（用单元格序号 升序 表示）， 请判定青蛙能否成功过河（即能否在最后一步跳至最后一块石子上）。开始时， 青蛙默认已站在第一块石子上，并可以假定它第一步只能跳跃` 1 `个单位（即只能从单元格` 1 `跳至单元格` 2 `）。  
+如果青蛙上一步跳跃了` k `个单位，那么它接下来的跳跃距离只能选择为` k - 1、k `或` k + 1 `个单位。 另请注意，青蛙只能向前方（终点的方向）跳跃。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/frog-jump  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java 记忆化搜索
+```
+class Solution {
+    // 记忆化搜索
+    public Map<Integer, Boolean> memory = new HashMap<>();
+
+    public boolean canCross(int[] stones) {
+        return dfs(stones, 0, 0);
+    }
+
+    public boolean dfs(int[] stones, int k, int index){
+        // 成功走到最后一块石子
+        if (index == stones.length - 1)
+            return true;
+        int key = index * 1000 + k;  // 构造hash
+        // 如果为true，就代表着之前这里已经计算过了，如果真的可以跳到终点的话已经就返回了，就不会再执行这里了，所以说明此路不通，直接false
+        if (memory.containsKey(key))
+            return false;
+        memory.put(key, true);
+        for (int i = index + 1; i < stones.length; i++){
+            // 计算下一块石头和当前石头的距离
+            int dist = stones[i] - stones[index];
+            // 只能走k-1,k,k+1步
+            if (k - 1 <= dist && dist <= k + 1)
+                if (dfs(stones, dist, i))
+                    return true;
+            // 跳最远都上不了下一块石头，后续更远的就更不可能了
+            else if (dist > k + 1)
+                break;
+        }
+        return false;
+    }
+}
+```
 ### 409.最长回文串
 > 给定一个包含大写字母和小写字母的字符串` s `，返回 通过这些字母构造成的 **最长的回文串** 。  
 在构造过程中，请注意 **区分大小写** 。比如` "Aa" `不能当做一个回文字符串。
