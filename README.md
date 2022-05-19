@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-165题-green)
+![](https://img.shields.io/badge/已覆盖-166题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -146,6 +146,7 @@
     + [449.序列化和反序列化二叉搜索树](#449序列化和反序列化二叉搜索树)
     + [454.四数相加 ⅱ](#454四数相加ⅱ)
     + [462.最少移动次数使数组元素相等 ii](#462最少移动次数使数组元素相等ii)
+    + [472.连接词](#472连接词)
     + [518.零钱兑换ii](#518零钱兑换ii)
     + [526.优美的排列](#526优美的排列)
     + [528.按权重随机选择](#528按权重随机选择)
@@ -651,7 +652,7 @@ def bfs(root: TreeNode):
 ### 1.6 字典树Trie 
 字典树基础知识看[这里](https://leetcode-cn.com/problems/implement-trie-prefix-tree/solution/gong-shui-san-xie-yi-ti-shuang-jie-er-we-esm9/)
 #### 1.6.1 代表题目
-208、212★
+208、212★、472
 
 ### 1.7 并查集
 #### 1.7.1 基本概念
@@ -4274,6 +4275,68 @@ class Solution:
 链接：https://leetcode-cn.com/problems/implement-trie-prefix-tree  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
++ java
+```
+class Trie {
+
+    class TrieNode {
+        boolean isEnd;  // 当前节点是否是一个单词的最终节点
+        TrieNode[] next;  // 当前节点的下一个后续节点
+
+        public TrieNode(){
+            this.isEnd = false;
+            this.next = new TrieNode[26];
+        }
+    }
+
+    public TrieNode root;  // 根节点
+
+    public Trie() {
+        this.root = new TrieNode();
+    }
+    
+    public void insert(String word) {
+        TrieNode node = root;
+        for (char c: word.toCharArray()){
+            if (node.next[c - 'a'] == null)
+                node.next[c - 'a'] = new TrieNode();
+            node = node.next[c - 'a'];
+        }
+        // 插入的是一个单词，所以这个设置节点是true
+        node.isEnd = true;
+    }
+    
+    public boolean search(String word) {
+        TrieNode node = root;
+        for (char c: word.toCharArray()){
+            if (node.next[c - 'a'] == null)
+                return false;
+            node = node.next[c - 'a'];
+        }
+        return node.isEnd;
+    }
+    
+    public boolean startsWith(String prefix) {
+        TrieNode node = root;
+        for (char c: prefix.toCharArray()){
+            if (node.next[c - 'a'] == null)
+                return false;
+            node = node.next[c - 'a'];
+        }
+        return true;
+    }
+}
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie obj = new Trie();
+ * obj.insert(word);
+ * boolean param_2 = obj.search(word);
+ * boolean param_3 = obj.startsWith(prefix);
+ */
+```
+
++ python
 ```
 class Trie(object):
     def __init__(self):
@@ -6490,6 +6553,78 @@ class Solution:
             right -= 1
 
         return ans
+```
+### 472.连接词
+> 给你一个**不含重复**单词的字符串数组` words `，请你找出并返回` words `中的所有 **连接词** 。
+
+**连接词** 定义为：一个完全由给定数组中的至少两个较短单词组成的字符串。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/concatenated-words  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java 字典树+记忆化搜索
+```
+class Solution {
+    class TrieNode{
+        boolean isEnd;
+        TrieNode[] next;
+
+        public TrieNode(){
+            this.isEnd = false;
+            this.next = new TrieNode[26];
+        }
+    }
+
+    // 定义根节点
+    public TrieNode root = new TrieNode();
+
+    public List<String> findAllConcatenatedWordsInADict(String[] words) {
+        List<String> ans = new ArrayList<>();  // 定义最终答案
+        Arrays.sort(words, (a, b) -> a.length() - b.length());
+        for (String word: words){
+            // 该词长度为0，直接跳过
+            if (word.length() == 0)
+                continue;
+            boolean[] visited = new boolean[word.length()];
+            if (dfs(word, 0, visited))
+                ans.add(word);
+            else
+                insert(word);
+        }
+        return ans;
+    }
+
+    public boolean dfs(String word, int start, boolean[] visited){
+        // 判断完了，是一个连接词
+        if (word.length() == start)
+            return true;
+        if (visited[start])
+            return false;
+        visited[start] = true;
+        TrieNode node = this.root;
+        for (int i = start; i < word.length(); i++){
+            char c = word.charAt(i);
+            node = node.next[c - 'a'];
+            if (node == null)
+                return false;
+            if (node.isEnd)
+                if (dfs(word, i + 1, visited))
+                    return true;
+        }
+        return false;
+    }
+
+    public void insert(String word){
+        TrieNode node = this.root;
+        for (char c: word.toCharArray()){
+            if (node.next[c - 'a'] == null)
+                node.next[c - 'a'] = new TrieNode();
+            node = node.next[c - 'a'];
+        }
+        node.isEnd = true;
+    }
+}
 ```
 ### 518.零钱兑换II
 > 给你一个整数数组` coins `表示不同面额的硬币，另给一个整数 `amount `表示总金额。  
