@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-167题-green)
+![](https://img.shields.io/badge/已覆盖-169题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -128,6 +128,7 @@
     + [304.二维区域和检索-矩阵不可变](#304二维区域和检索-矩阵不可变)
     + [310.最小高度树★](#310最小高度树)
     + [328.奇偶链表](#328奇偶链表)
+    + [329.矩阵中的最长递增路径](#329矩阵中的最长递增路径)
     + [341.扁平化嵌套列表迭代器](#341扁平化嵌套列表迭代器)
     + [347.前k个高频元素](#347前k个高频元素)
     + [350.两个数组的交集 ii](#350两个数组的交集ii)
@@ -143,6 +144,7 @@
     + [424.替换后的最长重复字符](#424替换后的最长重复字符)
     + [427.建立四叉树](#427建立四叉树)
     + [433.最小基因变化](#433最小基因变化)
+    + [436.寻找右区间](#436寻找右区间)
     + [442.数组中的重复数字](#442数组中的重复数字)
     + [449.序列化和反序列化二叉搜索树](#449序列化和反序列化二叉搜索树)
     + [454.四数相加 ⅱ](#454四数相加ⅱ)
@@ -5621,6 +5623,59 @@ class Solution:
         odd.next = succ
         return head
 ```
+### 329.矩阵中的最长递增路径
+> 给定一个` m x n `整数矩阵` matrix `，找出其中 **最长递增路径** 的长度。  
+对于每个单元格，你可以往上，下，左，右四个方向移动。 你 **不能**在 **对角线** 方向上移动或移动到 边界外（即不允许环绕）。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/longest-increasing-path-in-a-matrix  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java 记忆化搜索
+```
+class Solution {
+    public int[][] memory; // 记忆化搜索
+    public int[][] steps = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+    public int longestIncreasingPath(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0)
+            return 0;
+        int m = matrix.length;  // 行数
+        int n = matrix[0].length;  //列数
+
+        memory = new int[m][n]; // memory[i][j]代表着数组下标为i, j开始的最长路径
+        int ans = 0;
+
+        // 每一个位置作为起点进行搜索
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                ans = Math.max(ans, dfs(matrix, i, j, m, n));
+        
+        return ans;
+    }
+
+    public int dfs(int[][] matrix, int x, int y, int m, int n){
+        if (memory[x][y] != 0)
+            return memory[x][y];  // 之前已经计算过了
+        int res = 1;
+        // 每一个方向
+        for (int[] step: steps){
+            int i = x + step[0];
+            int j = y + step[1];
+            if (isValid(matrix, i, j) && matrix[i][j] > matrix[x][y])
+                res = Math.max(res, dfs(matrix, i, j, m, n) + 1);
+        }
+        memory[x][y] = res;
+        return res;
+    }
+
+    public boolean isValid(int[][] matrix, int x, int y){
+        if (x < 0 || x >= matrix.length || y < 0 || y >= matrix[0].length)
+            return false;
+        return true;
+    }
+}
+```
 ### 341.扁平化嵌套列表迭代器
 > 给你一个嵌套的整数列表` nestedList `。每个元素要么是一个整数，要么是一个列表；该列表的元素也可能是整数或者是其他列表。请你实现一个迭代器将其扁平化，使之能够遍历这个列表中的所有整数。
 
@@ -6394,6 +6449,31 @@ class Solution {
         return -1;
     }
 }
+```
+### 436.寻找右区间
+> 给你一个区间数组` intervals `，其中` intervals[i] = [starti, endi] `，且每个` starti `都 **不同** 。  
+区间` i `的 **右侧区间** 可以记作区间` j `，并满足` startj >= endi `，且` startj `最小化 。
+
+返回一个由每个区间` i `的 **右侧区间** 的最小起始位置组成的数组。如果某个区间` i `不存在对应的 右侧区间 ，则下标` i `处的值设为` -1 `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/find-right-interval  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```
+class Solution:
+    def findRightInterval(self, intervals: List[List[int]]) -> List[int]:
+        for i, interval in enumerate(intervals):
+            interval.append(i)
+        intervals.sort()
+
+        n = len(intervals)
+        ans = [-1] * n
+        for _, end, id in intervals:
+            i = bisect_left(intervals, [end])
+            if i < n:
+                ans[id] = intervals[i][2]
+        return ans
 ```
 ### 442.数组中的重复数字
 > 给你一个长度为` n `的整数数组` nums `，其中` nums `的所有整数都在范围` [1, n] `内，且每个整数出现 **一次** 或 **两次** 。请你找出所有出现 **两次** 的整数，并以数组形式返回。
