@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-169题-green)
+![](https://img.shields.io/badge/已覆盖-171题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -53,6 +53,7 @@
     + [49.字母异位词分组](#49字母异位词分组)
     + [51.N皇后★](#51n皇后)
     + [52.N皇后ii](#52n皇后ii)
+    + [53.最大子数组和](#53最大子数组和)
     + [54.螺旋矩阵](#54螺旋矩阵)
     + [56.合并区间](#56合并区间)
     + [69.x的平方根](#69x的平方根)
@@ -180,6 +181,7 @@
     + [944.删列造序](#944删列造序)
     + [951.翻转等价二叉树](#951翻转等价二叉树)
     + [953.验证外星语词典](#953验证外星语词典)
+    + [961.在长度2n的数组中找出重复n次的元素](#961在长度2n的数组中找出重复n次的元素)
     + [973.最接近原点的k个点](#973最接近原点的k个点)
     + [987.二叉树的垂序遍历](#987二叉树的垂序遍历)
     + [1004.最大连续1的个数 iii](#1004最大连续1的个数-iii)
@@ -858,7 +860,7 @@ class UnionFind:
 > 这里指的是用`for`循环方式的动态规划，非`Memoization Search`方式。`DP`可以在多项式时间复杂度内解决`DFS`需要指数级别的问题。常见的题目包括找最大最小，找可行性，找总方案数等，一般结果是一个`Integer`或者`Boolean`。
 
 #### 1.9.1 代表题目
-139、72(类似**面试题 01.05. 一次编辑**)、377、518、70、97、403
+139、72(类似**面试题 01.05. 一次编辑**)、377、518、70、97、403、53
 
 ## 2.题目
 ### 1.两数之和
@@ -1963,6 +1965,28 @@ class Solution:
    
         backtracking(board, 0)
         return ans
+```
+### 53.最大子数组和
+> 给你一个整数数组` nums `，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。  
+**子数组** 是数组中的一个连续部分。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/maximum-subarray/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。 
+
++ java 动态规划
+```
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int pre = 0;  // 计算
+        int ans = nums[0];  // 最大值默认初始化
+        for (int num: nums){
+            pre = Math.max(num, pre + num);
+            ans = Math.max(ans, pre);
+        }
+        return ans;
+    }
+}
 ```
 ### 54.螺旋矩阵
 > 给你一个` m `行` n `列的矩阵` matrix `，请按照**顺时针**螺旋顺序 ，返回矩阵中的所有元素。
@@ -7906,6 +7930,28 @@ class Solution:
             tmp = "".join([chr(ord('a')+(mapping[x])) for x in word])
             decrypt.append(tmp)
         return sorted(decrypt) == decrypt
+```
+### 961.在长度2N的数组中找出重复N次的元素
+> 给你一个整数数组 nums ，该数组具有以下属性：
++ `nums.length == 2 * n`.
++ `nums` 包含` n + 1 `个 **不同的** 元素
++ `nums` 中恰有一个元素重复` n `次
+
+找出并返回重复了` n `次的那个元素。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/n-repeated-element-in-size-2n-array  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java
+```
+class Solution {
+    public int repeatedNTimes(int[] nums) {
+        Arrays.sort(nums);
+        int len = nums.length;
+        return nums[len/2 + 1] == nums[len/2] ? nums[len/2] : nums[len/2 - 1];
+    }
+}
 ```
 ### 973.最接近原点的K个点
 > 给定一个数组` points `，其中` points[i] = [xi, yi] `表示` X-Y `平面上的一个点，并且是一个整数` k `，返回离原点` (0,0) `最近的` k `个点。  
