@@ -211,7 +211,7 @@
 > 简单选择排序是最简单直观的一种算法，基本思想为每一趟从待排序的数据元素中选择最小（或最大）的一个元素作为首元素，直到所有元素排完为止，简单选择排序是不稳定排序。  
 在算法实现时，每一趟确定最小元素的时候会通过不断地比较交换来使得首位置为当前最小，交换是个比较耗时的操作。其实我们很容易发现，在还未完全确定当前最小元素之前，这些交换都是无意义的。我们可以通过设置一个变量min，每一次比较仅存储较小元素的数组下标，当轮循环结束之后，那这个变量存储的就是当前最小元素的下标，此时再执行交换操作即可。 
 
-```
+```java
     public static void selectSort(int[] arr) {
         for (int i = 0; i < arr.length - 1; i++) {
             int min = i;//每一趟循环比较时，min用于存放较小元素的数组下标，这样当前批次比较完毕最终存放的就是此趟内最小的元素的下标，避免每次遇到较小元素都要进行交换。
@@ -233,7 +233,7 @@
 示例：  
 ![冒泡排序示例](/image/sort/冒泡排序.png)
 
-```
+```java
     public static void bubbleSort(int[] arr) {
         for (int i = 0; i < arr.length - 1; i++) {
             boolean flag = true;//设定一个标记，若为true，则表示此次循环没有进行交换，也就是待排序列已经有序，排序已然完成。
@@ -255,7 +255,7 @@
 示例：  
 ![直接插入排序示例](/image/sort/直接插入排序.png)
 
-```
+```java
     public static void insertionSort(int[] arr) {
         for (int i = 1; i < arr.length; i++) {
             int j = i;
@@ -277,7 +277,7 @@
 示例(**第一轮**)  
 ![快速排序第一轮示例](/image/sort/快速排序.jpg)
 
-```
+```java
     /*
      * 快速排序
      *
@@ -321,7 +321,7 @@
 最后  
 ![归并排序top down思路](/image/sort/归并排序3.png)  
 
-```
+```java
     public static void sort(int []arr){
         int []temp = new int[arr.length];//在排序前，先建好一个长度等于原数组长度的临时数组，避免递归中频繁开辟空间
         sort(arr,0,arr.length-1,temp);
@@ -377,7 +377,7 @@ step=8: (1->2->3->4->5->6->7->8->9->11)
 
 示例:
 ![希尔排序示例](/image/sort/希尔排序.png)
-```
+```java
     /**
      * 希尔排序 针对有序序列在插入时采用交换法
      * @param arr
@@ -462,7 +462,7 @@ step 2: 将堆顶元素与末尾元素进行交换，使末尾元素最大。然
 |3|再将堆顶元素8与末尾元素5进行交换，得到第二大元素8|![示例](/image/sort/堆排序9.png)|
 |4|后续过程，继续进行调整，交换，如此反复进行，最终使得整个序列有序|![示例](/image/sort/堆排序10.png)|
 
-```
+```java
     public static void sort(int []arr){
         //1.构建大顶堆
         for(int i=arr.length/2-1;i>=0;i--){
@@ -514,7 +514,7 @@ step 2: 将堆顶元素与末尾元素进行交换，使末尾元素最大。然
 
 ### 1.2 同向双指针/滑动窗口
 #### 1.2.1 常用模板
-```
+```python
 1. 定义需要用到的变量，如快慢指针int slow = 0, int fast = 0; 输入的string s; 
 Hashmap char_freq用于记录string s当中slow到fast（包含）之间所有的字母出现的频率；
 int longest记录符合题目要求的最长substring长度等
@@ -543,16 +543,16 @@ return longest
 ![DFS、BFS示意图](/image/bfs/DFS和BFS示意图1.gif)
 
 #### 1.3.1 二叉树上 `DFS` 与 `BFS` 代码比较  
-    + DFS遍历使用**递归**
++ DFS遍历使用**递归**
+    ```python
+        def dfs(root: TreeNode):
+            if not root:
+                return 
+            dfs(root.left)
+            dfs(root.right)
     ```
-    def dfs(root: TreeNode):
-        if not root:
-            return 
-        dfs(root.left)
-        dfs(root.right)
-    ```
-    + BFS遍历使用**队列**
-    ```
++ BFS遍历使用**队列**
+    ```python
     def bfs(root: TreeNode):
         if not root:
             return
@@ -587,7 +587,7 @@ return longest
 
 因此，我们需要稍微修改一下代码，在每一层遍历开始前，先记录队列中的结点数量 n（也就是这一层的结点数量），然后一口气处理完这一层的 n 个结点。
 
-```
+```python
 def bfs(root: TreeNode):
     if not root:
         return
@@ -678,7 +678,7 @@ def bfs(root: TreeNode):
 
 如果节点是相互连通的（从一个节点可以到达另一个节点），那么他们在同一棵树里，或者说在同一个集合里，或者说他们的祖先是相同的
 
-```
+```python
 class UnionFind:
 
     def __init__(self):
@@ -691,7 +691,7 @@ class UnionFind:
 把一个新节点添加到并查集中，它的父节点应该为空  
 ![并查集之添加](/image/union/union_2.png)
 
-```
+```python
 def add(self, x):
         """
         添加新节点
@@ -703,7 +703,7 @@ def add(self, x):
 如果发现两个节点是连通的，那么就要把他们合并，也就是他们的祖先是相同的。这里究竟把谁当做父节点一般是没有区别的。  
 ![并查集之合并](/image/union/union_3.png)
 
-```
+```python
 def merge(self, x, y, val):
         """
         合并两个节点
@@ -717,7 +717,7 @@ def merge(self, x, y, val):
 查找祖先的方法是：如果节点的父节点不为空，那就不断迭代。  
 ![并查集之查找祖先](/image/union/union_4.png)
 
-```
+```python
 def find(self, x):
         """
         查找根节点
@@ -734,7 +734,7 @@ def find(self, x):
 |压缩之前|压缩之后|
 |:-----:|:-----:|
 |![并查集之路径压缩1](/image/union/union_5.png)|![并查集之路径压缩2](/image/union/union_6.png)|
-```
+```python
 def find(self, x):
         """
         查找根节点
@@ -756,7 +756,7 @@ def find(self, x):
 
 ##### 1.7.2.5 两节点是否连通
 我们判断两个节点是否处于同一个连通分量的时候，就需要判断它们的祖先是否相同  
-```
+```python
 def is_connected(self,x,y):
         """
         判断两节点是否相连
@@ -764,7 +764,7 @@ def is_connected(self,x,y):
         return self.find(x) == self.find(y)
 ```
 #### 1.7.3 总体模板
-```
+```python
 class UnionFind:
     def __init__(self):
         """
@@ -839,7 +839,7 @@ class UnionFind:
 + 一维数组前缀和
     303  
     + 一般语言而言，例如java可以
-    ```
+    ```java
         # 使用前缀和
         int n = nums.length;
         sums = new int[n + 1];
@@ -848,7 +848,7 @@ class UnionFind:
         }
     ```
     + 对于python而言，可以这么做
-    ```
+    ```python
         # 使用前缀和
         self.sum = [0]
         for i in nums:
@@ -874,7 +874,7 @@ class UnionFind:
 链接：https://leetcode-cn.com/problems/two-sum  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
 
-```
+```python
 class Solution(object):
     def twoSum(self, nums, target):
         """
@@ -897,7 +897,7 @@ class Solution(object):
 链接：https://leetcode-cn.com/problems/add-two-numbers  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
 + 法一 ~~这种写法很烂~~
-    ```
+    ```python
     # Definition for singly-linked list.
     # class ListNode:
     #     def __init__(self, val=0, next=None):
@@ -980,7 +980,7 @@ class Solution(object):
 
     ```
 + 法二
-    ```
+    ```python
     # Definition for singly-linked list.
     # class ListNode:
     #     def __init__(self, val=0, next=None):
@@ -1015,7 +1015,7 @@ class Solution(object):
 链接：https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  
-```
+```python
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
         if len(s) == 0:
@@ -1046,7 +1046,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 二分查找 $O(log(m+n)).$
-    ```
+    ```python
     class Solution:
         def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
             # 二分查找
@@ -1078,7 +1078,7 @@ class Solution:
 
     ```
 + 中位数定义出发 $O(log min(m,n)).$
-    ```
+    ```python
     class Solution:
         def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
             # 二分查找
@@ -1125,7 +1125,7 @@ class Solution:
 + 动态规划，重点是找状态转移方程
     > `dp[left][right]=True`代表着`left`到`right`是回文串，那么如果`s[left-1]==s[right+1]`,那么`dp[left-1][right+1]=True`
 
-    ```
+    ```python
     class Solution:
         def longestPalindrome(self, s: str) -> str:
             n = len(s)
@@ -1168,7 +1168,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/container-with-most-water  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def maxArea(self, height: List[int]) -> int:
         # 双指针做法，物理意义代表着容器的左右边界
@@ -1192,7 +1192,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/3sum  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def threeSum(self, nums: List[int]) -> List[List[int]]:
         ans = []
@@ -1232,7 +1232,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/3sum-closest  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def threeSumClosest(self, nums: List[int], target: int) -> int:
         n = len(nums)
@@ -1267,7 +1267,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + DFS+回溯
-    ```
+    ```python
     class Solution:
         def letterCombinations(self, digits: str) -> List[str]:
             if len(digits) == 0:
@@ -1307,7 +1307,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/4sum  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
         n = len(nums)
@@ -1355,7 +1355,7 @@ class Solution:
 来源：力扣（LeetCode）  
 链接：https://leetcode-cn.com/problems/valid-parentheses  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
-```
+```python
 class Solution:
     def isValid(self, s: str) -> bool:
         stack = []
@@ -1380,7 +1380,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + DFS+回溯
-```
+```python
 class Solution:
     def generateParenthesis(self, n: int) -> List[str]:
         ans = []
@@ -1419,7 +1419,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/merge-k-sorted-lists/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, val=0, next=None):
@@ -1452,7 +1452,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def removeDuplicates(self, nums: List[int]) -> int:
         n = len(nums)
@@ -1474,7 +1474,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/remove-element  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 + 法一：直接使用list自带函数remove
-    ```
+    ```python
     class Solution:
         def removeElement(self, nums: List[int], val: int) -> int:
             for i in range(nums.count(val)):
@@ -1483,7 +1483,7 @@ class Solution:
     ```
 
 + 法二：双指针做法
-    ```
+    ```python
     class Solution:
         def removeElement(self, nums: List[int], val: int) -> int:
             # 双指针做法
@@ -1512,7 +1512,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 时间复杂度不符合要求
-    ```
+    ```python
     class Solution:
         def search(self, nums: List[int], target: int) -> int:
             length = len(nums)
@@ -1538,7 +1538,7 @@ class Solution:
             return -1
     ```
 + 虽然不能直接二分查找，但是算mid之后总有一半是有序的
-    ```
+    ```python
     class Solution:
         def search(self, nums: List[int], target: int) -> int:
             length = len(nums)
@@ -1577,7 +1577,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/find-first-and-last-position-of-element-in-sorted-array  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def searchRange(self, nums: List[int], target: int) -> List[int]:
         def binarySearchLeft(nums, target):
@@ -1616,7 +1616,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + DFS+回溯
-```
+```python
 class Solution:
     def solveSudoku(self, board: List[List[str]]) -> None:
         """
@@ -1670,7 +1670,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/combination-sum  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
         # 回溯
@@ -1712,7 +1712,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + DFS+回溯(这道题核心是剪枝，防止重复组合纳入结果中。首先需要对数组排序，其次就是`i > start`的理解，即`1，1`不跳过，`1，1，1`就要跳过)
-```
+```python
 class Solution:
     def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
         # 回溯
@@ -1749,7 +1749,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + python回溯
-    ```
+    ```python
     class Solution:
         def permute(self, nums: List[int]) -> List[List[int]]:
             ans = []
@@ -1766,7 +1766,7 @@ class Solution:
             return ans
     ```
 + java回溯
-    ```
+    ```java
     class Solution {
 
         public List<List<Integer>> permute(int[] nums) {
@@ -1802,7 +1802,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 回溯
-    ```
+    ```python
     class Solution:
         def permuteUnique(self, nums: List[int]) -> List[List[int]]:
             # 给数组排序
@@ -1838,7 +1838,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/group-anagrams  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
         result = collections.defaultdict(list)
@@ -1859,7 +1859,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 回溯法
-    ```
+    ```python
     class Solution:
         def solveNQueens(self, n: int) -> List[List[str]]:
             # 回溯法，构造棋盘树，节点的子树数量等于列数，树的高度为行数
@@ -1923,7 +1923,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/n-queens-ii  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def totalNQueens(self, n: int) -> int:
         # 回溯法
@@ -1977,7 +1977,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。 
 
 + java 动态规划
-```
+```java
 class Solution {
     public int maxSubArray(int[] nums) {
         int pre = 0;  // 计算
@@ -1997,7 +1997,7 @@ class Solution {
 链接：https://leetcode-cn.com/problems/spiral-matrix/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。 
 
-```
+```python
 class Solution:
     def spiralOrder(self, matrix: List[List[int]]) -> List[int]:
         i, j = 0, len(matrix)-1
@@ -2032,7 +2032,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
 
 + 快速排序
-    ```
+    ```python
     class Solution:
         def merge(self, intervals: List[List[int]]) -> List[List[int]]:
             if len(intervals) <= 1 :
@@ -2097,7 +2097,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/sqrtx  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def mySqrt(self, x: int) -> int:
         # 直接在0到x之间使用二分查找
@@ -2123,7 +2123,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java 动态规划
-    ```
+    ```java
     class Solution {
         public int climbStairs(int n) {
             // 动态规划
@@ -2152,7 +2152,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java 记忆化搜索DFS
-    ```
+    ```java
     class Solution {
         public int minDistance(String word1, String word2) {
             // 记忆化DFS
@@ -2190,7 +2190,7 @@ class Solution:
     }
     ```
 + java动态规划
-    ```
+    ```java
     class Solution {
         public int minDistance(String word1, String word2) {
             // 动态规划
@@ -2228,7 +2228,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/set-matrix-zeroes/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def setZeroes(self, matrix: List[List[int]]) -> None:
         """
@@ -2271,7 +2271,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/search-a-2d-matrix  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
         def binary_search(nums, left, right, target):
@@ -2302,7 +2302,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/sort-colors  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 + 单指针
-    ```
+    ```python
     class Solution:
         def sortColors(self, nums: List[int]) -> None:
             """
@@ -2323,7 +2323,7 @@ class Solution:
             nums[a], nums[b] = nums[b], nums[a]
     ```
 + 双指针(0、1交换)
-    ```
+    ```python
     class Solution:
         def sortColors(self, nums: List[int]) -> None:
             """
@@ -2345,7 +2345,7 @@ class Solution:
             nums[a], nums[b] = nums[b], nums[a]
     ```
 + 双指针(0、2交换)
-    ```
+    ```python
     class Solution:
         def sortColors(self, nums: List[int]) -> None:
             """
@@ -2367,7 +2367,7 @@ class Solution:
             nums[a], nums[b] = nums[b], nums[a]
     ```
 + 三指针
-    ```
+    ```python
     class Solution:
         def sortColors(self, nums: List[int]) -> None:
             """
@@ -2402,7 +2402,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/minimum-window-substring  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
         ans = ''
@@ -2442,7 +2442,7 @@ https://leetcode-cn.com/problems/combinations/
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + Java回溯
-    ```
+    ```java
     class Solution {
         public List<List<Integer>> combine(int n, int k) {
             List<List<Integer>> ans = new ArrayList<List<Integer>>();
@@ -2475,7 +2475,7 @@ https://leetcode-cn.com/problems/combinations/
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + DFS
-    ```
+    ```python
     class Solution:
         def subsets(self, nums: List[int]) -> List[List[int]]:
             ans = []
@@ -2499,7 +2499,7 @@ https://leetcode-cn.com/problems/combinations/
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + DFS+回溯
-```
+```python
 class Solution:
     def exist(self, board: List[List[str]], word: str) -> bool:
         # 回溯
@@ -2561,7 +2561,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/merge-sorted-array  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
         """
@@ -2593,7 +2593,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + python回溯
-    ```
+    ```python
     class Solution:
         def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
             # 先排序，转换成树型结构就是同一层的节点值不能相同
@@ -2615,7 +2615,7 @@ class Solution:
     ```
 
 + java回溯
-    ```
+    ```java
     class Solution {
         //保存答案
         public List<List<Integer>> ans = new ArrayList<List<Integer>>();
@@ -2648,7 +2648,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/reverse-linked-list-ii  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
 + 自己的解答 
-    ```
+    ```python
     # Definition for singly-linked list.
     # class ListNode:
     #     def __init__(self, val=0, next=None):
@@ -2687,7 +2687,7 @@ class Solution:
                 return p   
     ```
 + 官方解答更好
-    ```
+    ```python
     class Solution:
         def reverseBetween(self, head: ListNode, left: int, right: int) -> ListNode:
             # 设置 dummyNode 是这一类问题的一般做法
@@ -2715,7 +2715,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + DFS+回溯
-    ```
+    ```python
     class Solution:
         def restoreIpAddresses(self, s: str) -> List[str]:
             if len(s) < 4 or len(s) > 12:
@@ -2775,7 +2775,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java 动态规划
-```
+```java
 class Solution {
     public boolean isInterleave(String s1, String s2, String s3) {
         // 定义字符的长度
@@ -2825,7 +2825,7 @@ class Solution {
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 中序遍历
-    ```
+    ```python
     # Definition for a binary tree node.
     # class TreeNode:
     #     def __init__(self, val=0, left=None, right=None):
@@ -2853,7 +2853,7 @@ class Solution {
             return True
     ```
 + 递归
-    ```
+    ```python
     # Definition for a binary tree node.
     # class TreeNode:
     #     def __init__(self, val=0, left=None, right=None):
@@ -2889,7 +2889,7 @@ class Solution {
 链接：https://leetcode-cn.com/problems/same-tree/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -2913,7 +2913,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/symmetric-tree/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -2942,7 +2942,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/binary-tree-level-order-traversal/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -2977,7 +2977,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/binary-tree-zigzag-level-order-traversal/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -3015,7 +3015,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -3046,7 +3046,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -3096,7 +3096,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -3124,7 +3124,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/convert-sorted-list-to-binary-search-tree  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, val=0, next=None):
@@ -3171,7 +3171,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/binary-tree-maximum-path-sum  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -3209,7 +3209,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/valid-palindrome/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  
-```
+```python
 class Solution:
     def isPalindrome(self, s: str) -> bool:
         n = len(s)
@@ -3243,7 +3243,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + BFS+DFS+回溯+队列
-```
+```python
 class Solution:
     def findLadders(self, beginWord: str, endWord: str, wordList: List[str]) -> List[List[str]]:
         # 结尾单词并不存在于单词序列中
@@ -3305,7 +3305,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/word-ladder  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
         def addWord(word: str):
@@ -3363,7 +3363,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/longest-consecutive-sequence  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def longestConsecutive(self, nums: List[int]) -> int:
         link = {}
@@ -3391,7 +3391,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + DFS
-    ```
+    ```python
     class Solution:
         def solve(self, board: List[List[str]]) -> None:
             """
@@ -3430,7 +3430,7 @@ class Solution:
                         board[i][j] = "X"
     ```
 + BFS
-    ```
+    ```python
     class Solution:
         def solve(self, board: List[List[str]]) -> None:
             """
@@ -3480,7 +3480,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/palindrome-partitioning/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def partition(self, s: str) -> List[List[str]]:
         if len(s) == 1:
@@ -3519,7 +3519,7 @@ class Solution:
 ### 133.克隆图★
 > 给你无向 **连通** 图中一个节点的引用，请你返回该图的 **深拷贝**（克隆）。  
 图中的每个节点都包含它的值` val（int）` 和其邻居的列表`（list[Node]）`。 
-``` 
+```java
 class Node {
     public int val;
     public List<Node> neighbors;
@@ -3536,7 +3536,7 @@ class Node {
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + BFS
-    ```
+    ```python
     class Solution:
         def cloneGraph(self, node: 'Node') -> 'Node':
             if not node:
@@ -3557,7 +3557,7 @@ class Node {
             return visited[node]
     ```
 + DFS
-    ```
+    ```python
     class Solution:
         def cloneGraph(self, node: 'Node') -> 'Node':        
             # DFS 写法
@@ -3587,7 +3587,7 @@ class Node {
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + python记忆化DFS
-    ```
+    ```python
     class Solution:
         def wordBreak(self, s: str, wordDict: List[str]) -> bool:
             length = len(s)
@@ -3610,7 +3610,7 @@ class Node {
             return dfs(0)
     ```
 + java动态规划
-    ```
+    ```java
     class Solution {
         public boolean wordBreak(String s, List<String> wordDict) {
             int length = s.length();
@@ -3641,7 +3641,7 @@ class Node {
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + python记忆化dfs
-    ```
+    ```python
     class Solution:
         def wordBreak(self, s: str, wordDict: List[str]) -> List[str]:
             # 记忆体，如果遇到重复子问题就可以直接取出答案
@@ -3673,7 +3673,7 @@ class Node {
 来源：力扣（LeetCode）  
 链接：https://leetcode-cn.com/problems/linked-list-cycle  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
-```
+```python
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, x):
@@ -3698,7 +3698,7 @@ class Solution:
 来源：力扣（LeetCode）  
 链接：https://leetcode-cn.com/problems/linked-list-cycle-ii  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
-```
+```python
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, x):
@@ -3737,7 +3737,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/lru-cache  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class DLinkedNode:
     # 双向链表
     def __init__(self, key=0, value=0):
@@ -3818,7 +3818,7 @@ class LRUCache:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
 
 + 归并排序 top down
-    ```
+    ```python
     # Definition for singly-linked list.
     # class ListNode:
     #     def __init__(self, val=0, next=None):
@@ -3869,7 +3869,7 @@ class LRUCache:
     ```
 
 + 归并排序 bottom up
-    ```
+    ```python
     # Definition for singly-linked list.
     # class ListNode:
     #     def __init__(self, val=0, next=None):
@@ -3957,7 +3957,7 @@ class LRUCache:
 + 去掉括号后表达式无歧义，上式即便写成` 1 2 + 3 4 + * `也可以依据次序计算出正确结果。  
 + 适合用栈操作运算：遇到数字则入栈；遇到算符则取出栈顶两个数字进行计算，并将结果压入栈中  
 
-```
+```python
 class Solution:
     def evalRPN(self, tokens: List[str]) -> int:
         def add(pre, succ):
@@ -3998,7 +3998,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/min-stack  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class MinStack:
 
     def __init__(self):
@@ -4040,7 +4040,7 @@ class MinStack:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处  
 ![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/link/link_160.png)
 
-```
+```python
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, x):
@@ -4065,7 +4065,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/find-peak-element  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def findPeakElement(self, nums: List[int]) -> int:
         n = len(nums)
@@ -4101,7 +4101,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def twoSum(self, numbers: List[int], target: int) -> List[int]:
         ans = []
@@ -4122,7 +4122,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/largest-number/    
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处
 
-```
+```python
 class Solution:
     def largestNumber(self, nums: List[int]) -> str:
         import functools
@@ -4144,7 +4144,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + BFS
-    ```
+    ```python
     class Solution:
         def numIslands(self, grid: List[List[str]]) -> int:
             # BFS解法
@@ -4177,7 +4177,7 @@ class Solution:
             return ans
     ```
 + DFS
-    ```
+    ```python
     class Solution:
         def numIslands(self, grid: List[List[str]]) -> int:
             # DFS解法
@@ -4213,7 +4213,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处
 
 + 迭代法
-    ```
+    ```python
     # Definition for singly-linked list.
     # class ListNode:
     #     def __init__(self, val=0, next=None):
@@ -4230,7 +4230,7 @@ class Solution:
             return pre
     ```
 + 递归法
-    ```
+    ```python
     # Definition for singly-linked list.
     # class ListNode:
     #     def __init__(self, val=0, next=None):
@@ -4259,7 +4259,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/course-schedule  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
         # 按照先修课程数组构造有向图
@@ -4306,7 +4306,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java
-```
+```java
 class Trie {
 
     class TrieNode {
@@ -4367,7 +4367,7 @@ class Trie {
 ```
 
 + python
-```
+```python
 class Trie(object):
     def __init__(self):
         """
@@ -4442,7 +4442,7 @@ class TrieNode:
 来源：力扣（LeetCode）  
 链接：https://leetcode-cn.com/problems/course-schedule-ii/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
-```
+```python
 class Solution:
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
         # 按照先修课程数组构造有向图
@@ -4482,7 +4482,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/word-search-ii  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 + 字典树(官方题解)
-    ```
+    ```python
     class Trie:
         def __init__(self):
             self.children = defaultdict(Trie)
@@ -4530,7 +4530,7 @@ class Solution:
             return list(ans)
     ```
 + DFS+回溯(~~虽然剪枝了一部分，但是python超时，过不了，垃圾python~~)
-    ```
+    ```python
     class Solution:
         def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
 
@@ -4595,7 +4595,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处
 
 + 调库(~~毫无意义~~)
-    ```
+    ```python
     class Solution:
         def findKthLargest(self, nums: List[int], k: int) -> int:
             nums.sort(reverse = True)
@@ -4603,7 +4603,7 @@ class Solution:
     ```
 
 + 大顶堆
-    ```
+    ```python
     class Solution:
         def findKthLargest(self, nums: List[int], k: int) -> int:
             # python的heapq库只实现了小顶堆，这里使用大顶堆合适一些
@@ -4669,7 +4669,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + DFS+回溯
-    ```
+    ```python
     class Solution:
         def combinationSum3(self, k: int, n: int) -> List[List[int]]:
             # 数字列表1-9
@@ -4701,7 +4701,7 @@ class Solution:
 来源：力扣（LeetCode）  
 链接：https://leetcode-cn.com/problems/basic-calculator/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
-```
+```python
 class Solution:
     def calculate(self, s: str) -> int:
         # 可以转成后缀表达式，再参考150求解
@@ -4758,12 +4758,12 @@ class Solution:
 > 请你仅使用两个队列实现一个后入先出（LIFO）的栈，并支持普通栈的全部四种操作（push、top、pop 和 empty）。
 
 实现 MyStack 类：
-```
-void push(int x) 将元素 x 压入栈顶。
-int pop() 移除并返回栈顶元素。
-int top() 返回栈顶元素。
-boolean empty() 如果栈是空的，返回 true ；否则，返回 false 。
-```
+
++ `void push(int x)` 将元素` x `压入栈顶。
++ `int pop()` 移除并返回栈顶元素。
++ `int top()` 返回栈顶元素。
++ `boolean empty()` 如果栈是空的，返回` true `；否则，返回` false `。
+
 注意：
 
 你只能使用队列的基本操作 —— 也就是` push to back、peek/pop from front、size `和` is empty `这些操作。  
@@ -4774,7 +4774,7 @@ boolean empty() 如果栈是空的，返回 true ；否则，返回 false 。
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 一个队列实现
-    ```
+    ```python
     class MyStack:
 
         def __init__(self):
@@ -4801,7 +4801,7 @@ boolean empty() 如果栈是空的，返回 true ；否则，返回 false 。
             return True if self.size == 0 else False
     ```
 + 两个队列实现
-    ```
+    ```python
     class MyStack:
 
         def __init__(self):
@@ -4840,7 +4840,7 @@ boolean empty() 如果栈是空的，返回 true ；否则，返回 false 。
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 自身函数递归
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -4859,7 +4859,7 @@ class Solution:
         return root
 ```
 + 新建dfs函数递归
-```
+```python
 class Solution:
     def invertTree(self, root: TreeNode) -> TreeNode:
 
@@ -4884,7 +4884,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 中序遍历
-    ```
+    ```python
     # Definition for a binary tree node.
     # class TreeNode:
     #     def __init__(self, val=0, left=None, right=None):
@@ -4909,7 +4909,7 @@ class Solution:
     ```
 
 + 记录子树的结点数(官方题解)
-    ```
+    ```python
     class MyBst:
         def __init__(self, root: TreeNode):
             self.root = root
@@ -4967,7 +4967,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/implement-queue-using-stacks  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class MyQueue:
 
     def __init__(self):
@@ -5011,7 +5011,7 @@ class MyQueue:
 链接：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-search-tree  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, x):
@@ -5039,7 +5039,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, x):
@@ -5081,7 +5081,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/search-a-2d-matrix-ii  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
         def binary_search(nums, left, right, target):
@@ -5112,7 +5112,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/ugly-number-ii/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def nthUglyNumber(self, n: int) -> int:
         min_heap = []
@@ -5141,7 +5141,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/first-bad-version  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # The isBadVersion API is already defined for you.
 # @param version, an integer
 # @return an integer
@@ -5171,7 +5171,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/move-zeroes/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def moveZeroes(self, nums: List[int]) -> None:
         """
@@ -5202,7 +5202,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/P5rCT8  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, x):
@@ -5236,7 +5236,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/word-pattern  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def wordPattern(self, pattern: str, s: str) -> bool:
         word2ch = dict()
@@ -5267,7 +5267,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/find-median-from-data-stream  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class MedianFinder:
 
     def __init__(self):
@@ -5313,7 +5313,7 @@ class MedianFinder:
 链接：https://leetcode-cn.com/problems/serialize-and-deserialize-binary-tree  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 + BFS
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode(object):
 #     def __init__(self, x):
@@ -5378,7 +5378,7 @@ class Codec:
 # ans = deser.deserialize(ser.serialize(root))
 ```
 + DFS
-```
+```python
 class Codec:
 
     def serialize(self, root):
@@ -5421,7 +5421,7 @@ class Codec:
 链接：https://leetcode-cn.com/problems/bulls-and-cows  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def getHint(self, secret: str, guess: str) -> str:
         dict_secret = collections.defaultdict(list)
@@ -5449,7 +5449,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + DFS+回溯
-```
+```python
 class Solution:
     def removeInvalidParentheses(self, s: str) -> List[str]:
         ans = []
@@ -5511,7 +5511,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/range-sum-query-immutable  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class NumArray:
 
     def __init__(self, nums: List[int]):
@@ -5543,7 +5543,7 @@ class NumArray:
 链接：https://leetcode-cn.com/problems/range-sum-query-2d-immutable  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class NumMatrix:
 
     def __init__(self, matrix: List[List[int]]):
@@ -5579,7 +5579,7 @@ class NumMatrix:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 拓扑排序+BFS
-```
+```python
 class Solution:
     def findMinHeightTrees(self, n: int, edges: List[List[int]]) -> List[int]:
         # 如果针对每个节点都来作为根节点计算树高度，时间性能就不好
@@ -5629,7 +5629,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/odd-even-linked-list  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, val=0, next=None):
@@ -5658,7 +5658,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java 记忆化搜索
-```
+```java
 class Solution {
     public int[][] memory; // 记忆化搜索
     public int[][] steps = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
@@ -5727,7 +5727,7 @@ return res
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 递归
-    ```
+    ```python
     # """
     # This is the interface that allows for creating nested lists.
     # You should not implement it, or speculate about its implementation
@@ -5777,7 +5777,7 @@ return res
     ```
 
 + 迭代
-    ```
+    ```python
     # """
     # This is the interface that allows for creating nested lists.
     # You should not implement it, or speculate about its implementation
@@ -5836,7 +5836,7 @@ return res
 链接：https://leetcode-cn.com/problems/top-k-frequent-elements/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
         # 构造小顶堆
@@ -5869,7 +5869,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/intersection-of-two-arrays-ii  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def intersect(self, nums1: List[int], nums2: List[int]) -> List[int]:
         my_dict_1 = collections.Counter(nums1)
@@ -5891,7 +5891,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java 记忆化搜索
-    ```
+    ```java
     class Solution {
         public int combinationSum4(int[] nums, int target) {
             // 记忆化递归
@@ -5920,7 +5920,7 @@ class Solution:
     }
     ```
 + java 动态规划
-    ```
+    ```java
     class Solution {
         public int combinationSum4(int[] nums, int target) {
             // 动态规划
@@ -5945,7 +5945,7 @@ class Solution:
 来源：力扣（LeetCode）  
 链接：https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
-```
+```python
 class Solution:
     def kthSmallest(self, matrix: List[List[int]], k: int) -> int:
         # 使用大小为K个元素的大顶堆
@@ -5974,7 +5974,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/insert-delete-getrandom-o1  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class RandomizedSet:
 
     def __init__(self):
@@ -6023,7 +6023,7 @@ class RandomizedSet:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 栈
-    ```
+    ```python
     class Solution:
         def decodeString(self, s: str) -> str:
             # 典型的括号匹配问题，自然就联想到栈
@@ -6048,7 +6048,7 @@ class RandomizedSet:
     ```
 
 + 递归
-    ```
+    ```python
     class Solution:
         def decodeString(self, s: str) -> str:
             # 其实括号里面的内容可以当作最原始的字符串处理，也就是递归
@@ -6085,7 +6085,7 @@ class RandomizedSet:
 链接：https://leetcode-cn.com/problems/longest-substring-with-at-least-k-repeating-characters/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def longestSubstring(self, s: str, k: int) -> int:
         n = len(s)
@@ -6129,7 +6129,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/evaluate-division  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
 + 并查集
-    ```
+    ```python
     class UnionFind:
         def __init__(self):
             # 记录每个节点的父节点
@@ -6195,7 +6195,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java 记忆化搜索
-```
+```java
 class Solution {
     // 记忆化搜索
     public Map<Integer, Boolean> memory = new HashMap<>();
@@ -6236,7 +6236,7 @@ class Solution {
 链接：https://leetcode-cn.com/problems/longest-palindrome  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def longestPalindrome(self, s: str) -> int:
         if len(s) == 1:
@@ -6266,7 +6266,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/pacific-atlantic-water-flow  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
         # BFS, 从海洋出发，逆向思维水往高处流，两边海洋都能去的点就是答案
@@ -6322,7 +6322,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/longest-repeating-character-replacement  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def characterReplacement(self, s: str, k: int) -> int:
         n = len(s)
@@ -6350,7 +6350,7 @@ class Solution:
 
 + `val`：储存叶子结点所代表的区域的值。`1 `对应` True`，`0 `对应 `False`；
 + `isLeaf`: 当这个节点是一个叶子结点时为` True`，如果它有` 4 `个子节点则为` False` 。
-```
+```java
 class Node {
     public boolean val;
     public boolean isLeaf;
@@ -6366,7 +6366,7 @@ class Node {
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 递归+前缀和
-    ```
+    ```python
     """
     # Definition for a QuadTree node.
     class Node:
@@ -6425,7 +6425,7 @@ class Node {
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java的BFS
-```
+```java
 class Solution {
     //记录基本的基因组成字符
     public static char[] base = {'A', 'C', 'G', 'T'};
@@ -6486,7 +6486,7 @@ class Solution {
 链接：https://leetcode.cn/problems/find-right-interval  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def findRightInterval(self, intervals: List[List[int]]) -> List[int]:
         for i, interval in enumerate(intervals):
@@ -6511,7 +6511,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java原地哈希(数字i定义到数组下标为i-1的位置)
-    ```
+    ```java
     class Solution {
         public List<Integer> findDuplicates(int[] nums) {
             int n = nums.length;
@@ -6551,7 +6551,7 @@ class Solution:
 链接：https://leetcode.cn/problems/serialize-and-deserialize-bst  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 + java
-    ```
+    ```java
     /**
     * Definition for a binary tree node.
     * public class TreeNode {
@@ -6613,7 +6613,7 @@ class Solution:
     // return ans;
     ```
 + python
-    ```
+    ```python
     # Definition for a binary tree node.
     # class TreeNode:
     #     def __init__(self, x):
@@ -6669,7 +6669,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/4sum-ii  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def fourSumCount(self, nums1: List[int], nums2: List[int], nums3: List[int], nums4: List[int]) -> int:
         # 两两分组，妙啊
@@ -6693,7 +6693,7 @@ Tip：一个优秀的题解，核心在于目标[为什么是中位数](https://
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + python双指针
-```
+```python
 class Solution:
     def minMoves2(self, nums: List[int]) -> int:
         nums.sort()
@@ -6716,7 +6716,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java 记忆化搜索
-```
+```java
 class Solution {
      public boolean canIWin(int maxChoosableInteger, int desiredTotal) {
         //总长度不满足目标值
@@ -6765,7 +6765,7 @@ class Solution {
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java 字典树+记忆化搜索
-```
+```java
 class Solution {
     class TrieNode{
         boolean isEnd;
@@ -6839,7 +6839,7 @@ class Solution {
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java 动态规划
-```
+```java
 class Solution {
     public int change(int amount, int[] coins) {
         // dp[i]代表总额i存在的兑换方法种数
@@ -6866,7 +6866,7 @@ class Solution {
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java回溯
-    ```
+    ```java
     class Solution {
         //因为n个整数不重复，所以需要记录当前数字是否已经被使用了
         public boolean[] visited;
@@ -6917,7 +6917,7 @@ class Solution {
 链接：https://leetcode-cn.com/problems/random-pick-with-weight  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
 
     def __init__(self, w: List[int]):
@@ -6943,7 +6943,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/single-element-in-a-sorted-array  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def singleNonDuplicate(self, nums: List[int]) -> int:
         length = len(nums)
@@ -6980,7 +6980,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/01-matrix  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:
         # 看见最近距离，就联想到BFS
@@ -7015,7 +7015,7 @@ class Solution:
 
 + DFS
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -7054,7 +7054,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 并查集
-    ```
+    ```python
     class UnionFind:
         def __init__(self): 
             self.father = {}
@@ -7103,7 +7103,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/subtree-of-another-tree  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -7140,7 +7140,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 法一：中心扩散
-    ```
+    ```python
     class Solution:
         def countSubstrings(self, s: str) -> int:
             ans = 0
@@ -7160,7 +7160,7 @@ class Solution:
             return ans
     ```
 + 法二：动态规划
-    ```
+    ```python
     class Solution:
         def countSubstrings(self, s: str) -> int:
             ans = 0
@@ -7189,7 +7189,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/trim-a-binary-search-tree  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -7222,7 +7222,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。  
 
 + java记忆化搜索+状态压缩
-    ```
+    ```java
     class Solution {
         public int minStickers(String[] stickers, String target) {
             int m = target.length();
@@ -7284,7 +7284,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/top-k-frequent-words  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Pair:
     def __init__(self, key: str, value: int):
         self.key = key
@@ -7322,7 +7322,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java回溯
-    ```
+    ```java
     class Solution {
         // 备忘录，存储 used 的状态
         private HashMap<Integer, Boolean> memo = new HashMap<>();
@@ -7391,7 +7391,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/search-in-a-binary-search-tree  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -7416,7 +7416,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/subarray-product-less-than-k/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def numSubarrayProductLessThanK(self, nums: List[int], k: int) -> int:
         if k <= 1:
@@ -7443,7 +7443,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/asteroid-collision  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def asteroidCollision(self, asteroids: List[int]) -> List[int]:
         stack = []
@@ -7494,7 +7494,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 
-```
+```python
 class Solution:
     def openLock(self, deadends: List[str], target: str) -> int:
         # 最小旋转次数，可能就是最短路径，联想到BFS
@@ -7543,7 +7543,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/reorganize-string/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def reorganizeString(self, s: str) -> str:
         length = len(s)
@@ -7582,7 +7582,7 @@ class Solution:
 链接：https://leetcode.cn/problems/largest-triangle-area/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def largestTriangleArea(self, points):
         """
@@ -7608,7 +7608,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/bus-routes  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def numBusesToDestination(self, routes: List[List[int]], source: int, target: int) -> int:
         # 看见最少乘坐公交车数量，可以推断出这又是一道基于BFS的题目
@@ -7672,7 +7672,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/score-of-parentheses  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def scoreOfParentheses(self, s: str) -> int:
         stack = [0]
@@ -7694,7 +7694,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/all-nodes-distance-k-in-binary-tree  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, x):
@@ -7749,7 +7749,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 快慢指针
-    ```
+    ```python
     # Definition for singly-linked list.
     # class ListNode:
     #     def __init__(self, val=0, next=None):
@@ -7778,7 +7778,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/maximum-frequency-stack  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class FreqStack:
 
     def __init__(self):
@@ -7814,7 +7814,7 @@ class FreqStack:
 链接：https://leetcode-cn.com/problems/sort-array-by-parity/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def sortArrayByParity(self, nums: List[int]) -> List[int]:
         if len(nums) == 1:
@@ -7850,7 +7850,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java队列
-    ```
+    ```java
     class RecentCounter {
         //定义队列
         public Queue<Integer> queue;
@@ -7887,7 +7887,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java贪心构造
-    ```
+    ```java
     class Solution {
         public int[] diStringMatch(String s) {
             int n = s.length();
@@ -7921,7 +7921,7 @@ cae
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java模拟
-    ```
+    ```java
     class Solution {
         public int minDeletionSize(String[] strs) {
             int n = strs.length, m = strs[0].length(), ans = 0;
@@ -7946,7 +7946,7 @@ cae
 链接：https://leetcode-cn.com/problems/flip-equivalent-binary-trees  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -7971,7 +7971,7 @@ class Solution:
 链接：https://leetcode.cn/problems/verifying-an-alien-dictionary  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def isAlienSorted(self, words: List[str], order: str) -> bool:
         mapping = dict()
@@ -7996,7 +7996,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java
-```
+```java
 class Solution {
     public int repeatedNTimes(int[] nums) {
         Arrays.sort(nums);
@@ -8015,7 +8015,7 @@ class Solution {
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 小顶堆(这样做不省空间，相当是所有的点都放进去算了之后选了前K个顶点)
-    ```
+    ```python
     import heapq
 
     class Solution:
@@ -8036,7 +8036,7 @@ class Solution {
             return result
     ```
 + 大顶堆(省空间，构造K个节点的大顶堆，对剩余的n-k个点分别与堆顶点比，只要其余值小，就弹出堆顶点，把这个值插进去，最后大顶堆里面的k个元素就是所需的)
-    ```
+    ```python
     class Solution:
         def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
             q = [(-x ** 2 - y ** 2, i) for i, (x, y) in enumerate(points[:k])]
@@ -8064,7 +8064,7 @@ class Solution {
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + DFS + 最小堆
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -8107,7 +8107,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/max-consecutive-ones-iii/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def longestOnes(self, nums: List[int], k: int) -> int:
         # 同向双指针
@@ -8136,7 +8136,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/shortest-path-in-binary-matrix  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def shortestPathBinaryMatrix(self, grid: List[List[int]]) -> int:
         # 看到最短畅通路径，就知道是BFS
@@ -8189,7 +8189,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/find-in-mountain-array  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # """
 # This is MountainArray's API interface.
 # You should not implement it, or speculate about its implementation
@@ -8239,7 +8239,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/delete-nodes-and-return-forest  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -8277,7 +8277,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/remove-all-adjacent-duplicates-in-string-ii  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def removeDuplicates(self, s: str, k: int) -> str:
         if len(s) < k:
@@ -8323,7 +8323,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + python 记忆化搜索
-    ```
+    ```python
     class Solution:
         def jobScheduling(self, startTime, endTime, profit):
             # 工作数量
@@ -8375,7 +8375,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/minimum-remove-to-make-valid-parentheses  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def minRemoveToMakeValid(self, s: str) -> str:
         stack = [] # 存放s
@@ -8407,7 +8407,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/shortest-path-in-a-grid-with-obstacles-elimination  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def shortestPath(self, grid: List[List[int]], k: int) -> int:
         m, n = len(grid), len(grid[0])
@@ -8446,7 +8446,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/sum-of-mutated-array-closest-to-target  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class Solution:
     def findBestValue(self, arr: List[int], target: int) -> int:
         # 前缀和、二分查找
@@ -8483,7 +8483,7 @@ class Solution:
 链接：https://leetcode-cn.com/problems/all-elements-in-two-binary-search-trees/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 + 中序遍历+归并
-    ```
+    ```python
     # Definition for a binary tree node.
     # class TreeNode:
     #     def __init__(self, val=0, left=None, right=None):
@@ -8546,7 +8546,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + DFS
-    ```
+    ```python
     class Solution:
         def numOfMinutes(self, n: int, headID: int, manager: List[int], informTime: List[int]) -> int:
             def dfs(root, total):
@@ -8579,7 +8579,7 @@ class Solution:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + java滑动窗口
-```
+```java
 class Solution {
     public int maxScore(int[] cardPoints, int k) {
         // 由于只能拿第一张或者最后一张，所以当k次卡牌全被选择完之后，剩下的n-k张卡牌是连续的
@@ -8610,7 +8610,7 @@ class Solution {
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 单调双端队列法 `collections.deque`
-    ```
+    ```python
     class Solution:
         def longestSubarray(self, nums: List[int], limit: int) -> int:
             length = len(nums)
@@ -8640,7 +8640,7 @@ class Solution {
             return ans
     ```
 + python底层并不是平衡树的`sortedcontainers.SortedList`，**内部有序**
-    ```
+    ```python
     class Solution:
         def longestSubarray(self, nums: List[int], limit: int) -> int:
             from sortedcontainers import SortedList
@@ -8657,7 +8657,7 @@ class Solution {
             return res
     ```
 + 使用堆来维护`heapq`
-    ```
+    ```python
     class Solution:
         def longestSubarray(self, nums: List[int], limit: int) -> int:
             from heapq import heappop, heappush
@@ -8699,7 +8699,7 @@ class Solution {
 链接：https://leetcode-cn.com/problems/design-browser-history  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 class BrowserHistory:
 
     def __init__(self, homepage: str):
@@ -8762,7 +8762,7 @@ class BrowserHistory:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + 模拟+队列
-    ```
+    ```python
     # python
     class Solution:
         def findTheWinner(self, n: int, k: int) -> int:
@@ -8793,7 +8793,7 @@ class BrowserHistory:
     }
     ```
 + 递归
-    ```
+    ```python
     class Solution:
         def findTheWinner(self, n: int, k: int) -> int:
             if n <= 1:
@@ -8802,7 +8802,7 @@ class BrowserHistory:
             return n if ans == 0 else ans
     ```
 + 迭代    解释看[这里](https://blog.csdn.net/u011500062/article/details/72855826)
-    ```
+    ```python
     class Solution:
         def findTheWinner(self, n: int, k: int) -> int:
             ans = 0
@@ -8820,7 +8820,7 @@ class BrowserHistory:
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 + python双指针
-    ```
+    ```python
     class Solution:
         def oneEditAway(self, first: str, second: str) -> bool:
             m, n = len(first), len(second)
@@ -8858,7 +8858,7 @@ class BrowserHistory:
 链接：https://leetcode.cn/problems/successor-lcci/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
-```
+```python
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, x):
