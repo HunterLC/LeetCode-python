@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-171题-green)
+![](https://img.shields.io/badge/已覆盖-173题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -150,6 +150,7 @@
     + [449.序列化和反序列化二叉搜索树](#449序列化和反序列化二叉搜索树)
     + [454.四数相加 ⅱ](#454四数相加ⅱ)
     + [462.最少移动次数使数组元素相等 ii](#462最少移动次数使数组元素相等ii)
+    + [464.我能赢吗](#464我能赢吗)
     + [472.连接词](#472连接词)
     + [518.零钱兑换ii](#518零钱兑换ii)
     + [526.优美的排列](#526优美的排列)
@@ -195,6 +196,7 @@
     + [1300.转变数组后最接近目标值的数组和](#1300转变数组后最接近目标值的数组和)
     + [1305.两棵二叉搜索树中的所有元素](#1305两棵二叉搜索树中的所有元素)
     + [1376.通知所有员工所需的时间](#1376通知所有员工所需的时间)
+    + [1423.可获得的最大点数](#1423可获得的最大点数)
     + [1438.绝对差不超过限制的最长连续子数组](#1438绝对差不超过限制的最长连续子数组)
     + [1472.设计浏览器历史记录](#1472设计浏览器历史记录)
     + [1823.找出游戏的获胜者](#1823找出游戏的获胜者)
@@ -6703,6 +6705,56 @@ class Solution:
 
         return ans
 ```
+### 464.我能赢吗
+> 在 "100 game" 这个游戏中，两名玩家轮流选择从 1 到 10 的任意整数，累计整数和，先使得累计整数和 **达到或超过**  100 的玩家，即为胜者。  
+如果我们将游戏规则改为 “玩家 **不能** 重复使用整数” 呢？  
+例如，两个玩家可以轮流从公共整数池中抽取从 1 到 15 的整数（不放回），直到累计整数和 >= 100。  
+给定两个整数` maxChoosableInteger` （整数池中可选择的最大数）和 desiredTotal（累计和），若先出手的玩家是否能稳赢则返回 `true `，否则返回` false `。假设两位玩家游戏时都表现 **最佳** 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/can-i-win  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java 记忆化搜索
+```
+class Solution {
+     public boolean canIWin(int maxChoosableInteger, int desiredTotal) {
+        //总长度不满足目标值
+        if (maxChoosableInteger * (maxChoosableInteger + 1) < (desiredTotal * 2)) {
+            return false;
+        }
+        //存储state的变量值，state一共有2^maxChoosableInteger种
+        Map<Integer, Boolean> memory = new HashMap<>(1 << maxChoosableInteger);
+        //开始遍历整个树
+        return dfs(maxChoosableInteger, 0, desiredTotal, 0, memory);
+    }
+
+    private boolean dfs(int maxChoosableInteger, int state, int desiredTotal, int curTotal, Map<Integer, Boolean> memory) {
+        if (!memory.containsKey(state)) {
+            boolean ans = false;
+            for (int i = 0; i < maxChoosableInteger; i++) {
+                //state的第i位表示 第i+1个数字被使用
+                if (((state >> i) & 1) == 1) {
+                    continue;
+                }
+                //先手取i看 能不能赢 不能赢则轮到对手取数字
+                if (curTotal + i + 1 >= desiredTotal) {
+                    ans = true;
+                    break;
+                }
+                //轮到对手取数字 若对手不能赢（必然输掉的状态） 则我方赢
+                //state | (1 << i), 将state的第i位置为已使用
+                if (!dfs(maxChoosableInteger, state | (1 << i), desiredTotal, curTotal + i + 1, memory)) {
+                    ans = true;
+                    break;
+                }
+            }
+            memory.put(state, ans);
+        }
+        return memory.get(state);
+    }
+}
+```
 ### 472.连接词
 > 给你一个**不含重复**单词的字符串数组` words `，请你找出并返回` words `中的所有 **连接词** 。
 
@@ -8516,6 +8568,39 @@ class Solution:
             dfs(headID, 0)        
             return ans
     ```
+### 1423.可获得的最大点数
+> 几张卡牌 **排成一行**，每张卡牌都有一个对应的点数。点数由整数数组` cardPoints `给出。  
+每次行动，你可以从行的开头或者末尾拿一张卡牌，最终你必须正好拿` k `张卡牌。  
+你的点数就是你拿到手中的所有卡牌的点数之和。  
+给你一个整数数组` cardPoints `和整数` k`，请你返回可以获得的最大点数。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/maximum-points-you-can-obtain-from-cards  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ java滑动窗口
+```
+class Solution {
+    public int maxScore(int[] cardPoints, int k) {
+        // 由于只能拿第一张或者最后一张，所以当k次卡牌全被选择完之后，剩下的n-k张卡牌是连续的
+        int n = cardPoints.length;
+        int windowSize = n - k;
+        int sum = 0;
+        for (int i = 0; i < windowSize;  i++){
+            sum += cardPoints[i];
+        }
+        // 当前的最小值初始化为前n-k个元素
+        int minSum = sum;
+        for (int i = windowSize; i < n; i++){
+            sum = sum + cardPoints[i] - cardPoints[i - windowSize];
+            minSum = Math.min(minSum, sum);
+        }
+
+        return Arrays.stream(cardPoints).sum() - minSum;
+    }
+
+}
+```
 ### 1438.绝对差不超过限制的最长连续子数组
 > 给你一个整数数组` nums `，和一个表示限制的整数` limit`，请你返回最长连续子数组的长度，该子数组中的任意两个元素之间的绝对差必须小于或者等于` limit `。  
 如果不存在满足条件的子数组，则返回` 0 `。
