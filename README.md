@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-173题-green)
+![](https://img.shields.io/badge/已覆盖-174题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -162,6 +162,7 @@
     + [572.另一颗树的子树](#572另一颗树的子树)
     + [647.回文子串 (与题5可做比较)](#647回文子串与题5可做比较)
     + [669.修剪二叉搜索树★](#669修剪二叉搜索树)
+    + [675.为高尔夫比赛砍树](#675为高尔夫比赛砍树)
     + [691.贴纸拼词](#691贴纸拼词)
     + [692.前k个高频单词](#692前k个高频单词)
     + [698.划分为k个相等的子集](#698划分为k个相等的子集)
@@ -609,7 +610,7 @@ def bfs(root: TreeNode):
 
 #### 1.3.4 代表题目
 
-130、752、815、1091、542、1293、417、207、210、310、433
+130、752、815、1091、542、1293、417、207、210、310、433、675
 
 ### 1.4 深度优先搜索DFS
 #### 1.4.1 岛屿类问题
@@ -7210,6 +7211,56 @@ class Solution:
             root.right = self.trimBST(root.right, low, high)
         return root
 ```
+### 675.为高尔夫比赛砍树
+> 你被请来给一个要举办高尔夫比赛的树林砍树。树林由一个` m x n `的矩阵表示， 在这个矩阵中：
+
++ `0 `表示障碍，无法触碰
++ `1 `表示地面，可以行走
++ 比` 1 `大的数 表示有树的单元格，可以行走，数值表示树的高度
+每一步，你都可以向上、下、左、右四个方向之一移动一个单位，如果你站的地方有一棵树，那么你可以决定是否要砍倒它。
+
+你需要按照树的高度从低向高砍掉所有的树，每砍过一颗树，该单元格的值变为` 1`（即变为地面）。
+
+你将从` (0, 0) `点开始工作，返回你砍完所有树需要走的最小步数。 如果你无法砍完所有的树，返回` -1 `。
+
+可以保证的是，没有两棵树的高度是相同的，并且你至少需要砍倒一棵树。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/cut-off-trees-for-golf-event  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ BFS
+    ```python
+    class Solution:
+        def cutOffTree(self, forest: List[List[int]]) -> int:
+        
+            def bfs(sx, sy, ti, tj):
+                queue = deque([(0, sx, sy)])
+                m, n = len(forest), len(forest[0])  # 记录树林的长、宽
+                visited = set()  # 标记已经访问过的节点
+                visited.add((sx, sy))
+                while queue:
+                    step, x, y = queue.popleft()
+                    if x == ti and y == tj:
+                        return step
+                    for nx, ny in [(x + 1, y), (x, y + 1), (x - 1, y), (x, y - 1)]:
+                        # 越界了
+                        if 0 <= nx < m and 0 <= ny < n and (nx, ny) not in visited and forest[nx][ny]:
+                            visited.add((nx, ny))  # 添加到已经访问的节点
+                            queue.append((step + 1, nx, ny))
+                return -1
+            
+            trees = sorted((h, i, j) for i, row in enumerate(forest) for j, h in enumerate(row) if h > 1)
+            ans = preI = preJ = 0
+            for _, i, j in trees:
+                d = bfs(preI, preJ, i, j)
+                if d < 0:
+                    return -1
+                ans += d
+                preI, preJ = i, j
+
+            return ans
+    ```
 ### 691.贴纸拼词
 > 我们有` n `种不同的贴纸。每个贴纸上都有一个小写的英文单词。  
 您想要拼写出给定的字符串` target `，方法是从收集的贴纸中切割单个字母并重新排列它们。如果你愿意，你可以多次使用每个贴纸，每个贴纸的数量是无限的。  
