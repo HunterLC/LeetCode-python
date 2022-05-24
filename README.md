@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-174题-green)
+![](https://img.shields.io/badge/已覆盖-175题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -184,6 +184,7 @@
     + [951.翻转等价二叉树](#951翻转等价二叉树)
     + [953.验证外星语词典](#953验证外星语词典)
     + [961.在长度2n的数组中找出重复n次的元素](#961在长度2n的数组中找出重复n次的元素)
+    + [965.单值二叉树](#965单值二叉树)
     + [973.最接近原点的k个点](#973最接近原点的k个点)
     + [987.二叉树的垂序遍历](#987二叉树的垂序遍历)
     + [1004.最大连续1的个数 iii](#1004最大连续1的个数-iii)
@@ -8056,6 +8057,37 @@ class Solution {
     }
 }
 ```
+### 965.单值二叉树
+> 如果二叉树每个节点都具有相同的值，那么该二叉树就是单值二叉树。  
+只有给定的树是单值二叉树时，才返回` true`；否则返回` false`。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/univalued-binary-tree/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```python
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def isUnivalTree(self, root: TreeNode) -> bool:
+        if not root:
+            return True
+        
+        if root.left:
+            if root.val != root.left.val or not self.isUnivalTree(root.left):
+                return False
+        
+        if root.right:
+            if root.val != root.right.val or not self.isUnivalTree(root.right):
+                return False
+        
+        return True
+```
+
 ### 973.最接近原点的K个点
 > 给定一个数组` points `，其中` points[i] = [xi, yi] `表示` X-Y `平面上的一个点，并且是一个整数` k `，返回离原点` (0,0) `最近的` k `个点。  
 这里，平面上两点之间的距离是 `欧几里德距离（ √(x1 - x2)2 + (y1 - y2)2 ）`。  
