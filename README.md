@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-175题-green)
+![](https://img.shields.io/badge/已覆盖-176题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -151,6 +151,7 @@
     + [454.四数相加 ⅱ](#454四数相加ⅱ)
     + [462.最少移动次数使数组元素相等 ii](#462最少移动次数使数组元素相等ii)
     + [464.我能赢吗](#464我能赢吗)
+    + [467.环绕字符串中唯一的子字符串](#467环绕字符串中唯一的子字符串)
     + [472.连接词](#472连接词)
     + [518.零钱兑换ii](#518零钱兑换ii)
     + [526.优美的排列](#526优美的排列)
@@ -6756,6 +6757,34 @@ class Solution {
         return memory.get(state);
     }
 }
+```
+### 467.环绕字符串中唯一的子字符串
+> 把字符串` s `看作是` “abcdefghijklmnopqrstuvwxyz” `的无限环绕字符串，所以` s `看起来是这样的：
+
++ `"...zabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcd...."` . 
+
+现在给定另一个字符串` p `。返回` s `中 **唯一** 的` p `的 **非空子串** 的数量 。 
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/unique-substrings-in-wraparound-string  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ python 滑动窗口
+```python
+class Solution:
+    def findSubstringInWraproundString(self, p: str) -> int:
+        p = '^' + p  # 确保p字符串的长度是≥2的，这样下面的for循环才能处理只有一位长的字符串p
+        # 这个map代表着以某个字母结尾的最大连续长度
+        len_mapper = collections.defaultdict(lambda: 0)
+        w = 1
+        for i in range(1,len(p)):
+            if ord(p[i])-ord(p[i-1]) == 1 or ord(p[i])-ord(p[i-1]) == -25:
+                w += 1
+            else:
+                w = 1
+            len_mapper[p[i]] = max(len_mapper[p[i]], w)
+
+        return sum(len_mapper.values())
 ```
 ### 472.连接词
 > 给你一个**不含重复**单词的字符串数组` words `，请你找出并返回` words `中的所有 **连接词** 。
