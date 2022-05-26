@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-176题-green)
+![](https://img.shields.io/badge/已覆盖-182题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -33,6 +33,7 @@
     + [3.无重复读字符的最长字串](#3无重复字符的最长子串)
     + [4.寻找两个正序数组中的中位数](#4寻找两个正序数组的中位数)
     + [5.最长回文子串](#5最长回文子串)
+    + [8.字符串转换整数atoi](#8字符串转换整数atoi)
     + [11.盛水最多的容器](#11盛水最多的容器)
     + [15.三数之和](#15三数之和)
     + [16.最接近的三数之和](#16最接近的三数之和)
@@ -207,6 +208,13 @@
     + [01.05.一次编辑](#0105一次编辑)
     + [04.06.后继者](#0406后继者)
 
++ [4.剑指offer](#4剑指offer)
+    + [09.用两个栈实现队列](#09用两个栈实现队列)
+    + [30.包含min函数的栈](#30包含min函数的栈)
+    + [64.求1+2+...+n](#64求12n)
+    + [65.不用加减乘除做加法](#65不用加减乘除做加法)
+    + [66.构建乘积数组](#66构建乘积数组)
+    + [67.把字符串转换成整数](#67把字符串转换成整数)
 
 ## 1.基础知识
 ### 1.1 排序算法（java实现）
@@ -1160,6 +1168,78 @@ class Solution:
                         max_l = L
             return max_s
     ```
+### 8.字符串转换整数(atoi)
+> 请你来实现一个` myAtoi(string s) `函数，使其能将字符串转换成一个` 32 `位有符号整数（类似 C/C++ 中的` atoi `函数）。
+
+函数 `myAtoi(string s)` 的算法如下：
+
+1. 读入字符串并丢弃无用的前导空格
+2. 检查下一个字符（假设还未到字符末尾）为正还是负号，读取该字符（如果有）。 确定最终结果是负数还是正数。 如果两者都不存在，则假定结果为正。
+3. 读入下一个字符，直到到达下一个非数字字符或到达输入的结尾。字符串的其余部分将被忽略。
+4. 将前面步骤读入的这些数字转换为整数（即，"123" -> 123， "0032" -> 32）。如果没有读入数字，则整数为 0 。必要时更改符号（从步骤 2 开始）。
+5. 如果整数数超过 32 位有符号整数范围 [−231,  231 − 1] ，需要截断这个整数，使其保持在这个范围内。具体来说，小于 −231 的整数应该被固定为 −231 ，大于 231 − 1 的整数应该被固定为 231 − 1 。
+6.返回整数作为最终结果。
+
+注意：
++ 本题中的空白字符只包括空格字符 ' ' 。
++ 除前导空格或数字后的其余字符串外，请勿忽略 任何其他字符。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/string-to-integer-atoi  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+![状态机](/image/offer/67.png)
+
+```java
+class Solution {
+    // 状态机
+    class Automaton {
+        public String state = "start";
+        public long ans;
+        public int sign = 1;  // 该数字的正负情况，1代表正，0代表负\
+        public Map<String, String[]> table = new HashMap<String, String[]>() {{
+            put("start", new String[]{"start", "signed", "in_number", "end"});
+            put("signed", new String[]{"end", "end", "in_number", "end"});
+            put("in_number", new String[]{"end", "end", "in_number", "end"});
+            put("end", new String[]{"end", "end", "end", "end"});
+        }};
+
+        public void get(char c) {
+            state = table.get(state)[get_col(c)];
+            if ("in_number".equals(state)) {
+                ans = ans * 10 + c - '0';
+                ans = sign == 1 ? Math.min(ans, (long) Integer.MAX_VALUE) : Math.min(ans, -(long) Integer.MIN_VALUE);
+            } else if ("signed".equals(state)) {
+                sign = c == '+' ? 1 : -1;
+            }
+
+        }
+
+        public int get_col(char c) {
+            if (c == ' ') {
+                return 0;
+            }
+            if (c == '+' || c == '-') {
+                return 1;
+            }
+            if (Character.isDigit(c)) {
+                return 2;
+            }
+            return 3;
+
+        }
+    }
+
+    public int myAtoi(String s) {
+        Automaton automaton = new Automaton();
+        int length = s.length();
+        for (int i = 0; i < length; ++i) {
+            automaton.get(s.charAt(i));
+        }
+        return (int) (automaton.sign * automaton.ans);
+    }
+}
+```
 ### 11.盛水最多的容器
 > 给定一个长度为` n `的整数数组` height `。有` n `条垂线，第` i `条线的两个端点是` (i, 0) `和 `(i, height[i])` 。  
 找出其中的两条线，使得它们与` x `轴共同构成的容器可以容纳最多的水。  
@@ -8991,4 +9071,262 @@ class Solution:
             pre = cur
             cur = cur.right
         return None
+```
+
+## 4.剑指Offer
+### 09.用两个栈实现队列
+> 用两个栈实现一个队列。队列的声明如下，请实现它的两个函数` appendTail `和` deleteHead `，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，`deleteHead` 操作返回` -1 `)
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/yong-liang-ge-zhan-shi-xian-dui-lie-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class CQueue {
+    // 实现队列，即实现先进先出
+    //不推荐使用Stack，Java官方已经弃用，使用LinkedList
+
+    public LinkedList<Integer> stackOne; // 只进元素
+    public LinkedList<Integer> stackTwo;  //非空就移除，空就把one的元素加进来
+
+    public CQueue() {
+        stackOne = new LinkedList<>();
+        stackTwo = new LinkedList<>();
+    }
+    
+    public void appendTail(int value) {
+        // stack one 的作用就是往里面添加元素
+        stackOne.addLast(value);
+    }
+    
+    public int deleteHead() {
+        if (!stackTwo.isEmpty())
+            return stackTwo.removeLast();
+        else{
+            // 先把stack one中的元素全部移到stack two中间去
+            while (!stackOne.isEmpty()){
+                stackTwo.addLast(stackOne.removeLast());
+            }
+            // 如果现在stack two是空，就代表着两个栈都是空的了，那就不能delete
+            // 否则就把stack two的最后一个元素移除
+            return stackTwo.isEmpty() ? -1 : stackTwo.removeLast();
+        }
+    }
+}
+
+/**
+ * Your CQueue object will be instantiated and called as such:
+ * CQueue obj = new CQueue();
+ * obj.appendTail(value);
+ * int param_2 = obj.deleteHead();
+ */
+```
+
+### 30.包含min函数的栈
+> 定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数在该栈中，调用` min`、`push` 及` pop `的时间复杂度都是` O(1)`。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/bao-han-minhan-shu-de-zhan-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class MinStack {
+
+    public LinkedList<Integer> minStack;
+    public LinkedList<Integer> min;  // 保存全局最小值
+
+    /** initialize your data structure here. */
+    public MinStack() {
+        minStack = new LinkedList<>();
+        min = new LinkedList<>();
+    }
+    
+    public void push(int x) {
+        minStack.addLast(x);
+        // 维护最小值栈
+        if (min.isEmpty())
+            min.addFirst(x);
+        else {
+            if (min.peek() > x)
+                min.addFirst(x);
+            else
+                min.addFirst(min.peek());
+        }
+    }
+    
+    public void pop() {
+        minStack.removeLast();
+        min.pop();
+    }
+    
+    public int top() {
+        return minStack.peekLast();
+    }
+    
+    public int min() {
+        return min.peek();
+    }
+}
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack obj = new MinStack();
+ * obj.push(x);
+ * obj.pop();
+ * int param_3 = obj.top();
+ * int param_4 = obj.min();
+ */
+```
+
+### 64.求1+2+...+n
+> 求 1+2+...+n ，要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句（A?B:C）。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/qiu-12n-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 短路与的考察，秀的我头皮发麻
+```java
+class Solution {
+    public int sumNums(int n) {
+        boolean flag = n > 0 && (n += sumNums(n - 1)) > 0;
+        return n;
+    }
+}
+```
+
+### 65.不用加减乘除做加法
+> 写一个函数，求两个整数之和，要求在函数体内不得使用 “+”、“-”、“*”、“/” 四则运算符号。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/bu-yong-jia-jian-cheng-chu-zuo-jia-fa-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 考察位运算
+```java
+class Solution {
+    public int add(int a, int b) {
+        if (b == 0)
+            return a;
+        // a^b代表着异或，代表着没有进位的加法，但是数字中间可能某一位对应都是1，这样就遗漏掉了进位
+        // a&b按位与，就是为了找到发生进位的位置，然后 <<1 左移一位就代表着这个进位的最终位置
+        // 这个时候没进位的+进位的就是答案，所以递归求解，直到没有进位为止，这个时候的异或就是真正的答案
+        // 注意结合性，<<的优先级比&高
+        return add(a^b, (a&b) << 1);
+    }
+}
+```
+
+### 66.构建乘积数组
+> 给定一个数组` A[0,1,…,n-1]`，请构建一个数组` B[0,1,…,n-1]`，其中` B[i] `的值是数组` A `中除了下标` i `以外的元素的积, 即` B[i]=A[0]×A[1]×…×A[i-1]×A[i+1]×…×A[n-1]`。不能使用除法。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/gou-jian-cheng-ji-shu-zu-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int[] constructArr(int[] a) {
+        // 边界判断，我是没想到的，题目里面没有特殊提到的话多半就是存在这样的case
+        if (a == null || a.length == 0)
+            return a;
+        int[] ans = new int[a.length];
+        int[] left = new int[a.length];
+        int[] right = new int[a.length];
+
+        // 对于每个位置的左边进行计算
+        left[0] = 1;
+        for (int i = 1; i < a.length; i++){
+            left[i] = left[i-1] * a[i-1];
+        }
+        //对于每个位置的右边进行计算
+        right[a.length - 1] = 1;
+        for (int i = a.length - 2; i >= 0 ; i--) {
+            right[i] = right[i+1] * a[i+1];
+        }
+
+        //对应位置的元素直接相乘，就可以获得该位置的最终结果
+        for (int i = 0; i < a.length; i++) {
+            ans[i] = left[i] * right[i];
+        }
+        return ans;
+    }
+}
+```
+### 67.把字符串转换成整数
+> 写一个函数 StrToInt，实现把字符串转换成整数这个功能。不能使用 atoi 或者其他类似的库函数。
+
+ 
+
+首先，该函数会根据需要丢弃无用的开头空格字符，直到寻找到第一个非空格的字符为止。
+
+当我们寻找到的第一个非空字符为正或者负号时，则将该符号与之后面尽可能多的连续数字组合起来，作为该整数的正负号；假如第一个非空字符是数字，则直接将其与之后连续的数字字符组合起来，形成整数。
+
+该字符串除了有效的整数部分之后也可能会存在多余的字符，这些字符可以被忽略，它们对于函数不应该造成影响。
+
+注意：假如该字符串中的第一个非空格字符不是一个有效整数字符、字符串为空或字符串仅包含空白字符时，则你的函数不需要进行转换。
+
+在任何情况下，若函数不能进行有效的转换时，请返回 0。
+
+说明：
+
+假设我们的环境只能存储 32 位大小的有符号整数，那么其数值范围为 [−231,  231 − 1]。如果数值超过这个范围，请返回  INT_MAX (231 − 1) 或 INT_MIN (−231) 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/ba-zi-fu-chuan-zhuan-huan-cheng-zheng-shu-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 状态机的使用，是一种比较好的思想
+
+![状态机图示](/image/offer/67.png)
+
+```java
+class Solution {
+    // 状态机
+    class Automaton {
+        public String state = "start";
+        public long ans;
+        public int sign = 1;  // 该数字的正负情况，1代表正，0代表负\
+        public Map<String, String[]> table = new HashMap<String, String[]>() {{
+            put("start", new String[]{"start", "signed", "in_number", "end"});
+            put("signed", new String[]{"end", "end", "in_number", "end"});
+            put("in_number", new String[]{"end", "end", "in_number", "end"});
+            put("end", new String[]{"end", "end", "end", "end"});
+        }};
+
+        public void get(char c) {
+            state = table.get(state)[get_col(c)];
+            if ("in_number".equals(state)) {
+                ans = ans * 10 + c - '0';
+                ans = sign == 1 ? Math.min(ans, (long) Integer.MAX_VALUE) : Math.min(ans, -(long) Integer.MIN_VALUE);
+            } else if ("signed".equals(state)) {
+                sign = c == '+' ? 1 : -1;
+            }
+
+        }
+
+        public int get_col(char c) {
+            if (c == ' ') {
+                return 0;
+            }
+            if (c == '+' || c == '-') {
+                return 1;
+            }
+            if (Character.isDigit(c)) {
+                return 2;
+            }
+            return 3;
+
+        }
+    }
+
+    public int strToInt(String str) {
+        Automaton automaton = new Automaton();
+        int length = str.length();
+        for (int i = 0; i < length; ++i) {
+            automaton.get(str.charAt(i));
+        }
+        return (int) (automaton.sign * automaton.ans);
+    }
+}
 ```
