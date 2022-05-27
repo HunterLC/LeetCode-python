@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-182题-green)
+![](https://img.shields.io/badge/已覆盖-187题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -89,6 +89,7 @@
     + [130.被围绕的区域★](#130被围绕的区域)
     + [131.分割回文串](#131分割回文串)
     + [133.克隆图★](#133克隆图)
+    + [138.复制带随机指针的链表](#138复制带随机指针的链表)
     + [139.单词拆分](#139单词拆分)
     + [140.单词拆分 ii](#140单词拆分-ii)
     + [141.环形链表 i](#141环形链表-i)
@@ -207,10 +208,14 @@
 + [3.面试题系列](#3面试题系列)
     + [01.05.一次编辑](#0105一次编辑)
     + [04.06.后继者](#0406后继者)
+    + [17.11.单词距离](#1711单词距离)
 
 + [4.剑指offer](#4剑指offer)
+    + [06.从尾到头打印链表](#06从尾到头打印链表)
     + [09.用两个栈实现队列](#09用两个栈实现队列)
+    + [24.反转链表](#24反转链表)
     + [30.包含min函数的栈](#30包含min函数的栈)
+    + [35.复杂链表的复制](#35复杂链表的复制)
     + [64.求1+2+...+n](#64求12n)
     + [65.不用加减乘除做加法](#65不用加减乘除做加法)
     + [66.构建乘积数组](#66构建乘积数组)
@@ -3660,6 +3665,56 @@ class Node {
 
             return dfs(node)
     ```
+### 138.复制带随机指针的链表
+> 给你一个长度为` n `的链表，每个节点包含一个额外增加的随机指针` random `，该指针可以指向链表中的任何节点或空节点。  
+构造这个链表的 **深拷贝**。 深拷贝应该正好由` n `个 **全新** 节点组成，其中每个新节点的值都设为其对应的原节点的值。新节点的` next `指针和` random `指针也都应指向复制链表中的新节点，并使原链表和复制链表中的这些指针能够表示相同的链表状态。复制链表中的指针都不应指向原链表中的节点 。  
+例如，如果原链表中有` X `和` Y `两个节点，其中` X.random --> Y `。那么在复制链表中对应的两个节点` x `和` y `，同样有` x.random --> y `。  
+返回复制链表的头节点。
+
+用一个由` n `个节点组成的链表来表示输入/输出中的链表。每个节点用一个` [val, random_index] `表示：
+
++ `val`：一个表示 Node.val 的整数。
++ `random_index`：随机指针指向的节点索引（范围从` 0` 到` n-1`）；如果不指向任何节点，则为  `null `。
+你的代码 **只** 接受原链表的头节点` head `作为传入参数。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/copy-list-with-random-pointer  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/*
+// Definition for a Node.
+class Node {
+    int val;
+    Node next;
+    Node random;
+
+    public Node(int val) {
+        this.val = val;
+        this.next = null;
+        this.random = null;
+    }
+}
+*/
+class Solution {
+    // 记录节点
+    public Map<Node, Node> listCache = new HashMap<>();
+
+    public Node copyRandomList(Node head) {
+        // 当前节点为空
+        if (head == null)
+            return head;
+        // 查看当前的节点是否已经存在
+        if (!listCache.containsKey(head)) {
+            Node newHead = new Node(head.val);
+            listCache.put(head, newHead);
+            newHead.next = copyRandomList(head.next);
+            newHead.random = copyRandomList(head.random);
+        }
+        return listCache.get(head);
+    }
+}
+```
 ### 139.单词拆分
 > 给你一个字符串` s `和一个字符串列表` wordDict `作为字典。请你判断是否可以利用字典中出现的单词拼接出` s `。
 
@@ -9073,7 +9128,73 @@ class Solution:
         return None
 ```
 
+### 17.11.单词距离
+> 有个内含单词的超大文本文件，给定任意两个不同的单词，找出在这个文件中这两个单词的最短距离(相隔单词数)。如果寻找过程在这个文件中会重复多次，而每次寻找的单词不同，你能对此优化吗?
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/find-closest-lcci  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 直接模拟
+```java
+class Solution {
+    public int findClosest(String[] words, String word1, String word2) {
+        // 使用双指针来进行距离的计算
+        int pFirst = -1, pSecond = -1;
+        int n = words.length;
+        int ans = Integer.MAX_VALUE;  // 初始化当前的最小值为最大值
+
+        for (int i = 0; i < n; i++) {
+            // 找到第一个词的位置
+            if (words[i].equals(word1))
+                pFirst = i;
+            // 找到第二个词的位置
+            if (words[i].equals(word2))
+                pSecond = i;
+            if (pFirst != -1 && pSecond != -1)
+                ans = Math.min(ans, Math.abs(pFirst-pSecond));
+        }
+        return ans;
+    }
+}
+```
+
 ## 4.剑指Offer
+### 06.从尾到头打印链表
+> 输入一个链表的头节点，从尾到头反过来返回每个节点的值（用数组返回）
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/cong-wei-dao-tou-da-yin-lian-biao-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 使用栈的后进先出特性来做
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int[] reversePrint(ListNode head) {
+        // 使用栈来保存我们遇到的数字
+        LinkedList<Integer> stack = new LinkedList<>();
+        while (head != null){
+            stack.addLast(head.val);
+            head = head.next;
+        }
+        // 最终答案
+        int[] ans = new int[stack.size()];
+        int i = 0;
+        while (!stack.isEmpty()) {
+            ans[i++] = stack.removeLast();
+        }
+        return ans;
+    }
+}
+```
 ### 09.用两个栈实现队列
 > 用两个栈实现一个队列。队列的声明如下，请实现它的两个函数` appendTail `和` deleteHead `，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，`deleteHead` 操作返回` -1 `)
 
@@ -9122,6 +9243,48 @@ class CQueue {
  */
 ```
 
+### 24.反转链表
+> 定义一个函数，输入一个链表的头节点，反转该链表并输出反转后链表的头节点。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/fan-zhuan-lian-biao-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 指针迭代
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if (head == null)
+            return head;
+        // 添加一个dummy head
+        ListNode dummyHead = new ListNode(0);
+        dummyHead.next = head;
+        // p节点永远指向之前链表的第一个节点，origin不断指向新链表的开头位置，q一直往后走处理新节点
+        ListNode origin = dummyHead.next, p = dummyHead.next, q = dummyHead.next.next;
+        while (p != null && q != null) {
+            //连接新节点
+            dummyHead.next = q;
+            //为下一次连接新节点做准备
+            q = q.next;
+            //把新节点连接到之前链表的开头
+            dummyHead.next.next = origin;
+            //链表的结尾指向下一个新节点
+            p.next = q;
+            // 指向当前新链表的开头
+            origin = dummyHead.next;
+        }
+        return dummyHead.next;
+    }
+}
+```
 ### 30.包含min函数的栈
 > 定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数在该栈中，调用` min`、`push` 及` pop `的时间复杂度都是` O(1)`。
 
@@ -9176,6 +9339,49 @@ class MinStack {
  * int param_3 = obj.top();
  * int param_4 = obj.min();
  */
+```
+
+### 35.复杂链表的复制
+> 请实现 copyRandomList 函数，复制一个复杂链表。在复杂链表中，每个节点除了有一个 next 指针指向下一个节点，还有一个 random 指针指向链表中的任意节点或者 null。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/fu-za-lian-biao-de-fu-zhi-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 哈希表+递归
+```java
+/*
+// Definition for a Node.
+class Node {
+    int val;
+    Node next;
+    Node random;
+
+    public Node(int val) {
+        this.val = val;
+        this.next = null;
+        this.random = null;
+    }
+}
+*/
+class Solution {
+    // 记录节点
+    public Map<Node, Node> listCache = new HashMap<>();
+
+    public Node copyRandomList(Node head) {
+        // 当前节点为空
+        if (head == null)
+            return head;
+        // 查看当前的节点是否已经存在
+        if (!listCache.containsKey(head)) {
+            Node newHead = new Node(head.val);
+            listCache.put(head, newHead);
+            newHead.next = copyRandomList(head.next);
+            newHead.random = copyRandomList(head.random);
+        }
+        return listCache.get(head);
+    }
+}
 ```
 
 ### 64.求1+2+...+n
