@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-187题-green)
+![](https://img.shields.io/badge/已覆盖-190题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -191,6 +191,7 @@
     + [973.最接近原点的k个点](#973最接近原点的k个点)
     + [987.二叉树的垂序遍历](#987二叉树的垂序遍历)
     + [1004.最大连续1的个数 iii](#1004最大连续1的个数-iii)
+    + [1021.删除最外层的括号](#1021删除最外层的括号)
     + [1091.二进制矩阵中的最短路径](#1091二进制矩阵中的最短路径)
     + [1095.山脉数组中查找目标值](#1095山脉数组中查找目标值)
     + [1110.删点成林★](#1110删点成林)
@@ -211,11 +212,13 @@
     + [17.11.单词距离](#1711单词距离)
 
 + [4.剑指offer](#4剑指offer)
+    + [05.替换空格](#05替换空格)
     + [06.从尾到头打印链表](#06从尾到头打印链表)
     + [09.用两个栈实现队列](#09用两个栈实现队列)
     + [24.反转链表](#24反转链表)
     + [30.包含min函数的栈](#30包含min函数的栈)
     + [35.复杂链表的复制](#35复杂链表的复制)
+    + [58-ii.左旋转字符串](#58-ii左旋转字符串)
     + [64.求1+2+...+n](#64求12n)
     + [65.不用加减乘除做加法](#65不用加减乘除做加法)
     + [66.构建乘积数组](#66构建乘积数组)
@@ -8370,6 +8373,36 @@ class Solution:
             fast += 1
         return longest
 ```
+### 1021.删除最外层的括号
+> 有效括号字符串为空` ""、"(" + A + ")" `或` A + B `，其中` A `和` B `都是有效的括号字符串，`+ `代表字符串的连接。  
+例如，`""，"()"，"(())()"` 和` "(()(()))" `都是有效的括号字符串。  
+如果有效字符串 s 非空，且不存在将其拆分为` s = A + B `的方法，我们称其为**原语**（primitive），其中` A `和` B `都是非空有效括号字符串。  
+给出一个非空有效字符串` s`，考虑将其进行原语化分解，使得：`s = P_1 + P_2 + ... + P_k`，其中` P_i `是有效括号字符串原语。  
+对` s `进行原语化分解，删除分解中每个原语字符串的最外层括号，返回` s `。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/remove-outermost-parentheses  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 栈模拟
+```java
+class Solution {
+    public String removeOuterParentheses(String s) {
+        StringBuffer ans = new StringBuffer();
+        Deque<Character> stack = new ArrayDeque<Character>();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == ')')
+                stack.pop();
+            if (!stack.isEmpty())
+                ans.append(c);
+            if (c == '(')
+                stack.push(c);
+        }
+        return ans.toString();
+    }
+}
+```
 ### 1091.二进制矩阵中的最短路径
 > 给你一个` n x n `的二进制矩阵` grid `中，返回矩阵中**最短 畅通路径** 的长度。如果不存在这样的路径，返回` -1 `。  
 
@@ -9160,6 +9193,31 @@ class Solution {
 ```
 
 ## 4.剑指Offer
+### 05.替换空格
+> 请实现一个函数，把字符串` s `中的每个空格替换成"%20"。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/ti-huan-kong-ge-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public String replaceSpace(String s) {
+        // 空串
+        if (s == null || s.equals(""))
+            return s;
+        StringBuffer ans = new StringBuffer();
+        for (int i = 0; i  < s.length(); i++) {
+            char c = s.charAt(i);
+            if (Character.isSpace(c))
+                ans.append("%20");
+            else
+                ans.append(c);
+        }
+        return ans.toString();
+    }
+}
+```
 ### 06.从尾到头打印链表
 > 输入一个链表的头节点，从尾到头反过来返回每个节点的值（用数组返回）
 
@@ -9383,7 +9441,30 @@ class Solution {
     }
 }
 ```
+### 58-II.左旋转字符串
+> 字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
 
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/zuo-xuan-zhuan-zi-fu-chuan-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public String reverseLeftWords(String s, int n) {
+        if (s == null || s.equals(""))
+            return s;
+
+        StringBuffer ans = new StringBuffer();
+        for (int i = n; i < s.length(); i++) {
+            ans.append(s.charAt(i));
+        }
+        for (int i = 0; i < n; i++) {
+            ans.append(s.charAt(i));
+        }
+        return ans.toString();
+    }
+}
+```
 ### 64.求1+2+...+n
 > 求 1+2+...+n ，要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句（A?B:C）。
 
