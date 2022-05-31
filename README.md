@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-190题-green)
+![](https://img.shields.io/badge/已覆盖-193题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -218,6 +218,9 @@
     + [09.用两个栈实现队列](#09用两个栈实现队列)
     + [24.反转链表](#24反转链表)
     + [30.包含min函数的栈](#30包含min函数的栈)
+    + [32-i.从上到下打印二叉树](#32-i从上到下打印二叉树)
+    + [32-ii.从上到下打印二叉树ii](#32-ii从上到下打印二叉树ii)
+    + [32-iii.从上到下打印二叉树iii](#32-iii从上到下打印二叉树iii)
     + [35.复杂链表的复制](#35复杂链表的复制)
     + [58-ii.左旋转字符串](#58-ii左旋转字符串)
     + [64.求1+2+...+n](#64求12n)
@@ -9443,6 +9446,141 @@ class MinStack {
  */
 ```
 
+### 32-I.从上到下打印二叉树
+> 从上到下打印出二叉树的每个节点，同一层的节点按照从左到右的顺序打印。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/cong-shang-dao-xia-da-yin-er-cha-shu-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int[] levelOrder(TreeNode root) {
+        // 层序遍历二叉树，也就是BFS
+        List<Integer> ans = new ArrayList<>();
+        if ( root == null)
+            return ans.stream().mapToInt(Integer::valueOf).toArray();
+
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.addLast(root);
+
+        while (!queue.isEmpty()) {
+            int n = queue.size();
+            for (int i = 0; i < n; i++) {
+                TreeNode node = queue.removeFirst();
+                ans.add(node.val);
+                if ( node.left != null) {
+                    queue.addLast(node.left);
+                }
+
+                if ( node.right != null) {
+                    queue.addLast(node.right);
+                }
+
+            }
+        }
+        return ans.stream().mapToInt(Integer::valueOf).toArray();
+    }
+}
+```
+
+### 32-II.从上到下打印二叉树II
+> 从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/cong-shang-dao-xia-da-yin-er-cha-shu-ii-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> ans = new ArrayList<>();
+        if (root == null)
+            return ans;
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.addLast(root);
+
+        while (!queue.isEmpty()) {
+            int n = queue.size();
+            List<Integer> temp = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                TreeNode node = queue.removeFirst();
+                temp.add(node.val);
+                if (node.left != null)
+                    queue.addLast(node.left);
+                if (node.right != null)
+                    queue.addLast(node.right);
+            }
+            ans.add(temp);
+        }
+        return ans;
+    }
+}
+```
+
+### 32-III.从上到下打印二叉树III
+> 请实现一个函数按照之字形顺序打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右到左的顺序打印，第三行再按照从左到右的顺序打印，其他行以此类推。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/cong-shang-dao-xia-da-yin-er-cha-shu-iii-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> ans = new ArrayList<>();
+        if (root == null)
+            return ans;
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.addLast(root);
+        boolean isEven = true;  //判断当前行是否是偶数行
+
+        while (!queue.isEmpty()) {
+            int n = queue.size();
+            isEven = !isEven;
+            List<Integer> temp = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                TreeNode node = queue.removeFirst();
+                temp.add(node.val);
+                if (node.left != null)
+                    queue.addLast(node.left);
+                if (node.right != null)
+                    queue.addLast(node.right);
+            }
+            if (isEven)
+                Collections.reverse(temp);
+            ans.add(temp);         
+        }
+        return ans;
+    }
+}
+```
 ### 35.复杂链表的复制
 > 请实现 copyRandomList 函数，复制一个复杂链表。在复杂链表中，每个节点除了有一个 next 指针指向下一个节点，还有一个 random 指针指向链表中的任意节点或者 null。
 
