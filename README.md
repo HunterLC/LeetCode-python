@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-193题-green)
+![](https://img.shields.io/badge/已覆盖-196题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -217,6 +217,9 @@
     + [06.从尾到头打印链表](#06从尾到头打印链表)
     + [09.用两个栈实现队列](#09用两个栈实现队列)
     + [24.反转链表](#24反转链表)
+    + [26.树的子结构](#26树的子结构)
+    + [27.二叉树的镜像](#27二叉树的镜像)
+    + [28.对称的二叉树](#28对称的二叉树)
     + [30.包含min函数的栈](#30包含min函数的栈)
     + [32-i.从上到下打印二叉树](#32-i从上到下打印二叉树)
     + [32-ii.从上到下打印二叉树ii](#32-ii从上到下打印二叉树ii)
@@ -9390,6 +9393,102 @@ class Solution {
     }
 }
 ```
+
+### 26.树的子结构
+> 输入两棵二叉树A和B，判断B是不是A的子结构。(约定空树不是任意一个树的子结构)B是A的子结构， 即 A中有出现和B相同的结构和节点值。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/shu-de-zi-jie-gou-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isSubStructure(TreeNode A, TreeNode B) {
+        // 当前起始点就是子结构的开始or在左子树or在右子树
+        return (A != null && B != null) && (recur(A, B) || isSubStructure(A.left, B) || isSubStructure(A.right, B));
+    }
+    boolean recur(TreeNode A, TreeNode B) {
+        if(B == null) return true;
+        if(A == null || A.val != B.val) return false;
+        return recur(A.left, B.left) && recur(A.right, B.right);
+    }
+}
+```
+
+### 27.二叉树的镜像
+> 请完成一个函数，输入一个二叉树，该函数输出它的镜像。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/er-cha-shu-de-jing-xiang-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode mirrorTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode leftRoot = mirrorTree(root.right);
+        TreeNode rightRoot = mirrorTree(root.left);
+        root.left = leftRoot;
+        root.right = rightRoot;
+        return root;
+    }
+}
+```
+
+### 28.对称的二叉树
+> 请实现一个函数，用来判断一棵二叉树是不是对称的。如果一棵二叉树和它的镜像一样，那么它是对称的。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/dui-cheng-de-er-cha-shu-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        if (root == null)
+            return true;
+        return dfs(root.left, root.right);
+    }
+
+    public boolean dfs(TreeNode p, TreeNode q) {
+        if ( p == null && q == null)
+            return true;
+        if ( p == null || q == null)
+            return false;
+        return p.val == q.val && dfs(p.left, q.right) && dfs(p.right, q.left);
+    }
+}
+```
+
 ### 30.包含min函数的栈
 > 定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数在该栈中，调用` min`、`push` 及` pop `的时间复杂度都是` O(1)`。
 
