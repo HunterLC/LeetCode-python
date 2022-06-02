@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-196题-green)
+![](https://img.shields.io/badge/已覆盖-201题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -81,6 +81,7 @@
     + [105.从前序与中序遍历序列构造二叉树](#105从前序与中序遍历序列构造二叉树)
     + [108.将有序数组转换成二叉搜索树](#108将有序数组转换成二叉搜索树)
     + [109.有序链表转换二叉搜索树](#109有序链表转换二叉搜索树)
+    + [121.买卖股票的最佳时机](#121买卖股票的最佳时机)
     + [124.二叉树中的最大路径和](#124二叉树中的最大路径和)
     + [125.验证回文串](#125验证回文串)
     + [126.单词接龙ii★](#126单词接龙ii)
@@ -150,6 +151,7 @@
     + [436.寻找右区间](#436寻找右区间)
     + [442.数组中的重复数字](#442数组中的重复数字)
     + [449.序列化和反序列化二叉搜索树](#449序列化和反序列化二叉搜索树)
+    + [450.删除二叉搜索树中的节点](#450删除二叉搜索树中的节点)
     + [454.四数相加 ⅱ](#454四数相加ⅱ)
     + [462.最少移动次数使数组元素相等 ii](#462最少移动次数使数组元素相等ii)
     + [464.我能赢吗](#464我能赢吗)
@@ -216,6 +218,8 @@
     + [05.替换空格](#05替换空格)
     + [06.从尾到头打印链表](#06从尾到头打印链表)
     + [09.用两个栈实现队列](#09用两个栈实现队列)
+    + [10-i.斐波那契数列](#10-i斐波那契数列)
+    + [10-ii.青蛙跳台阶问题](#10-ii青蛙跳台阶问题)
     + [24.反转链表](#24反转链表)
     + [26.树的子结构](#26树的子结构)
     + [27.二叉树的镜像](#27二叉树的镜像)
@@ -226,6 +230,7 @@
     + [32-iii.从上到下打印二叉树iii](#32-iii从上到下打印二叉树iii)
     + [35.复杂链表的复制](#35复杂链表的复制)
     + [58-ii.左旋转字符串](#58-ii左旋转字符串)
+    + [63.股票的最大利润](#63股票的最大利润)
     + [64.求1+2+...+n](#64求12n)
     + [65.不用加减乘除做加法](#65不用加减乘除做加法)
     + [66.构建乘积数组](#66构建乘积数组)
@@ -3258,6 +3263,32 @@ class Solution:
         # 把链表断开
         pre.next = None
         return slow
+```
+### 121.买卖股票的最佳时机
+> 给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。  
+你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。  
+返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/best-time-to-buy-and-sell-stock  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices.length == 0) return 0;
+        int buy = Integer.MAX_VALUE;
+        int profit = 0;
+
+        for (int price: prices) {
+            // 我们需要最低价格买入
+            buy = Math.min(buy, price);
+            // 我们需要最高的利润
+            profit = Math.max(profit, price - buy);
+        }
+        return profit;
+    }
+}
 ```
 ### 124.二叉树中的最大路径和
 > **路径** 被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中 **至多出现一次** 。该路径 **至少包含一个** 节点，且不一定经过根节点。  
@@ -6807,6 +6838,51 @@ class Solution:
     # ans = deser.deserialize(tree)
     # return ans
     ```
+
+### 450.删除二叉搜索树中的节点
+> 给定一个二叉搜索树的根节点 root 和一个值 key，删除二叉搜索树中的 key 对应的节点，并保证二叉搜索树的性质不变。返回二叉搜索树（有可能被更新）的根节点的引用。
+
+一般来说，删除节点可分为两个步骤：
+
+1. 首先找到需要删除的节点；
+2. 如果找到了，删除它。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/delete-node-in-a-bst  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public TreeNode deleteNode(TreeNode root, int key) {
+        if (root == null) return null;
+        if (root.val == key) {
+            if (root.left == null) return root.right;
+            if (root.right == null) return root.left;
+            TreeNode t = root.left;
+            while (t.right != null) t = t.right;
+            t.right = root.right;
+            return root.left;
+        } else if (root.val < key) root.right = deleteNode(root.right, key);
+        else root.left = deleteNode(root.left, key);
+        return root;
+    }
+}
+```
 ### 454.四数相加Ⅱ
 > 给你四个整数数组` nums1`、`nums2`、`nums3` 和` nums4 `，数组长度都是` n `，请你计算有多少个元组` (i, j, k, l) `能满足：
 
@@ -9351,6 +9427,66 @@ class CQueue {
  */
 ```
 
+### 10-I.斐波那契数列
+> 写一个函数，输入 n ，求斐波那契（Fibonacci）数列的第 n 项（即 F(N)）。斐波那契数列的定义如下：
+
++ F(0) = 0,   F(1) = 1
++ F(N) = F(N - 1) + F(N - 2), 其中 N > 1.
+
+斐波那契数列由 0 和 1 开始，之后的斐波那契数就是由之前的两数相加而得出。
+
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+
+ 
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/fei-bo-na-qi-shu-lie-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int fib(int n) {
+        if (n <= 1)
+            return n;
+        int mod = (int)1e9 + 7;
+        int a = 0, b = 1;
+        for (int i = 2; i <= n; i++) {
+            int c = a + b;
+            c %= mod;
+            a = b;
+            b = c;
+        }
+        return b;
+    }
+}
+```
+
+### 10-II.青蛙跳台阶问题
+> 一只青蛙一次可以跳上1级台阶，也可以跳上2级台阶。求该青蛙跳上一个 n 级的台阶总共有多少种跳法。
+
+答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/qing-wa-tiao-tai-jie-wen-ti-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int numWays(int n) {
+        // f(n) = f(n-1) + f(n-2)
+        // 青蛙跳上第n阶的情况是由青蛙跳上第n-1的情况数加上青蛙跳上n-2的情况数
+         if (n <= 1)
+            return 1;
+        int mod = (int)1e9 + 7;
+        int[] dp = new int[n+1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int j = 2; j < dp.length; j++)
+            dp[j] = (dp[j-1] + dp[j-2]) % mod;
+        return dp[n];
+    }
+}
+```
 ### 24.反转链表
 > 定义一个函数，输入一个链表的头节点，反转该链表并输出反转后链表的头节点。
 
@@ -9743,6 +9879,30 @@ class Solution {
             ans.append(s.charAt(i));
         }
         return ans.toString();
+    }
+}
+```
+### 63.股票的最大利润
+> 假设把某股票的价格按照时间先后顺序存储在数组中，请问买卖该股票一次可能获得的最大利润是多少？
+
+ 来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/gu-piao-de-zui-da-li-run-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices.length == 0) return 0;
+        int buy = Integer.MAX_VALUE;
+        int profit = 0;
+
+        for (int price: prices) {
+            // 我们需要最低价格买入
+            buy = Math.min(buy, price);
+            // 我们需要最高的利润
+            profit = Math.max(profit, price - buy);
+        }
+        return profit;
     }
 }
 ```
