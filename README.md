@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-201题-green)
+![](https://img.shields.io/badge/已覆盖-205题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -229,6 +229,10 @@
     + [32-ii.从上到下打印二叉树ii](#32-ii从上到下打印二叉树ii)
     + [32-iii.从上到下打印二叉树iii](#32-iii从上到下打印二叉树iii)
     + [35.复杂链表的复制](#35复杂链表的复制)
+    + [42.连续子数组的最大和](#42连续子数组的最大和)
+    + [46.把数字翻译成字符串](#46把数字翻译成字符串)
+    + [47.礼物的最大价值](#47礼物的最大价值)
+    + [48.最长不含重复字符的子字符串](#48最长不含重复字符的子字符串)
     + [58-ii.左旋转字符串](#58-ii左旋转字符串)
     + [63.股票的最大利润](#63股票的最大利润)
     + [64.求1+2+...+n](#64求12n)
@@ -9858,6 +9862,122 @@ class Solution {
     }
 }
 ```
+### 42.连续子数组的最大和
+> 输入一个整型数组，数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值。  
+要求时间复杂度为O(n)。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 动态规划
+```java
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int n = nums.length;
+        int dp = nums[0];
+        int max = dp;
+        for (int i = 1; i < n; i++) {
+            // 如果前一个dp是正数，那么以接下来元素结尾的最大值就是前dp加上现有的元素值
+            // 负数的话就直接取现在这个值
+            dp = Math.max(dp + nums[i], nums[i]);
+            max = Math.max(max, dp);
+        }
+        return max;
+    }
+}
+```
+
+### 46.把数字翻译成字符串
+> 给定一个数字，我们按照如下规则把它翻译为字符串：0 翻译成 “a” ，1 翻译成 “b”，……，11 翻译成 “l”，……，25 翻译成 “z”。一个数字可能有多个翻译。请编程实现一个函数，用来计算一个数字有多少种不同的翻译方法。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 动态规划
+```java
+class Solution {
+    public int translateNum(int num) {
+        String s = String.valueOf(num);
+        int a = 1, b = 1;
+        for(int i = 2; i <= s.length(); i++) {
+            String tmp = s.substring(i - 2, i);
+            int c = tmp.compareTo("10") >= 0 && tmp.compareTo("25") <= 0 ? a + b : a;
+            b = a;
+            a = c;
+        }
+        return a;
+    }
+}
+```
+
+### 47.礼物的最大价值
+> 在一个 m*n 的棋盘的每一格都放有一个礼物，每个礼物都有一定的价值（价值大于 0）。你可以从棋盘的左上角开始拿格子里的礼物，并每次向右或者向下移动一格、直到到达棋盘的右下角。给定一个棋盘及其上面的礼物的价值，请计算你最多能拿到多少价值的礼物？
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 动态规划
+```java
+class Solution {
+    public int maxValue(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(i == 0 && j == 0) continue;
+                if(i == 0) grid[i][j] += grid[i][j - 1] ;
+                else if(j == 0) grid[i][j] += grid[i - 1][j];
+                else grid[i][j] += Math.max(grid[i][j - 1], grid[i - 1][j]);
+            }
+        }
+        return grid[m - 1][n - 1];
+    }
+}
+```
+
+### 48.最长不含重复字符的子字符串
+> 请从字符串中找出一个最长的不包含重复字符的子字符串，计算该最长子字符串的长度。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/zui-chang-bu-han-zhong-fu-zi-fu-de-zi-zi-fu-chuan-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 滑动窗口
+```java
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        // 滑动窗口
+        if (s.length() == 0)
+            return 0;
+        Map<Character, Integer> map = new HashMap<>();
+        int maxLength = 1;
+        int left = 0, right = 0;
+        int total = 0; // 窗口内的字符类别总数
+        while (right < s.length()) {
+            char ch = s.charAt(right);
+            // 新进入窗口的字符数加1
+            map.put(ch, map.getOrDefault(ch, 0) + 1);
+            // 当某个字符长度等于1的时候，就代表着字母的种类数增加了
+            if (map.get(ch) == 1)
+                total++;
+            // 如果窗口内的字符长度大于字符类别总数，说明肯定就存在着重复字符了
+            // 左指针右移
+            while (total < right - left + 1) {
+                map.put(s.charAt(left), map.get(s.charAt(left)) - 1);
+                if (map.get(s.charAt(left)) == 0)
+                    total--;
+                left++;
+            }
+            maxLength = Math.max(maxLength, right - left + 1);
+            right++;
+        }
+        return maxLength;
+    }
+}
+```
+
 ### 58-II.左旋转字符串
 > 字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
 
