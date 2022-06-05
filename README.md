@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-205题-green)
+![](https://img.shields.io/badge/已覆盖-207题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -220,6 +220,8 @@
     + [09.用两个栈实现队列](#09用两个栈实现队列)
     + [10-i.斐波那契数列](#10-i斐波那契数列)
     + [10-ii.青蛙跳台阶问题](#10-ii青蛙跳台阶问题)
+    + [18.删除链表的节点](#18删除链表的节点)
+    + [22.链表中倒数第k个节点](#22链表中倒数第k个节点)
     + [24.反转链表](#24反转链表)
     + [26.树的子结构](#26树的子结构)
     + [27.二叉树的镜像](#27二叉树的镜像)
@@ -9488,6 +9490,66 @@ class Solution {
         for (int j = 2; j < dp.length; j++)
             dp[j] = (dp[j-1] + dp[j-2]) % mod;
         return dp[n];
+    }
+}
+```
+### 18.链表中倒数第k个节点
+> 给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点。  
+返回删除后的链表的头节点。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/shan-chu-lian-biao-de-jie-dian-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode deleteNode(ListNode head, int val) {
+        if(head.val == val) return head.next;
+        ListNode pre = head, cur = head.next;
+        while(cur != null && cur.val != val) {
+            pre = cur;
+            cur = cur.next;
+        }
+        if(cur != null) pre.next = cur.next;
+        return head;
+    }
+}
+```
+### 22.链表中倒数第k个节点
+> 输入一个链表，输出该链表中倒数第k个节点。为了符合大多数人的习惯，本题从1开始计数，即链表的尾节点是倒数第1个节点。  
+例如，一个链表有 6 个节点，从头节点开始，它们的值依次是 1、2、3、4、5、6。这个链表的倒数第 3 个节点是值为 4 的节点。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/lian-biao-zhong-dao-shu-di-kge-jie-dian-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode getKthFromEnd(ListNode head, int k) {
+        ListNode former = head, latter = head;
+        for(int i = 0; i < k; i++)
+            former = former.next;
+        while(former != null) {
+            former = former.next;
+            latter = latter.next;
+        }
+        return latter;
     }
 }
 ```
