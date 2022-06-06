@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-207题-green)
+![](https://img.shields.io/badge/已覆盖-210题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -40,6 +40,7 @@
     + [17.电话号码的字母组合](#17电话号码的字母组合)
     + [18.四数之和](#18四数之和)
     + [20.有效的括号](#20有效的括号)
+    + [21.合并两个有序链表](#21合并两个有序链表)
     + [22.括号生成](#22括号生成)
     + [23.合并k个升序链表](#23合并k个升序链表)
     + [26.删除有序数组中的重复项](#26删除有序数组中的重复项)
@@ -223,6 +224,7 @@
     + [18.删除链表的节点](#18删除链表的节点)
     + [22.链表中倒数第k个节点](#22链表中倒数第k个节点)
     + [24.反转链表](#24反转链表)
+    + [25.合并两个排序的链表](#25合并两个排序的链表)
     + [26.树的子结构](#26树的子结构)
     + [27.二叉树的镜像](#27二叉树的镜像)
     + [28.对称的二叉树](#28对称的二叉树)
@@ -235,6 +237,7 @@
     + [46.把数字翻译成字符串](#46把数字翻译成字符串)
     + [47.礼物的最大价值](#47礼物的最大价值)
     + [48.最长不含重复字符的子字符串](#48最长不含重复字符的子字符串)
+    + [52.两个链表的第一个公共节点](#52两个链表的第一个公共节点)
     + [58-ii.左旋转字符串](#58-ii左旋转字符串)
     + [63.股票的最大利润](#63股票的最大利润)
     + [64.求1+2+...+n](#64求12n)
@@ -1480,6 +1483,45 @@ class Solution:
                     continue
                 return False
         return True if len(stack) == 0 else False
+```
+### 21.合并两个有序链表
+> 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。 
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/merge-two-sorted-lists/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode dummyHead = new ListNode(0);
+        ListNode curr = dummyHead;
+        while (list1 != null && list2 != null) {
+            if (list1.val < list2.val) {
+                curr.next = list1;
+                list1 = list1.next;
+            }
+            else {
+                curr.next = list2;
+                list2 = list2.next;
+            }
+            curr = curr.next;
+        }
+        // 两个链表不一样长时，还有链表有值
+        curr.next = list1 != null ? list1 : list2;
+        return dummyHead.next;
+    }
+}
 ```
 ### 22.括号生成
 > 数字` n `代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 **有效的** 括号组合。
@@ -4223,7 +4265,7 @@ class MinStack:
 来源：力扣（LeetCode）    
 链接：https://leetcode-cn.com/problems/intersection-of-two-linked-lists/    
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处  
-![示例](https://github.com/HunterLC/LeetCode-python/blob/main/image/link/link_160.png)
+![示例](/image/link/link_160.png)
 
 ```python
 # Definition for singly-linked list.
@@ -9595,6 +9637,43 @@ class Solution {
     }
 }
 ```
+### 25.合并两个排序的链表
+> 输入两个递增排序的链表，合并这两个链表并使新链表中的节点仍然是递增排序的。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/he-bing-liang-ge-pai-xu-de-lian-biao-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode dummyHead = new ListNode(0);
+        ListNode curr = dummyHead;
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val) {
+                curr.next = l1;
+                l1 = l1.next;
+            }
+            else {
+                curr.next = l2;
+                l2 = l2.next;
+            }
+            curr = curr.next;
+        }
+        // 两个链表不一样长时，还有链表有值
+        curr.next = l1 != null ? l1 : l2;
+        return dummyHead.next;
+    }
+}
+```
 
 ### 26.树的子结构
 > 输入两棵二叉树A和B，判断B是不是A的子结构。(约定空树不是任意一个树的子结构)B是A的子结构， 即 A中有出现和B相同的结构和节点值。
@@ -10036,6 +10115,37 @@ class Solution {
             right++;
         }
         return maxLength;
+    }
+}
+```
+
+### 52.两个链表的第一个公共节点
+> 输入两个链表，找出它们的第一个公共节点。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/liang-ge-lian-biao-de-di-yi-ge-gong-gong-jie-dian-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode pA = headA, pB = headB;
+        while (pA != pB) {
+            pA = pA != null ? pA.next : headB;
+            pB = pB != null ? pB.next : headA;
+        }
+        return pA;
     }
 }
 ```
