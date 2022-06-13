@@ -1,8 +1,8 @@
-# LeetCode-python
+ # LeetCode-python
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-214题-green)
+![](https://img.shields.io/badge/已覆盖-218题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -16,17 +16,6 @@
 我要刷题**冲冲冲**
 
 ## 目录
-+ [1.基础知识](#1基础知识)
-    + [1.1排序算法](#11-排序算法java实现)
-    + [1.2 同向双指针/滑动窗口](#12-同向双指针滑动窗口)
-    + [1.3 宽度优先搜索bfs](#13-宽度优先搜索bfs)
-    + [1.4 深度优先搜索dfs](#14-深度优先搜索dfs)
-    + [1.5 回溯](#15-回溯)
-    + [1.6 字典树](#16-字典树trie)
-    + [1.7 并查集](#17-并查集)
-    + [1.8 前缀和](#18-前缀和)
-    + [1.9 动态规划](#19-动态规划)
-
 - [LeetCode-python](#leetcode-python)
   - [目录](#目录)
   - [1.基础知识](#1基础知识)
@@ -285,45 +274,16 @@
     - [48.最长不含重复字符的子字符串](#48最长不含重复字符的子字符串)
     - [52.两个链表的第一个公共节点](#52两个链表的第一个公共节点)
     - [54.二叉搜索树的第k大节点](#54二叉搜索树的第k大节点)
+    - [55-I.二叉树的深度](#55-i二叉树的深度)
+    - [55-II.平衡二叉树](#55-ii平衡二叉树)
     - [58-II.左旋转字符串](#58-ii左旋转字符串)
     - [63.股票的最大利润](#63股票的最大利润)
     - [64.求1+2+...+n](#64求12n)
     - [65.不用加减乘除做加法](#65不用加减乘除做加法)
     - [66.构建乘积数组](#66构建乘积数组)
     - [67.把字符串转换成整数](#67把字符串转换成整数)
-
-+ [4.剑指offer](#4剑指offer)
-    + [05.替换空格](#05替换空格)
-    + [06.从尾到头打印链表](#06从尾到头打印链表)
-    + [09.用两个栈实现队列](#09用两个栈实现队列)
-    + [10-i.斐波那契数列](#10-i斐波那契数列)
-    + [10-ii.青蛙跳台阶问题](#10-ii青蛙跳台阶问题)
-    + [18.删除链表的节点](#18删除链表的节点)
-    + [22.链表中倒数第k个节点](#22链表中倒数第k个节点)
-    + [24.反转链表](#24反转链表)
-    + [25.合并两个排序的链表](#25合并两个排序的链表)
-    + [26.树的子结构](#26树的子结构)
-    + [27.二叉树的镜像](#27二叉树的镜像)
-    + [28.对称的二叉树](#28对称的二叉树)
-    + [30.包含min函数的栈](#30包含min函数的栈)
-    + [32-i.从上到下打印二叉树](#32-i从上到下打印二叉树)
-    + [32-ii.从上到下打印二叉树ii](#32-ii从上到下打印二叉树ii)
-    + [32-iii.从上到下打印二叉树iii](#32-iii从上到下打印二叉树iii)
-    + [34.二叉树中和为某一值的路径](#34二叉树中和为某一值的路径)
-    + [35.复杂链表的复制](#35复杂链表的复制)
-    + [36.二叉搜索树与双向链表](#36二叉搜索树与双向链表)
-    + [42.连续子数组的最大和](#42连续子数组的最大和)
-    + [46.把数字翻译成字符串](#46把数字翻译成字符串)
-    + [47.礼物的最大价值](#47礼物的最大价值)
-    + [48.最长不含重复字符的子字符串](#48最长不含重复字符的子字符串)
-    + [52.两个链表的第一个公共节点](#52两个链表的第一个公共节点)
-    + [54.二叉搜索树的第k大节点](#54二叉搜索树的第k大节点)
-    + [58-ii.左旋转字符串](#58-ii左旋转字符串)
-    + [63.股票的最大利润](#63股票的最大利润)
-    + [64.求1+2+...+n](#64求12n)
-    + [65.不用加减乘除做加法](#65不用加减乘除做加法)
-    + [66.构建乘积数组](#66构建乘积数组)
-    + [67.把字符串转换成整数](#67把字符串转换成整数)
+    - [68-I.二叉搜索树的最近公共祖先](#68-i二叉搜索树的最近公共祖先)
+    - [68-II.二叉树的最近公共祖先](#68-ii二叉树的最近公共祖先)
 
 ## 1.基础知识
 ### 1.1 排序算法（java实现）
@@ -10445,6 +10405,64 @@ class Solution {
     }
 }
 ```
+### 55-I.二叉树的深度
+> 输入一棵二叉树的根节点，求该树的深度。从根节点到叶节点依次经过的节点（含根、叶节点）形成树的一条路径，最长路径的长度为树的深度
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/er-cha-shu-de-shen-du-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int maxDepth(TreeNode root) {
+        if (root == null) return 0;
+        int left = maxDepth(root.left);
+        int right = maxDepth(root.right);
+        return 1 + Math.max(left, right);
+    }
+}
+```
+### 55-II.平衡二叉树
+> 输入一棵二叉树的根节点，判断该树是不是平衡二叉树。如果某二叉树中任意节点的左右子树的深度相差不超过1，那么它就是一棵平衡二叉树。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/ping-heng-er-cha-shu-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        if (root == null) return true;
+        return Math.abs(maxDepth(root.left) - maxDepth(root.right)) <= 1 && isBalanced(root.left) && isBalanced(root.right);
+    }
+
+    public int maxDepth(TreeNode root) {
+        if (root == null) return 0;
+        int left = maxDepth(root.left);
+        int right = maxDepth(root.right);
+        return 1 + Math.max(left, right);
+    }
+}
+```
+
 ### 58-II.左旋转字符串
 > 字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
 
@@ -10642,6 +10660,66 @@ class Solution {
             automaton.get(str.charAt(i));
         }
         return (int) (automaton.sign * automaton.ans);
+    }
+}
+```
+
+### 68-I.二叉搜索树的最近公共祖先
+> 给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。  
+百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/er-cha-sou-suo-shu-de-zui-jin-gong-gong-zu-xian-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root.val < p.val && root.val < q.val)
+            return lowestCommonAncestor(root.right, p, q);
+        if(root.val > p.val && root.val > q.val)
+            return lowestCommonAncestor(root.left, p, q);
+        return root;
+    }
+}
+```
+
+### 68-II.二叉树的最近公共祖先
+> 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+
+百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/er-cha-shu-de-zui-jin-gong-gong-zu-xian-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null || root == p || root == q) return root;
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if(left == null) return right;
+        if(right == null) return left;
+        return root;
     }
 }
 ```
