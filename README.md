@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-218题-green)
+![](https://img.shields.io/badge/已覆盖-221题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -85,6 +85,7 @@
     - [46.全排列](#46全排列)
     - [47.全排列II](#47全排列ii)
     - [49.字母异位词分组](#49字母异位词分组)
+    - [50.Pow(x,n)](#50powxn)
     - [51.N皇后★](#51n皇后)
     - [52.N皇后II](#52n皇后ii)
     - [53.最大子数组和](#53最大子数组和)
@@ -251,9 +252,11 @@
   - [4.剑指Offer](#4剑指offer)
     - [05.替换空格](#05替换空格)
     - [06.从尾到头打印链表](#06从尾到头打印链表)
+    - [07.重建二叉树](#07重建二叉树)
     - [09.用两个栈实现队列](#09用两个栈实现队列)
     - [10-I.斐波那契数列](#10-i斐波那契数列)
     - [10-II.青蛙跳台阶问题](#10-ii青蛙跳台阶问题)
+    - [16.数值的整数次方](#16数值的整数次方)
     - [18.链表中倒数第k个节点](#18链表中倒数第k个节点)
     - [22.链表中倒数第k个节点](#22链表中倒数第k个节点)
     - [24.反转链表](#24反转链表)
@@ -265,6 +268,7 @@
     - [32-I.从上到下打印二叉树](#32-i从上到下打印二叉树)
     - [32-II.从上到下打印二叉树II](#32-ii从上到下打印二叉树ii)
     - [32-III.从上到下打印二叉树III](#32-iii从上到下打印二叉树iii)
+    - [33.二叉搜索树的后序遍历序列](#33二叉搜索树的后序遍历序列)
     - [34.二叉树中和为某一值的路径](#34二叉树中和为某一值的路径)
     - [35.复杂链表的复制](#35复杂链表的复制)
     - [36.二叉搜索树与双向链表](#36二叉搜索树与双向链表)
@@ -527,20 +531,20 @@ step=8: (1->2->3->4->5->6->7->8->9->11)
 > 将待排序序列构造成一个大顶堆，此时，整个序列的最大值就是堆顶的根节点。将其与末尾元素进行交换，此时末尾就为最大值。然后将剩余n-1个元素重新构造成一个堆，这样会得到n个元素的次小值。如此反复执行，便能得到一个有序序列了
 
 step 1: 构造初始堆。将给定无序序列构造成一个大顶堆（一般升序采用大顶堆，降序采用小顶堆)。  
-|序号|说明|示意图|
-|:-:|-|:-:|
-|1|假设给定无序序列结构|![示例](/image/sort/堆排序3.png)|
-|2|从最后一个非叶子结点开始（叶结点自然不用调整，第一个非叶子结点 arr.length/2-1=5/2-1=1，也就是下面的6结点），从左至右，从下至上进行调整|![找最后一个非叶子结点](/image/sort/堆排序4.png)|
-|3|找到第二个非叶节点4，由于[4,9,8]中9元素最大，4和9交换|![找下一个相邻的非叶子节点](/image/sort/堆排序5.png)|
-|4|交换导致了子根[4,5,6]结构混乱，继续调整，[4,5,6]中6最大，交换4和6。我们就将一个无需序列构造成了一个大顶堆|![调整子树](/image/sort/堆排序6.png)|  
+| 序号  | 说明                                                                                                                                   |                        示意图                        |
+| :---: | -------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------: |
+|   1   | 假设给定无序序列结构                                                                                                                   |           ![示例](/image/sort/堆排序3.png)           |
+|   2   | 从最后一个非叶子结点开始（叶结点自然不用调整，第一个非叶子结点 arr.length/2-1=5/2-1=1，也就是下面的6结点），从左至右，从下至上进行调整 |   ![找最后一个非叶子结点](/image/sort/堆排序4.png)   |
+|   3   | 找到第二个非叶节点4，由于[4,9,8]中9元素最大，4和9交换                                                                                  | ![找下一个相邻的非叶子节点](/image/sort/堆排序5.png) |
+|   4   | 交换导致了子根[4,5,6]结构混乱，继续调整，[4,5,6]中6最大，交换4和6。我们就将一个无需序列构造成了一个大顶堆                              |         ![调整子树](/image/sort/堆排序6.png)         |
 
 step 2: 将堆顶元素与末尾元素进行交换，使末尾元素最大。然后继续调整堆，再将堆顶元素与末尾元素交换，得到第二大元素。如此反复进行交换、重建、交换。  
-|序号|说明|示意图|
-|:-:|-|:-:|
-|1|将堆顶元素9和末尾元素4进行交换|![示例](/image/sort/堆排序7.png)|
-|2|重新调整结构，使其继续满足堆定义|![示例](/image/sort/堆排序8.png)|
-|3|再将堆顶元素8与末尾元素5进行交换，得到第二大元素8|![示例](/image/sort/堆排序9.png)|
-|4|后续过程，继续进行调整，交换，如此反复进行，最终使得整个序列有序|![示例](/image/sort/堆排序10.png)|
+| 序号  | 说明                                                             |              示意图               |
+| :---: | ---------------------------------------------------------------- | :-------------------------------: |
+|   1   | 将堆顶元素9和末尾元素4进行交换                                   | ![示例](/image/sort/堆排序7.png)  |
+|   2   | 重新调整结构，使其继续满足堆定义                                 | ![示例](/image/sort/堆排序8.png)  |
+|   3   | 再将堆顶元素8与末尾元素5进行交换，得到第二大元素8                | ![示例](/image/sort/堆排序9.png)  |
+|   4   | 后续过程，继续进行调整，交换，如此反复进行，最终使得整个序列有序 | ![示例](/image/sort/堆排序10.png) |
 
 ```java
     public static void sort(int []arr){
@@ -811,9 +815,9 @@ def find(self, x):
 ```
 
 如果我们树很深，比如说退化成链表，那么每次查询的效率都会非常低。所以我们要做一下**路径压缩**，也就是**把树的深度固定为2**。这么做可行的原因是，并查集只是记录了节点之间的连通关系，而节点相互连通只需要有一个相同的祖先就可以了。路径压缩可以用**递归**，也可以**迭代**。  
-|压缩之前|压缩之后|
-|:-----:|:-----:|
-|![并查集之路径压缩1](/image/union/union_5.png)|![并查集之路径压缩2](/image/union/union_6.png)|
+|                    压缩之前                    |                    压缩之后                    |
+| :--------------------------------------------: | :--------------------------------------------: |
+| ![并查集之路径压缩1](/image/union/union_5.png) | ![并查集之路径压缩2](/image/union/union_6.png) |
 ```python
 def find(self, x):
         """
@@ -2038,6 +2042,32 @@ class Solution:
             result[key].append(i)
 
         return list(result.values())
+```
+### 50.Pow(x,n)
+> 实现 pow(x, n) ，即计算 x 的 n 次幂函数（即，$x^n$ ）
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/powx-n/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public double myPow(double x, int n) {
+        if(x == 0.0f) return 0.0d;
+        long b = n;
+        double res = 1.0;
+        if(b < 0) {
+            x = 1 / x;
+            b = -b;
+        }
+        while(b > 0) {
+            if((b & 1) == 1) res *= x;
+            x *= x;
+            b >>= 1;
+        }
+        return res;
+    }
+}
 ```
 ### 51.N皇后★
 > **n皇后问题** 研究的是如何将` n `个皇后放置在` n×n `的棋盘上，并且使皇后彼此之间不能相互攻击。  
@@ -9551,6 +9581,60 @@ class Solution {
     }
 }
 ```
+### 07.重建二叉树
+> 输入某二叉树的前序遍历和中序遍历的结果，请构建该二叉树并返回其根节点。  
+假设输入的前序遍历和中序遍历的结果中都不含重复的数字。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/zhong-jian-er-cha-shu-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+class Solution {
+    HashMap<Integer, Integer> map = new HashMap<>();//标记中序遍历
+    int[] preorder;//保留的先序遍历，方便递归时依据索引查看先序遍历的值
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        this.preorder = preorder;
+        //将中序遍历的值及索引放在map中，方便递归时获取左子树与右子树的数量及其根的索引
+        for (int i = 0; i < inorder.length; i++) {
+            map.put(inorder[i], i);
+        }
+        //三个索引分别为
+        //当前根的的索引
+        //递归树的左边界，即数组左边界
+        //递归树的右边界，即数组右边界
+        return recur(0,0,inorder.length-1);
+    }
+
+    TreeNode recur(int pre_root, int in_left, int in_right){
+        if(in_left > in_right) return null;// 相等的话就是自己
+        TreeNode root = new TreeNode(preorder[pre_root]);//获取root节点
+        int idx = map.get(preorder[pre_root]);//获取在中序遍历中根节点所在索引，以方便获取左子树的数量
+        //左子树的根的索引为先序中的根节点+1 
+        //递归左子树的左边界为原来的中序in_left
+        //递归左子树的右边界为中序中的根节点索引-1
+        root.left = recur(pre_root+1, in_left, idx-1);
+        //右子树的根的索引为先序中的 当前根位置 + 左子树的数量 + 1
+        //递归右子树的左边界为中序中当前根节点+1
+        //递归右子树的右边界为中序中原来右子树的边界
+        root.right = recur(pre_root + (idx - in_left) + 1, idx+1, in_right);
+        return root;
+
+    }
+
+}
+```
 ### 09.用两个栈实现队列
 > 用两个栈实现一个队列。队列的声明如下，请实现它的两个函数` appendTail `和` deleteHead `，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，`deleteHead` 操作返回` -1 `)
 
@@ -9656,6 +9740,33 @@ class Solution {
         for (int j = 2; j < dp.length; j++)
             dp[j] = (dp[j-1] + dp[j-2]) % mod;
         return dp[n];
+    }
+}
+```
+### 16.数值的整数次方
+> 实现 pow(x, n) ，即计算 x 的 n 次幂函数（即，$x^n$）。不得使用库函数，同时不需要考虑大数问题。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/shu-zhi-de-zheng-shu-ci-fang-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 快速幂+迭代
+```java
+class Solution {
+    public double myPow(double x, int n) {
+        if(x == 0) return 0;
+        long b = n;
+        double res = 1.0;
+        if(b < 0) {
+            x = 1 / x;
+            b = -b;
+        }
+        while(b > 0) {
+            if((b & 1) == 1) res *= x;
+            x *= x;
+            b >>= 1;
+        }
+        return res;
     }
 }
 ```
@@ -10085,6 +10196,29 @@ class Solution {
     }
 }
 ```
+### 33.二叉搜索树的后序遍历序列
+> 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回 true，否则返回 false。假设输入的数组的任意两个数字都互不相同。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public boolean verifyPostorder(int[] postorder) {
+        Stack<Integer> stack = new Stack<>();
+        int root = Integer.MAX_VALUE;
+        for(int i = postorder.length - 1; i >= 0; i--) {
+            if(postorder[i] > root) return false;
+            while(!stack.isEmpty() && stack.peek() > postorder[i])
+            	root = stack.pop();
+            stack.add(postorder[i]);
+        }
+        return true;
+    }
+}
+```
+
 ### 34.二叉树中和为某一值的路径
 > 给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径。
 
