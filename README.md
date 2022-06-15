@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-221题-green)
+![](https://img.shields.io/badge/已覆盖-223题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -139,6 +139,7 @@
     - [162.寻找峰值](#162寻找峰值)
     - [167.两数之和 II - 输入有序数组](#167两数之和-ii---输入有序数组)
     - [179.最大数](#179最大数)
+    - [191.位1的个数](#191位1的个数)
     - [200.岛屿数量](#200岛屿数量)
     - [206.反转链表](#206反转链表)
     - [207.课程表](#207课程表)
@@ -256,6 +257,7 @@
     - [09.用两个栈实现队列](#09用两个栈实现队列)
     - [10-I.斐波那契数列](#10-i斐波那契数列)
     - [10-II.青蛙跳台阶问题](#10-ii青蛙跳台阶问题)
+    - [15.二进制中1的个数](#15二进制中1的个数)
     - [16.数值的整数次方](#16数值的整数次方)
     - [18.链表中倒数第k个节点](#18链表中倒数第k个节点)
     - [22.链表中倒数第k个节点](#22链表中倒数第k个节点)
@@ -4515,6 +4517,32 @@ class Solution:
             res='0'
         return res
 ```
+### 191.位1的个数
+> 编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字位数为 '1' 的个数（也被称为汉明重量）。
+
+提示：
+
++ 请注意，在某些语言（如 Java）中，没有无符号整数类型。在这种情况下，输入和输出都将被指定为有符号整数类型，并且不应影响您的实现，因为无论整数是有符号的还是无符号的，其内部的二进制表示形式都是相同的。
++ 在 Java 中，编译器使用二进制补码记法来表示有符号整数。因此，在上面的 示例 3 中，输入表示有符号整数 -3。
+ 
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/number-of-1-bits  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+public class Solution {
+    // you need to treat n as an unsigned value
+    public int hammingWeight(int n) {
+        int ans = 0;
+        while (n != 0) {
+            ans++;
+            n &= n - 1;
+        }
+        return ans;
+    }
+}
+```
+
 ### 200.岛屿数量
 > 给你一个由` '1'`（陆地）和` '0'`（水）组成的的二维网格，请你计算网格中岛屿的数量。  
 岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。  
@@ -9740,6 +9768,31 @@ class Solution {
         for (int j = 2; j < dp.length; j++)
             dp[j] = (dp[j-1] + dp[j-2]) % mod;
         return dp[n];
+    }
+}
+```
+### 15.二进制中1的个数
+> 编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字位数为 '1' 的个数（也被称为 汉明重量).）。
+
+提示：  
++ 请注意，在某些语言（如 Java）中，没有无符号整数类型。在这种情况下，输入和输出都将被指定为有符号整数类型，并且不应影响您的实现，因为无论整数是有符号的还是无符号的，其内部的二进制表示形式都是相同的。
++ 在 Java 中，编译器使用 二进制补码 记法来表示有符号整数。因此，在上面的 示例 3 中，输入表示有符号整数 -3。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/er-jin-zhi-zhong-1de-ge-shu-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 位运算n&(n-1)
+```java
+public class Solution {
+    // you need to treat n as an unsigned value
+    public int hammingWeight(int n) {
+        int ans = 0;
+        while (n != 0) {
+            ans++;
+            n &= n - 1;
+        }
+        return ans;
     }
 }
 ```
