@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-223题-green)
+![](https://img.shields.io/badge/已覆盖-225题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -282,6 +282,8 @@
     - [54.二叉搜索树的第k大节点](#54二叉搜索树的第k大节点)
     - [55-I.二叉树的深度](#55-i二叉树的深度)
     - [55-II.平衡二叉树](#55-ii平衡二叉树)
+    - [56-I.数组中数字出现的次数](#56-i数组中数字出现的次数)
+    - [56-II.数组中数字出现的次数](#56-ii数组中数字出现的次数)
     - [58-II.左旋转字符串](#58-ii左旋转字符串)
     - [63.股票的最大利润](#63股票的最大利润)
     - [64.求1+2+...+n](#64求12n)
@@ -10646,6 +10648,56 @@ class Solution {
         int left = maxDepth(root.left);
         int right = maxDepth(root.right);
         return 1 + Math.max(left, right);
+    }
+}
+```
+
+### 56-I.数组中数字出现的次数
+> 一个整型数组 nums 里除两个数字之外，其他数字都出现了两次。请写程序找出这两个只出现一次的数字。要求时间复杂度是O(n)，空间复杂度是O(1)。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 位运算(太TM妙了)
+```java
+class Solution {
+    public int[] singleNumbers(int[] nums) {
+        int n = 0, x = 0, y = 0, m = 1;
+        // 假如我们的答案是数字a和数字b，那么这里的循环异或的结果就是a异或b
+        for (int num: nums)
+            n ^= num;
+        // 找到异或结果的最低位1，这个1就代表着a和b不一样的地方
+        while ((n & m) == 0)
+            m <<= 1;
+        // 根据这个不一样的地方就可以把a和b区分开，也就是说把nums划分为两个部分
+        for (int num: nums)
+            if ((num & m) == 0)
+                x ^= num;
+            else
+                y ^= num;
+        
+        return new int[] {x, y};
+    }
+}
+```
+
+### 56-II.数组中数字出现的次数
+> 在一个数组 nums 中除一个数字只出现一次之外，其他数字都出现了三次。请找出那个只出现一次的数字。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-ii-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int singleNumber(int[] nums) {
+        int ones = 0, twos = 0;
+        for(int num : nums){
+            ones = ones ^ num & ~twos;
+            twos = twos ^ num & ~ones;
+        }
+        return ones;
     }
 }
 ```
