@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-225题-green)
+![](https://img.shields.io/badge/已覆盖-227题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -138,6 +138,7 @@
     - [160.相交链表](#160相交链表)
     - [162.寻找峰值](#162寻找峰值)
     - [167.两数之和 II - 输入有序数组](#167两数之和-ii---输入有序数组)
+    - [169.多数元素](#169多数元素)
     - [179.最大数](#179最大数)
     - [191.位1的个数](#191位1的个数)
     - [200.岛屿数量](#200岛屿数量)
@@ -274,6 +275,7 @@
     - [34.二叉树中和为某一值的路径](#34二叉树中和为某一值的路径)
     - [35.复杂链表的复制](#35复杂链表的复制)
     - [36.二叉搜索树与双向链表](#36二叉搜索树与双向链表)
+    - [39.数组中出现次数超过一半的数字](#39数组中出现次数超过一半的数字)
     - [42.连续子数组的最大和](#42连续子数组的最大和)
     - [46.把数字翻译成字符串](#46把数字翻译成字符串)
     - [47.礼物的最大价值](#47礼物的最大价值)
@@ -4498,6 +4500,30 @@ class Solution:
                 break
         return ans
 ```
+
+### 169.多数元素
+> 给定一个大小为 n 的数组 nums ，返回其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ $\frac{n}{2}$ ⌋ 的元素。  
+你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/majority-element  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int majorityElement(int[] nums) {
+        // 摩尔投票法
+        int x = 0, votes = 0;
+        for (int num: nums) {
+            if (votes == 0)
+                x = num;
+            votes += num == x ? 1 : -1;
+        }
+        return x;
+    }
+}
+```
+
 ### 179.最大数
 
 > 给定一组非负整数 nums，重新排列每个数的顺序（每个数不可拆分）使之组成一个最大的整数。  
@@ -10414,6 +10440,31 @@ class Solution {
     }
 }
 ```
+
+### 39.数组中出现次数超过一半的数字
+> 数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。  
+你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/shu-zu-zhong-chu-xian-ci-shu-chao-guo-yi-ban-de-shu-zi-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 摩尔投票法
+```java
+class Solution {
+    public int majorityElement(int[] nums) {
+        // 摩尔投票法
+        int x = 0, votes = 0;
+        for (int num: nums) {
+            if (votes == 0)
+                x = num;
+            votes += num == x ? 1 : -1;
+        }
+        return x;
+    }
+}
+```
+
 ### 42.连续子数组的最大和
 > 输入一个整型数组，数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值。  
 要求时间复杂度为O(n)。
