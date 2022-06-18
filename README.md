@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-227题-green)
+![](https://img.shields.io/badge/已覆盖-231题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -172,6 +172,7 @@
     - [328.奇偶链表](#328奇偶链表)
     - [329.矩阵中的最长递增路径](#329矩阵中的最长递增路径)
     - [341.扁平化嵌套列表迭代器](#341扁平化嵌套列表迭代器)
+    - [343.整数拆分](#343整数拆分)
     - [347.前K个高频元素](#347前k个高频元素)
     - [350.两个数组的交集II](#350两个数组的交集ii)
     - [377.组合总和IV](#377组合总和iv)
@@ -258,6 +259,7 @@
     - [09.用两个栈实现队列](#09用两个栈实现队列)
     - [10-I.斐波那契数列](#10-i斐波那契数列)
     - [10-II.青蛙跳台阶问题](#10-ii青蛙跳台阶问题)
+    - [14-I.剪绳子](#14-i剪绳子)
     - [15.二进制中1的个数](#15二进制中1的个数)
     - [16.数值的整数次方](#16数值的整数次方)
     - [18.链表中倒数第k个节点](#18链表中倒数第k个节点)
@@ -286,7 +288,9 @@
     - [55-II.平衡二叉树](#55-ii平衡二叉树)
     - [56-I.数组中数字出现的次数](#56-i数组中数字出现的次数)
     - [56-II.数组中数字出现的次数](#56-ii数组中数字出现的次数)
+    - [57-II.和为s的连续正数序列](#57-ii和为s的连续正数序列)
     - [58-II.左旋转字符串](#58-ii左旋转字符串)
+    - [62.圆圈中最后剩下的数字](#62圆圈中最后剩下的数字)
     - [63.股票的最大利润](#63股票的最大利润)
     - [64.求1+2+...+n](#64求12n)
     - [65.不用加减乘除做加法](#65不用加减乘除做加法)
@@ -6266,10 +6270,30 @@ return res
     # i, v = NestedIterator(nestedList), []
     # while i.hasNext(): v.append(i.next())
     ```
+### 343.整数拆分
+> 给定一个正整数 n ，将其拆分为 k 个 正整数 的和（ k >= 2 ），并使这些整数的乘积最大化。  
+返回 你可以获得的最大乘积 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/integer-break/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int integerBreak(int n) {
+        if(n <= 3) return n - 1;
+        int a = n / 3, b = n % 3;
+        if(b == 0) return (int)Math.pow(3, a);
+        if(b == 1) return (int)Math.pow(3, a - 1) * 4;
+        return (int)Math.pow(3, a) * 2;
+    }
+}
+```
+
 ### 347.前K个高频元素
 > 给你一个整数数组` nums `和一个整数` k `，请你返回其中出现频率前` k `高的元素。你可以按 **任意顺序** 返回答案。
 
- 来源：力扣（LeetCode）  
+来源：力扣（LeetCode）  
 链接：https://leetcode-cn.com/problems/top-k-frequent-elements/  
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
@@ -9799,6 +9823,43 @@ class Solution {
     }
 }
 ```
+
+### 14-I.剪绳子
+> 给你一根长度为 n 的绳子，请把绳子剪成整数长度的 m 段（m、n都是整数，n>1并且m>1），每段绳子的长度记为 k[0],k[1]...k[m-1] 。请问 k[0]*k[1]*...*k[m-1] 可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/jian-sheng-zi-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 数学
+```java
+class Solution {
+    public int cuttingRope(int n) {
+        if(n <= 3) return n - 1;
+        int a = n / 3, b = n % 3;
+        if(b == 0) return (int)Math.pow(3, a);
+        if(b == 1) return (int)Math.pow(3, a - 1) * 4;
+        return (int)Math.pow(3, a) * 2;
+    }
+}
+```
+
++ 动态规划
+```java
+class Solution {
+    public int cuttingRope(int n) {
+        int[] dp = new int[n + 1];
+        dp[2] = 1;
+        for(int i = 3; i < n + 1; i++){
+            for(int j = 2; j < i; j++){
+                dp[i] = Math.max(dp[i], Math.max(j * (i - j), j * dp[i - j]));
+            }
+        }
+        return dp[n];
+    }
+}
+```
+
 ### 15.二进制中1的个数
 > 编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字位数为 '1' 的个数（也被称为 汉明重量).）。
 
@@ -10753,6 +10814,40 @@ class Solution {
 }
 ```
 
+### 57-II.和为s的连续正数序列
+> 输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。  
+序列内的数字由小到大排列，不同序列按照首个数字从小到大排列。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/he-wei-sde-lian-xu-zheng-shu-xu-lie-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 滑动窗口
+```java
+class Solution {
+    public int[][] findContinuousSequence(int target) {
+        int i = 1, j = 2, s = 3;
+        List<int[]> res = new ArrayList<>();
+        while(i < j) {
+            if(s == target) {
+                int[] ans = new int[j - i + 1];
+                for(int k = i; k <= j; k++)
+                    ans[k - i] = k;
+                res.add(ans);
+            }
+            if(s >= target) {
+                s -= i;
+                i++;
+            } else {
+                j++;
+                s += j;
+            }
+        }
+        return res.toArray(new int[0][]);
+    }
+}
+```
+
 ### 58-II.左旋转字符串
 > 字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，该函数将返回左旋转两位得到的结果"cdefgab"。
 
@@ -10777,6 +10872,27 @@ class Solution {
     }
 }
 ```
+
+### 62.圆圈中最后剩下的数字
+> 0,1,···,n-1这n个数字排成一个圆圈，从数字0开始，每次从这个圆圈里删除第m个数字（删除后从下一个数字开始计数）。求出这个圆圈里剩下的最后一个数字。  
+例如，0、1、2、3、4这5个数字组成一个圆圈，从数字0开始每次删除第3个数字，则删除的前4个数字依次是2、0、4、1，因此最后剩下的数字是3。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int lastRemaining(int n, int m) {
+        int x = 0;
+        for (int i = 2; i <= n; i++) {
+            x = (x + m) % i;
+        }
+        return x;
+    }
+}
+```
+
 ### 63.股票的最大利润
 > 假设把某股票的价格按照时间先后顺序存储在数组中，请问买卖该股票一次可能获得的最大利润是多少？
 
