@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-231题-green)
+![](https://img.shields.io/badge/已覆盖-234题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -225,6 +225,7 @@
     - [933.最近的请求次数](#933最近的请求次数)
     - [942.增减字符串匹配](#942增减字符串匹配)
     - [944.删列造序](#944删列造序)
+    - [946.验证栈序列](#946验证栈序列)
     - [951.翻转等价二叉树](#951翻转等价二叉树)
     - [953.验证外星语词典](#953验证外星语词典)
     - [961.在长度2N的数组中找出重复N次的元素](#961在长度2n的数组中找出重复n次的元素)
@@ -263,13 +264,16 @@
     - [15.二进制中1的个数](#15二进制中1的个数)
     - [16.数值的整数次方](#16数值的整数次方)
     - [18.链表中倒数第k个节点](#18链表中倒数第k个节点)
+    - [20.表示数值的字符串](#20表示数值的字符串)
     - [22.链表中倒数第k个节点](#22链表中倒数第k个节点)
     - [24.反转链表](#24反转链表)
     - [25.合并两个排序的链表](#25合并两个排序的链表)
     - [26.树的子结构](#26树的子结构)
     - [27.二叉树的镜像](#27二叉树的镜像)
     - [28.对称的二叉树](#28对称的二叉树)
+    - [29.顺时针打印矩阵](#29顺时针打印矩阵)
     - [30.包含min函数的栈](#30包含min函数的栈)
+    - [31.栈的压入、弹出序列](#31栈的压入弹出序列)
     - [32-I.从上到下打印二叉树](#32-i从上到下打印二叉树)
     - [32-II.从上到下打印二叉树II](#32-ii从上到下打印二叉树ii)
     - [32-III.从上到下打印二叉树III](#32-iii从上到下打印二叉树iii)
@@ -8520,6 +8524,30 @@ cae
         }
     }
     ```
+
+### 946.验证栈序列
+> 给定 pushed 和 popped 两个序列，每个序列中的 值都不重复，只有当它们可能是在最初空栈上进行的推入 push 和弹出 pop 操作序列的结果时，返回 true；否则，返回 false 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/validate-stack-sequences  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+```java
+class Solution {
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Deque<Integer> stack = new LinkedList<>();
+        int i = 0;
+        for(int num : pushed) {
+            stack.addLast(num); // num 入栈
+            while(!stack.isEmpty() && stack.peek() == popped[i]) { // 循环判断与出栈
+                stack.removeLast();
+                i++;
+            }
+        }
+        return stack.isEmpty();
+    }
+}
+```
+
 ### 951.翻转等价二叉树
 > 我们可以为二叉树` T `定义一个 **翻转操作** ，如下所示：选择任意节点，然后交换它的左子树和右子树。  
 只要经过一定次数的翻转操作后，能使` X `等于` Y`，我们就称二叉树` X `翻转 **等价** 于二叉树` Y`。
@@ -9942,6 +9970,68 @@ class Solution {
     }
 }
 ```
+### 20.表示数值的字符串
+> 请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。  
+> 
+数值（按顺序）可以分成以下几个部分：
+
++ 若干空格
++ 一个 小数 或者 整数
++ （可选）一个 'e' 或 'E' ，后面跟着一个 整数
++ 若干空格
+
+小数（按顺序）可以分成以下几个部分：
++ （可选）一个符号字符（'+' 或 '-'）
++ 下述格式之一：
+    + 至少一位数字，后面跟着一个点 '.'
+    + 至少一位数字，后面跟着一个点 '.' ，后面再跟着至少一位数字
+    + 一个点 '.' ，后面跟着至少一位数字
+
+整数（按顺序）可以分成以下几个部分：
++ （可选）一个符号字符（'+' 或 '-'）
++ 至少一位数字
+部分数值列举如下：
+
+["+100", "5e2", "-123", "3.1416", "-1E-16", "0123"]
+部分非数值列举如下：
+
+["12e", "1a3.14", "1.2.3", "+-5", "12e+5.4"]
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/biao-shi-shu-zhi-de-zi-fu-chuan-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public boolean isNumber(String s) {
+        Map[] states = {
+            new HashMap<>() {{ put(' ', 0); put('s', 1); put('d', 2); put('.', 4); }}, // 0.
+            new HashMap<>() {{ put('d', 2); put('.', 4); }},                           // 1.
+            new HashMap<>() {{ put('d', 2); put('.', 3); put('e', 5); put(' ', 8); }}, // 2.
+            new HashMap<>() {{ put('d', 3); put('e', 5); put(' ', 8); }},              // 3.
+            new HashMap<>() {{ put('d', 3); }},                                        // 4.
+            new HashMap<>() {{ put('s', 6); put('d', 7); }},                           // 5.
+            new HashMap<>() {{ put('d', 7); }},                                        // 6.
+            new HashMap<>() {{ put('d', 7); put(' ', 8); }},                           // 7.
+            new HashMap<>() {{ put(' ', 8); }}                                         // 8.
+        };
+        int p = 0;
+        char t;
+        for(char c : s.toCharArray()) {
+            if(c >= '0' && c <= '9') t = 'd';
+            else if(c == '+' || c == '-') t = 's';
+            else if(c == 'e' || c == 'E') t = 'e';
+            else if(c == '.' || c == ' ') t = c;
+            else t = '?';
+            if(!states[p].containsKey(t)) return false;
+            p = (int)states[p].get(t);
+        }
+        return p == 2 || p == 3 || p == 7 || p == 8;
+    }
+}
+
+```
+
 ### 22.链表中倒数第k个节点
 > 输入一个链表，输出该链表中倒数第k个节点。为了符合大多数人的习惯，本题从1开始计数，即链表的尾节点是倒数第1个节点。  
 例如，一个链表有 6 个节点，从头节点开始，它们的值依次是 1、2、3、4、5、6。这个链表的倒数第 3 个节点是值为 4 的节点。
@@ -10147,6 +10237,35 @@ class Solution {
 }
 ```
 
+### 29.顺时针打印矩阵
+> 输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/shun-shi-zhen-da-yin-ju-zhen-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 模拟
+```java
+class Solution {
+    public int[] spiralOrder(int[][] matrix) {
+        if(matrix.length == 0) return new int[0];
+        int l = 0, r = matrix[0].length - 1, t = 0, b = matrix.length - 1, x = 0;
+        int[] res = new int[(r + 1) * (b + 1)];
+        while(true) {
+            for(int i = l; i <= r; i++) res[x++] = matrix[t][i]; // left to right.
+            if(++t > b) break;
+            for(int i = t; i <= b; i++) res[x++] = matrix[i][r]; // top to bottom.
+            if(l > --r) break;
+            for(int i = r; i >= l; i--) res[x++] = matrix[b][i]; // right to left.
+            if(t > --b) break;
+            for(int i = b; i >= t; i--) res[x++] = matrix[i][l]; // bottom to top.
+            if(++l > r) break;
+        }
+        return res;
+    }
+}
+```
+
 ### 30.包含min函数的栈
 > 定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数在该栈中，调用` min`、`push` 及` pop `的时间复杂度都是` O(1)`。
 
@@ -10201,6 +10320,31 @@ class MinStack {
  * int param_3 = obj.top();
  * int param_4 = obj.min();
  */
+```
+
+### 31.栈的压入、弹出序列
+> 输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如，序列 {1,2,3,4,5} 是某栈的压栈序列，序列 {4,5,3,2,1} 是该压栈序列对应的一个弹出序列，但 {4,3,5,1,2} 就不可能是该压栈序列的弹出序列。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/zhan-de-ya-ru-dan-chu-xu-lie-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 提交有问题
+```java
+class Solution {
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Deque<Integer> stack = new LinkedList<>();
+        int i = 0;
+        for(int num : pushed) {
+            stack.addLast(num); // num 入栈
+            while(!stack.isEmpty() && stack.peekLast() == popped[i]) { // 循环判断与出栈
+                stack.removeLast();
+                i++;
+            }
+        }
+        return stack.isEmpty();
+    }
+}
 ```
 
 ### 32-I.从上到下打印二叉树
