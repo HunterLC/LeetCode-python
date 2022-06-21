@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-234题-green)
+![](https://img.shields.io/badge/已覆盖-237题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -156,6 +156,7 @@
     - [232.用栈实现队列](#232用栈实现队列)
     - [235.二叉搜索树的最近公共祖先](#235二叉搜索树的最近公共祖先)
     - [236.二叉树的最近公共祖先](#236二叉树的最近公共祖先)
+    - [239.滑动窗口最大值](#239滑动窗口最大值)
     - [240.搜索二维矩阵II](#240搜索二维矩阵ii)
     - [264.丑数II](#264丑数ii)
     - [278.第一个错误版本](#278第一个错误版本)
@@ -294,6 +295,8 @@
     - [56-II.数组中数字出现的次数](#56-ii数组中数字出现的次数)
     - [57-II.和为s的连续正数序列](#57-ii和为s的连续正数序列)
     - [58-II.左旋转字符串](#58-ii左旋转字符串)
+    - [59-I.滑动窗口的最大值](#59-i滑动窗口的最大值)
+    - [59-II.队列的最大值](#59-ii队列的最大值)
     - [62.圆圈中最后剩下的数字](#62圆圈中最后剩下的数字)
     - [63.股票的最大利润](#63股票的最大利润)
     - [64.求1+2+...+n](#64求12n)
@@ -5517,6 +5520,38 @@ class Solution:
             
         return None
 ```
+
+### 239.滑动窗口最大值
+> 给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。  
+返回 滑动窗口中的最大值 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/sliding-window-maximum  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if(nums.length == 0 || k == 0) return new int[0];
+        Deque<Integer> deque = new LinkedList<>();
+        int[] res = new int[nums.length - k + 1];
+        for(int j = 0, i = 1 - k; j < nums.length; i++, j++) {
+            // 删除 deque 中对应的 nums[i-1]
+            if(i > 0 && deque.peekFirst() == nums[i - 1])
+                deque.removeFirst();
+            // 保持 deque 递减
+            while(!deque.isEmpty() && deque.peekLast() < nums[j])
+                deque.removeLast();
+            deque.addLast(nums[j]);
+            // 记录窗口最大值
+            if(i >= 0)
+                res[i] = deque.peekFirst();
+        }
+        return res;
+    }
+}
+```
+
 ### 240.搜索二维矩阵II
 > 编写一个高效的算法来搜索` m x n `矩阵` matrix `中的一个目标值` target `。该矩阵具有以下特性：  
 每行的元素从左到右升序排列。
@@ -11015,6 +11050,79 @@ class Solution {
         return ans.toString();
     }
 }
+```
+
+### 59-I.滑动窗口的最大值
+> 给定一个数组 nums 和滑动窗口的大小 k，请找出所有滑动窗口里的最大值。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/hua-dong-chuang-kou-de-zui-da-zhi-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if(nums.length == 0 || k == 0) return new int[0];
+        Deque<Integer> deque = new LinkedList<>();
+        int[] res = new int[nums.length - k + 1];
+        for(int j = 0, i = 1 - k; j < nums.length; i++, j++) {
+            // 删除 deque 中对应的 nums[i-1]
+            if(i > 0 && deque.peekFirst() == nums[i - 1])
+                deque.removeFirst();
+            // 保持 deque 递减
+            while(!deque.isEmpty() && deque.peekLast() < nums[j])
+                deque.removeLast();
+            deque.addLast(nums[j]);
+            // 记录窗口最大值
+            if(i >= 0)
+                res[i] = deque.peekFirst();
+        }
+        return res;
+    }
+}
+```
+
+### 59-II.队列的最大值
+> 请定义一个队列并实现函数 max_value 得到队列里的最大值，要求函数max_value、push_back 和 pop_front 的均摊时间复杂度都是O(1)。  
+若队列为空，pop_front 和 max_value 需要返回 -1
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/dui-lie-de-zui-da-zhi-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class MaxQueue {
+
+    Queue<Integer> queue;
+    Deque<Integer> deque;
+    public MaxQueue() {
+        queue = new LinkedList<>();
+        deque = new LinkedList<>();
+    }
+    public int max_value() {
+        return deque.isEmpty() ? -1 : deque.peekFirst();
+    }
+    public void push_back(int value) {
+        queue.offer(value);
+        while(!deque.isEmpty() && deque.peekLast() < value)
+            deque.pollLast();
+        deque.offerLast(value);
+    }
+    public int pop_front() {
+        if(queue.isEmpty()) return -1;
+        if(queue.peek().equals(deque.peekFirst()))
+            deque.pollFirst();
+        return queue.poll();
+    }
+}
+
+/**
+ * Your MaxQueue object will be instantiated and called as such:
+ * MaxQueue obj = new MaxQueue();
+ * int param_1 = obj.max_value();
+ * obj.push_back(value);
+ * int param_3 = obj.pop_front();
+ */
 ```
 
 ### 62.圆圈中最后剩下的数字
