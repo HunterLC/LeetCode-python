@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-237题-green)
+![](https://img.shields.io/badge/已覆盖-239题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -282,6 +282,8 @@
     - [34.二叉树中和为某一值的路径](#34二叉树中和为某一值的路径)
     - [35.复杂链表的复制](#35复杂链表的复制)
     - [36.二叉搜索树与双向链表](#36二叉搜索树与双向链表)
+    - [37.序列化二叉树](#37序列化二叉树)
+    - [38.字符串的排列](#38字符串的排列)
     - [39.数组中出现次数超过一半的数字](#39数组中出现次数超过一半的数字)
     - [42.连续子数组的最大和](#42连续子数组的最大和)
     - [46.把数字翻译成字符串](#46把数字翻译成字符串)
@@ -10677,6 +10679,96 @@ class Solution {
         cur.left = pre;
         pre = cur;
         dfs(cur.right);
+    }
+}
+```
+
+### 37.序列化二叉树
+> 请实现两个函数，分别用来序列化和反序列化二叉树。  
+你需要设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。  
+提示：输入输出格式与 LeetCode 目前使用的方式一致，详情请参阅 LeetCode 序列化二叉树的格式。你并非必须采取这种方式，你也可以采用其他的方法解决这个问题。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/xu-lie-hua-er-cha-shu-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if (root == null)
+            return "null";
+        return String.valueOf(root.val) + "," + String.valueOf(serialize(root.left)) + "," + String.valueOf(serialize(root.right));
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        String[] dataList = data.split(",");
+        Deque<String> nodes = new LinkedList<>();
+        for (String num: dataList)
+            nodes.addLast(num);
+
+        return dfs(nodes);
+    }
+
+    public TreeNode dfs(Deque<String> nodes) {
+        String val = nodes.removeFirst();
+        if (val.equals("null")) return null;
+        TreeNode root = new TreeNode(Integer.valueOf(val));
+        root.left = dfs(nodes);
+        root.right = dfs(nodes);
+        return root;
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.deserialize(codec.serialize(root));
+```
+
+### 38.字符串的排列
+> 输入一个字符串，打印出该字符串中字符的所有排列。  
+你可以以任意顺序返回这个字符串数组，但里面不能有重复元素。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/zi-fu-chuan-de-pai-lie-lcof/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public String[] permutation(String s) {
+        Set<String> list = new HashSet<>();
+        char[] arr = s.toCharArray();
+        Arrays.sort(arr);  // 给字符数组排序，这样相同的字符就会排在一起
+        boolean[] visited = new boolean[arr.length];
+        backtracking(arr, "", visited, list);
+        return list.toArray(new String[0]);
+    }
+
+    public void backtracking(char[] arr, String s,  boolean[] visited, Set<String> list) {
+        if(s.length() == arr.length) {
+            list.add(s);
+            return;
+        }
+        for(int i = 0; i < arr.length; i++) {
+            if(visited[i]) continue;
+            // 去重
+            if (i > 0 && arr[i] == arr[i-1] && visited[i-1] == false) continue;
+            visited[i] = true;
+            backtracking(arr, s+String.valueOf(arr[i]), visited, list);
+            visited[i] = false;
+        }
+
     }
 }
 ```
