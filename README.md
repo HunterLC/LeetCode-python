@@ -2,7 +2,7 @@
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
-![](https://img.shields.io/badge/已覆盖-239题-green)
+![](https://img.shields.io/badge/已覆盖-243题-green)
 ![](https://img.shields.io/badge/排序算法-7种-red)
 ![](https://img.shields.io/badge/同向双指针/滑动窗口-Sliding%20Window-orange)
 ![](https://img.shields.io/badge/宽度/广度优先搜索-Breadth%20First%20Search|BFS-yellow)
@@ -66,6 +66,7 @@
     - [4.寻找两个正序数组的中位数](#4寻找两个正序数组的中位数)
     - [5.最长回文子串](#5最长回文子串)
     - [8.字符串转换整数(atoi)](#8字符串转换整数atoi)
+    - [10.正则表达式匹配](#10正则表达式匹配)
     - [11.盛水最多的容器](#11盛水最多的容器)
     - [15.三数之和](#15三数之和)
     - [16.最接近的三数之和](#16最接近的三数之和)
@@ -265,6 +266,7 @@
     - [15.二进制中1的个数](#15二进制中1的个数)
     - [16.数值的整数次方](#16数值的整数次方)
     - [18.链表中倒数第k个节点](#18链表中倒数第k个节点)
+    - [19.正则表达式匹配](#19正则表达式匹配)
     - [20.表示数值的字符串](#20表示数值的字符串)
     - [22.链表中倒数第k个节点](#22链表中倒数第k个节点)
     - [24.反转链表](#24反转链表)
@@ -289,6 +291,7 @@
     - [46.把数字翻译成字符串](#46把数字翻译成字符串)
     - [47.礼物的最大价值](#47礼物的最大价值)
     - [48.最长不含重复字符的子字符串](#48最长不含重复字符的子字符串)
+    - [49.丑数](#49丑数)
     - [52.两个链表的第一个公共节点](#52两个链表的第一个公共节点)
     - [54.二叉搜索树的第k大节点](#54二叉搜索树的第k大节点)
     - [55-I.二叉树的深度](#55-i二叉树的深度)
@@ -299,6 +302,7 @@
     - [58-II.左旋转字符串](#58-ii左旋转字符串)
     - [59-I.滑动窗口的最大值](#59-i滑动窗口的最大值)
     - [59-II.队列的最大值](#59-ii队列的最大值)
+    - [60.n个骰子的点数](#60n个骰子的点数)
     - [62.圆圈中最后剩下的数字](#62圆圈中最后剩下的数字)
     - [63.股票的最大利润](#63股票的最大利润)
     - [64.求1+2+...+n](#64求12n)
@@ -1332,6 +1336,39 @@ class Solution {
     }
 }
 ```
+
+### 10.正则表达式匹配
+> 给你一个字符串 s 和一个字符规律 p，请你来实现一个支持 '.' 和 '*' 的正则表达式匹配。
+
++ '.' 匹配任意单个字符
++ '*' 匹配零个或多个前面的那一个元素
+
+所谓匹配，是要涵盖 整个 字符串 s的，而不是部分字符串。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/regular-expression-matching  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public boolean isMatch(String s, String p) {
+        int m = s.length() + 1, n = p.length() + 1;
+        boolean[][] dp = new boolean[m][n];
+        dp[0][0] = true;
+        for(int j = 2; j < n; j += 2)
+            dp[0][j] = dp[0][j - 2] && p.charAt(j - 1) == '*';
+        for(int i = 1; i < m; i++) {
+            for(int j = 1; j < n; j++) {
+                dp[i][j] = p.charAt(j - 1) == '*' ?
+                    dp[i][j - 2] || dp[i - 1][j] && (s.charAt(i - 1) == p.charAt(j - 2) || p.charAt(j - 2) == '.') :
+                    dp[i - 1][j - 1] && (p.charAt(j - 1) == '.' || s.charAt(i - 1) == p.charAt(j - 1));
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+}
+```
+
 ### 11.盛水最多的容器
 > 给定一个长度为` n `的整数数组` height `。有` n `条垂线，第` i `条线的两个端点是` (i, 0) `和 `(i, height[i])` 。  
 找出其中的两条线，使得它们与` x `轴共同构成的容器可以容纳最多的水。  
@@ -10007,6 +10044,34 @@ class Solution {
     }
 }
 ```
+
+### 19.正则表达式匹配
+> 请实现一个函数用来匹配包含'. '和'*'的正则表达式。模式中的字符'.'表示任意一个字符，而'*'表示它前面的字符可以出现任意次（含0次）。在本题中，匹配是指字符串的所有字符匹配整个模式。例如，字符串"aaa"与模式"a.a"和"ab*ac*a"匹配，但与"aa.a"和"ab*a"均不匹配。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/zheng-ze-biao-da-shi-pi-pei-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public boolean isMatch(String s, String p) {
+        int m = s.length() + 1, n = p.length() + 1;
+        boolean[][] dp = new boolean[m][n];
+        dp[0][0] = true;
+        for(int j = 2; j < n; j += 2)
+            dp[0][j] = dp[0][j - 2] && p.charAt(j - 1) == '*';
+        for(int i = 1; i < m; i++) {
+            for(int j = 1; j < n; j++) {
+                dp[i][j] = p.charAt(j - 1) == '*' ?
+                    dp[i][j - 2] || dp[i - 1][j] && (s.charAt(i - 1) == p.charAt(j - 2) || p.charAt(j - 2) == '.') :
+                    dp[i - 1][j - 1] && (p.charAt(j - 1) == '.' || s.charAt(i - 1) == p.charAt(j - 1));
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+}
+```
+
 ### 20.表示数值的字符串
 > 请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。  
 > 
@@ -10913,6 +10978,31 @@ class Solution {
 }
 ```
 
+### 49.丑数
+> 我们把只包含质因子 2、3 和 5 的数称作丑数（Ugly Number）。求按从小到大的顺序的第 n 个丑数。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/chou-shu-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int nthUglyNumber(int n) {
+        int a = 0, b = 0, c = 0;
+        int[] dp = new int[n];
+        dp[0] = 1;
+        for(int i = 1; i < n; i++) {
+            int n2 = dp[a] * 2, n3 = dp[b] * 3, n5 = dp[c] * 5;
+            dp[i] = Math.min(Math.min(n2, n3), n5);
+            if(dp[i] == n2) a++;
+            if(dp[i] == n3) b++;
+            if(dp[i] == n5) c++;
+        }
+        return dp[n - 1];
+    }
+}
+```
+
 ### 52.两个链表的第一个公共节点
 > 输入两个链表，找出它们的第一个公共节点。
 
@@ -11217,6 +11307,32 @@ class MaxQueue {
  */
 ```
 
+### 60.n个骰子的点数
+> 把n个骰子扔在地上，所有骰子朝上一面的点数之和为s。输入n，打印出s的所有可能的值出现的概率。  
+你需要用一个浮点数数组返回答案，其中第 i 个元素代表这 n 个骰子所能掷出的点数集合中第 i 小的那个的概率。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/nge-tou-zi-de-dian-shu-lcof  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public double[] dicesProbability(int n) {
+        double[] dp = new double[6];
+        Arrays.fill(dp, 1.0 / 6.0);
+        for (int i = 2; i <= n; i++) {
+            double[] tmp = new double[5 * i + 1];
+            for (int j = 0; j < dp.length; j++) {
+                for (int k = 0; k < 6; k++) {
+                    tmp[j + k] += dp[j] / 6.0;
+                }
+            }
+            dp = tmp;
+        }
+        return dp;
+    }
+}
+```
 ### 62.圆圈中最后剩下的数字
 > 0,1,···,n-1这n个数字排成一个圆圈，从数字0开始，每次从这个圆圈里删除第m个数字（删除后从下一个数字开始计数）。求出这个圆圈里剩下的最后一个数字。  
 例如，0、1、2、3、4这5个数字组成一个圆圈，从数字0开始每次删除第3个数字，则删除的前4个数字依次是2、0、4、1，因此最后剩下的数字是3。
