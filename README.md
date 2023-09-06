@@ -1,4 +1,4 @@
- # LeetCode-python
+ # LeetCode-python-java
 因为俺要找工作，所以一些题解会含有java语言解法，QAQ
 
 ![](https://img.shields.io/badge/Python%203-Java%208-blue)
@@ -16,7 +16,7 @@
 我要刷题**冲冲冲**
 
 ## 目录
-- [LeetCode-python](#leetcode-python)
+- [LeetCode-python-java](#leetcode-python-java)
   - [目录](#目录)
   - [1.基础知识](#1基础知识)
     - [1.1 排序算法（java实现）](#11-排序算法java实现)
@@ -240,6 +240,7 @@
     - [1091.二进制矩阵中的最短路径](#1091二进制矩阵中的最短路径)
     - [1095.山脉数组中查找目标值](#1095山脉数组中查找目标值)
     - [1110.删点成林★](#1110删点成林)
+    - [1123.最深叶节点的最近公共祖先](#1123最深叶节点的最近公共祖先)
     - [1209.删除字符串中的所有相邻重复项 II](#1209删除字符串中的所有相邻重复项-ii)
     - [1235.规划兼职工作](#1235规划兼职工作)
     - [1249.移除无效的括号](#1249移除无效的括号)
@@ -9057,6 +9058,56 @@ class Solution:
         dfs(root, True)
         return ans
 ```
+
+### 1123.最深叶节点的最近公共祖先
+> 给你一个有根节点 root 的二叉树，返回它 最深的叶节点的最近公共祖先 。  
+回想一下：  
+叶节点 是二叉树中没有子节点的节点
+树的根节点的 深度 为 0，如果某一节点的深度为 d，那它的子节点的深度就是 d+1
+如果我们假定 A 是一组节点 S 的 最近公共祖先，S 中的每个节点都在以 A 为根节点的子树中，且 A 的深度达到此条件下可能的最大值。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/lowest-common-ancestor-of-deepest-leaves  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    private TreeNode ans;
+    private int maxDepth = -1;
+    public TreeNode lcaDeepestLeaves(TreeNode root) {
+        dfs(root, 0);
+        return ans;
+    }
+
+    public int dfs(TreeNode node, int depth) {
+        if (node == null) {
+            maxDepth = Math.max(maxDepth, depth);
+            return depth;
+        }
+        int leftMaxDepth = dfs(node.left, depth+1);
+        int rightMaxDepth = dfs(node.right, depth+1);
+        if (leftMaxDepth == rightMaxDepth && leftMaxDepth == maxDepth)
+            ans = node;
+        return Math.max(leftMaxDepth, rightMaxDepth);
+    }
+}
+```
+
 ### 1209.删除字符串中的所有相邻重复项 II
 > 给你一个字符串` s`，「k 倍重复项删除操作」将会从` s `中选择` k `个相邻且相等的字母，并删除它们，使被删去的字符串的左侧和右侧连在一起。  
 你需要对` s `重复进行无限次这样的删除操作，直到无法继续为止。  
