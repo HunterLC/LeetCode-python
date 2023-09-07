@@ -252,6 +252,7 @@
     - [1438.绝对差不超过限制的最长连续子数组](#1438绝对差不超过限制的最长连续子数组)
     - [1472.设计浏览器历史记录](#1472设计浏览器历史记录)
     - [1823.找出游戏的获胜者](#1823找出游戏的获胜者)
+    - [2594.修车的最少时间](#2594修车的最少时间)
   - [3.面试题系列](#3面试题系列)
     - [01.05.一次编辑](#0105一次编辑)
     - [04.06.后继者](#0406后继者)
@@ -9651,6 +9652,42 @@ class BrowserHistory:
                 ans = (ans + k) % i
             return ans + 1
     ```
+
+### 2594.修车的最少时间
+> 给你一个整数数组 ranks ，表示一些机械工的 能力值 。ranksi 是第 i 位机械工的能力值。能力值为 r 的机械工可以在 r * n2 分钟内修好 n 辆车。  
+同时给你一个整数 cars ，表示总共需要修理的汽车数目。  
+请你返回修理所有汽车 最少 需要多少时间。  
+注意：所有机械工可以同时修理汽车。  
+
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/minimum-time-to-repair-cars/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 二分查找
+```java
+class Solution {
+    public long repairCars(int[] ranks, int cars) {
+        // 最短时间一定在这个区间里，right需要先转long，不然就已经越界了，再转也没用了
+        long left = 0, right = 1L * ranks[0] * cars * cars;
+        while (left < right) {
+            // 二分查找，mid当作最短的时间
+            long mid = (left + right) >> 1;
+            long count = 0;
+            // 在该时间下所有修车人能修多少辆车
+            for (int i = 0; i < ranks.length; i++)
+                // 所有人能修车的车辆数
+                count += Math.sqrt(mid/ranks[i]);
+            if (count >= cars)
+                right = mid;
+            else
+                left = mid + 1;
+        }
+        return left;
+    }
+}
+```
+
 
 ## 3.面试题系列
 ### 01.05.一次编辑
