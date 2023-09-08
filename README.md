@@ -253,6 +253,7 @@
     - [1472.设计浏览器历史记录](#1472设计浏览器历史记录)
     - [1823.找出游戏的获胜者](#1823找出游戏的获胜者)
     - [2594.修车的最少时间](#2594修车的最少时间)
+    - [2651.计算列车到站时间](#2651计算列车到站时间)
   - [3.面试题系列](#3面试题系列)
     - [01.05.一次编辑](#0105一次编辑)
     - [04.06.后继者](#0406后继者)
@@ -9684,6 +9685,24 @@ class Solution {
                 left = mid + 1;
         }
         return left;
+    }
+}
+```
+
+### 2651.计算列车到站时间
+> 给你一个正整数 arrivalTime 表示列车正点到站的时间（单位：小时），另给你一个正整数 delayedTime 表示列车延误的小时数。  
+返回列车实际到站的时间。  
+注意，该问题中的时间采用 24 小时制。  
+
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/calculate-delayed-arrival-time/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int findDelayedArrivalTime(int arrivalTime, int delayedTime) {
+        return (arrivalTime + delayedTime) % 24;
     }
 }
 ```
