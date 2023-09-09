@@ -4780,6 +4780,42 @@ class Solution:
 
         return True if visited == numCourses else False
 ```
+
++ 有向无环图BFS
+```java
+class Solution {
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        // 有向无环图，广度优先BFS
+
+        int[] indegrees = new int[numCourses];
+        List<List<Integer>> adjacency = new ArrayList<>();
+        // 构造邻接表
+        for (int i = 0; i < numCourses; i++)
+            adjacency.add(new ArrayList<>());
+        for (int[] cp : prerequisites) {
+            // 数组前面的课程依赖于后者的课程，因此前面课程的入度+1
+            indegrees[cp[0]]++;
+            // 构造邻接表
+            adjacency.get(cp[1]).add(cp[0]);
+        }
+
+        Queue<Integer> queue = new LinkedList<>();
+        // 让先导课入队列，先开始先导课的学习
+        for (int i = 0; i < numCourses; i++)
+            if (indegrees[i] == 0)
+                queue.add(i);
+        while (!queue.isEmpty()) {
+            int pre = queue.poll();
+            numCourses--;
+            for (int cur: adjacency.get(pre))
+                if (--indegrees[cur] == 0)
+                    queue.add(cur);
+        }
+        return numCourses == 0;
+    }
+}
+```
+
 ### 208.实现Trie(前缀树)
 > `Trie`（发音类似 `"try"`）或者说 **前缀树** 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的应用情景，例如自动补完和拼写检查。
 
