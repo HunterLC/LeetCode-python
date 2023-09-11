@@ -206,6 +206,7 @@
     - [543.二叉树的直径](#543二叉树的直径)
     - [547.省份数量](#547省份数量)
     - [572.另一颗树的子树](#572另一颗树的子树)
+    - [630.课程表III](#630课程表iii)
     - [647.回文子串（与题5可做比较）](#647回文子串与题5可做比较)
     - [669.修剪二叉搜索树★](#669修剪二叉搜索树)
     - [675.为高尔夫比赛砍树](#675为高尔夫比赛砍树)
@@ -7780,6 +7781,34 @@ class Solution:
         
         return root.val == subRoot.val and self.isSame(root.left, subRoot.left) and self.isSame(root.right, subRoot.right)
 ```
+
+### 630.课程表III
+
+> 这里有 n 门不同的在线课程，按从` 1 `到` n `编号。给你一个数组 `courses` ，其中 `courses[i] = [durationi, lastDayi]` 表示第`i ` 门课将会 持续 上`durationi`  天课，并且必须在不晚于`lastDayi`  的时候完成。  
+你的学期从第` 1 `天开始。且不能同时修读两门及两门以上的课程。  
+返回你最多可以修读的课程数目。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/course-schedule-iii/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int scheduleCourse(int[][] courses) {
+        Arrays.sort(courses, (a,b)->a[1]-b[1]);
+        PriorityQueue<Integer> q = new PriorityQueue<>((a,b)->b-a);
+        int sum = 0;
+        for (int[] c : courses) {
+            int d = c[0], e = c[1];
+            sum += d;
+            q.add(d);
+            if (sum > e) sum -= q.poll();
+        }
+        return q.size();
+    }
+}
+```
+
 ### 647.回文子串（与题5可做比较）
 > 给你一个字符串` s `，请你统计并返回这个字符串中 **回文子串** 的数目。  
 **回文字符串** 是正着读和倒过来读一样的字符串。  
