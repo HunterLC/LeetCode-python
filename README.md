@@ -251,6 +251,7 @@
     - [1376.通知所有员工所需的时间](#1376通知所有员工所需的时间)
     - [1423.可获得的最大点数](#1423可获得的最大点数)
     - [1438.绝对差不超过限制的最长连续子数组](#1438绝对差不超过限制的最长连续子数组)
+    - [1462.课程表IV](#1462课程表iv)
     - [1472.设计浏览器历史记录](#1472设计浏览器历史记录)
     - [1823.找出游戏的获胜者](#1823找出游戏的获胜者)
     - [2594.修车的最少时间](#2594修车的最少时间)
@@ -9593,6 +9594,56 @@ class Solution {
                     res = r - l + 1
             return res
     ```
+
+### 1462.课程表IV
+> 你总共需要上 numCourses 门课，课程编号依次为 0 到 numCourses-1 。你会得到一个数组 prerequisite ，其中 prerequisites[i] = [ai, bi] 表示如果你想选 bi 课程，你 必须 先选 ai 课程。  
+有的课会有直接的先修课程，比如如果想上课程 1 ，你必须先上课程 0 ，那么会以 [0,1] 数对的形式给出先修课程数对。  
+先决条件也可以是 间接 的。如果课程 a 是课程 b 的先决条件，课程 b 是课程 c 的先决条件，那么课程 a 就是课程 c 的先决条件。  
+你也得到一个数组 queries ，其中 queries[j] = [uj, vj]。对于第 j 个查询，您应该回答课程 uj 是否是课程 vj 的先决条件。  
+返回一个布尔数组 answer ，其中 answer[j] 是第 j 个查询的答案。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/course-schedule-iv/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public List<Boolean> checkIfPrerequisite(int numCourses, int[][] prerequisites, int[][] queries) {
+        boolean[][] f = new boolean[numCourses][numCourses];
+        List<Integer>[] g = new List[numCourses];
+        int[] indeg = new int[numCourses];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (var p : prerequisites) {
+            g[p[0]].add(p[1]);
+            ++indeg[p[1]];
+        }
+        Deque<Integer> q = new ArrayDeque<>();
+        for (int i = 0; i < numCourses; ++i) {
+            if (indeg[i] == 0) {
+                q.offer(i);
+            }
+        }
+        while (!q.isEmpty()) {
+            int i = q.poll();
+            for (int j : g[i]) {
+                f[i][j] = true;
+                for (int h = 0; h < numCourses; ++h) {
+                    f[h][j] |= f[h][i];
+                }
+                if (--indeg[j] == 0) {
+                    q.offer(j);
+                }
+            }
+        }
+        List<Boolean> ans = new ArrayList<>();
+        for (var qry : queries) {
+            ans.add(f[qry[0]][qry[1]]);
+        }
+        return ans;
+    }
+}
+```
+
 ### 1472.设计浏览器历史记录
 > 你有一个只支持单个标签页的` 浏览器 `，最开始你浏览的网页是` homepage `，你可以访问其他的网站` url `，也可以在浏览历史中后退` steps `步或前进` steps `步。
 
