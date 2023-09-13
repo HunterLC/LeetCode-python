@@ -255,6 +255,7 @@
     - [1472.设计浏览器历史记录](#1472设计浏览器历史记录)
     - [1823.找出游戏的获胜者](#1823找出游戏的获胜者)
     - [2594.修车的最少时间](#2594修车的最少时间)
+    - [2596.检查骑士巡视方案](#2596检查骑士巡视方案)
     - [2651.计算列车到站时间](#2651计算列车到站时间)
   - [3.面试题系列](#3面试题系列)
     - [01.05.一次编辑](#0105一次编辑)
@@ -9801,6 +9802,49 @@ class Solution {
                 left = mid + 1;
         }
         return left;
+    }
+}
+```
+
+### 2596.检查骑士巡视方案
+> 骑士在一张 n x n 的棋盘上巡视。在 有效 的巡视方案中，骑士会从棋盘的 左上角 出发，并且访问棋盘上的每个格子 恰好一次 。  
+给你一个 n x n 的整数矩阵 grid ，由范围 [0, n * n - 1] 内的不同整数组成，其中 grid[row][col] 表示单元格 (row, col) 是骑士访问的第 grid[row][col] 个单元格。骑士的行动是从下标 0 开始的。  
+如果 grid 表示了骑士的有效巡视方案，返回 true；否则返回 false。  
+注意，骑士行动时可以垂直移动两个格子且水平移动一个格子，或水平移动两个格子且垂直移动一个格子。  
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/check-knight-tour-configuration/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    // 定义下一步的方向
+    public static final int[][] dirs =
+            new int[][]{{-2, 1}, {-1, 2}, {1, 2}, {2, 1}, {-2, -1}, {-1, -2}, {1, -2}, {2, -1}};
+
+    public boolean checkValidGrid(int[][] grid) {
+        int n = grid.length;
+        if (grid[0][0] != 0)
+            return false;
+        return dfs(grid, 0, 0, 0);
+    }
+
+    public boolean dfs(int[][] grid, int x, int y, int num) {
+        if (x < 0 || y < 0 || x >= grid.length || y >= grid[0].length)
+            return false;
+        // 递归终止条件
+        if (grid[x][y] == num && num == grid.length * grid[0].length - 1)
+            return true;
+        if (grid[x][y] == num) {
+            // 遍历八个方向
+            for (int[] dir : dirs) {
+                // 向下递归，若满足递归终止条件则证明为true
+                if (dfs(grid, x + dir[0], y + dir[1], num + 1)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
 ```
