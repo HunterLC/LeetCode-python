@@ -175,6 +175,7 @@
     - [310.最小高度树★](#310最小高度树)
     - [328.奇偶链表](#328奇偶链表)
     - [329.矩阵中的最长递增路径](#329矩阵中的最长递增路径)
+    - [337.打家劫舍III](#337打家劫舍iii)
     - [341.扁平化嵌套列表迭代器](#341扁平化嵌套列表迭代器)
     - [343.整数拆分](#343整数拆分)
     - [347.前K个高频元素](#347前k个高频元素)
@@ -6321,6 +6322,52 @@ class Solution {
     }
 }
 ```
+
+### 337.打家劫舍III
+
+> 小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 root 。  
+除了 root 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。 如果 两个直接相连的房子在同一天晚上被打劫 ，房屋将自动报警。  
+给定二叉树的 root 。返回 在不触动警报的情况下 ，小偷能够盗取的最高金额 。
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/house-robber-iii/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 树DFS
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public int rob(TreeNode root) {
+        int[] ans = dfs(root);
+        return Math.max(ans[0], ans[1]); 
+    }
+
+    public int[] dfs(TreeNode root) {
+        if (root == null)
+            return new int[]{0, 0};
+        int[] left = dfs(root.left);
+        int[] right = dfs(root.right);
+        int rob = left[1] + root.val + right[1];
+        int notRob = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+        return new int[]{rob, notRob};
+    }
+}
+```
+
 ### 341.扁平化嵌套列表迭代器
 > 给你一个嵌套的整数列表` nestedList `。每个元素要么是一个整数，要么是一个列表；该列表的元素也可能是整数或者是其他列表。请你实现一个迭代器将其扁平化，使之能够遍历这个列表中的所有整数。
 
