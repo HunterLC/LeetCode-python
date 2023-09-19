@@ -257,6 +257,7 @@
     - [1462.课程表IV](#1462课程表iv)
     - [1472.设计浏览器历史记录](#1472设计浏览器历史记录)
     - [1823.找出游戏的获胜者](#1823找出游戏的获胜者)
+    - [2560.打家劫舍IV](#2560打家劫舍iv)
     - [2594.修车的最少时间](#2594修车的最少时间)
     - [2596.检查骑士巡视方案](#2596检查骑士巡视方案)
     - [2651.计算列车到站时间](#2651计算列车到站时间)
@@ -9875,6 +9876,57 @@ class BrowserHistory:
                 ans = (ans + k) % i
             return ans + 1
     ```
+
+### 2560.打家劫舍IV
+
+> 沿街有一排连续的房屋。每间房屋内都藏有一定的现金。现在有一位小偷计划从这些房屋中窃取现金。  
+由于相邻的房屋装有相互连通的防盗系统，所以小偷 不会窃取相邻的房屋 。  
+小偷的 窃取能力 定义为他在窃取过程中能从单间房屋中窃取的 最大金额 。  
+给你一个整数数组 nums 表示每间房屋存放的现金金额。形式上，从左起第 i 间房屋中放有 nums[i] 美元。  
+另给你一个整数 k ，表示窃贼将会窃取的 最少 房屋数。小偷总能窃取至少 k 间房屋。  
+返回小偷的 最小 窃取能力。  
+
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/house-robber-iv/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
++ 二分查找  
+这道题的二分查找不好想出来，感觉得是有做题经验才能想出来，积累  
+
+```java
+class Solution {
+    public int minCapability(int[] nums, int k) {
+        int left = 0, right = 0;
+        for (int x : nums) {
+            right = Math.max(right, x);
+        }
+        while (left + 1 < right) { // 开区间写法
+            int mid = (left + right) >>> 1;
+            if (check(nums, k, mid)) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+
+    private boolean check(int[] nums, int k, int mx) {
+        int f0 = 0, f1 = 0;
+        for (int x : nums) {
+            if (x > mx) {
+                f0 = f1;
+            } else {
+                int tmp = f1;
+                f1 = Math.max(f1, f0 + 1);
+                f0 = tmp;
+            }
+        }
+        return f1 >= k;
+    }
+}
+```
 
 ### 2594.修车的最少时间
 > 给你一个整数数组 ranks ，表示一些机械工的 能力值 。ranksi 是第 i 位机械工的能力值。能力值为 r 的机械工可以在 r * n2 分钟内修好 n 辆车。  
