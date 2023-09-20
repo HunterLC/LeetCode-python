@@ -321,6 +321,8 @@
     - [67.把字符串转换成整数](#67把字符串转换成整数)
     - [68-I.二叉搜索树的最近公共祖先](#68-i二叉搜索树的最近公共祖先)
     - [68-II.二叉树的最近公共祖先](#68-ii二叉树的最近公共祖先)
+  - [5.LCP](#5lcp)
+    - [06.拿硬币](#06拿硬币)
 
 ## 1.基础知识
 ### 1.1 排序算法（java实现）
@@ -12010,6 +12012,29 @@ class Solution {
         if(left == null) return right;
         if(right == null) return left;
         return root;
+    }
+}
+```
+
+## 5.LCP
+
+### 06.拿硬币
+> 桌上有 n 堆力扣币，每堆的数量保存在数组 coins 中。我们每次可以选择任意一堆，拿走其中的一枚或者两枚，求拿完所有力扣币的最少次数。  
+
+来源：力扣（LeetCode）  
+链接：https://leetcode.cn/problems/na-ying-bi/  
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+```java
+class Solution {
+    public int minCount(int[] coins) {
+        int ans = 0;
+        for (int coin: coins)
+            if (coin % 2 == 0)
+                ans += coin / 2;
+            else
+                ans += coin / 2 + 1;
+        return ans;
     }
 }
 ```
